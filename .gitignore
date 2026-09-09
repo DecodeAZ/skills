@@ -1,0 +1,13 @@
+# 本地运行时产物与用户配置（不随仓库分发）
+skills/*/config.json
+skills/*/_user_meta.json
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 编辑器与系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
