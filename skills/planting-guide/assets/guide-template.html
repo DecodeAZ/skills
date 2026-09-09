@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="bloom">
+<!--
+  data-theme 按植物特点选择强调色（六选一）：
+    bloom  = 玫红   暖调浓花：三角梅、天竺葵、石榴花、矮牵牛
+    leaf   = 叶绿   观叶阴生：龟背竹、蕨类、竹芋、绿萝（纸底微偏冷绿）
+    harvest= 琥珀   果蔬香草与沙生多肉：番茄、无花果、迷迭香、仙人掌
+    orchid = 紫罗兰 雅致冷调花：兰花、薰衣草、满天星、紫花重瓣系（纸底偏冷）
+    aqua   = 黛蓝   蓝紫系花与喜湿清透气质：蓝雪花、绣球蓝状态（纸底偏冷）
+    frost  = 冰蓝   球根、白花系与耐寒植物：水仙、雪滴、郁金香（纸底最冷）
+  切换只需改 <html> 上的 data-theme，无需改动任何组件代码。
+  首屏装饰花朵 SVG 可按「植物形态」三选一替换（见 hero 处注释）。
+-->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>{{DOC_TITLE}}</title>
+<meta name="description" content="{{META_DESC}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   设计令牌层 —— 样式唯一来源。生成指南时不要重写这一层，
+   需要换色只改 :root 或切换 data-theme。
+   ========================================================================= */
+:root{
+  /* 纸感底色：暖白，不用纯白 */
+  --paper:     oklch(0.972 0.012 76);
+  --paper-2:   oklch(0.945 0.016 76);
+  --paper-3:   oklch(0.920 0.020 76);
+  --ink:       oklch(0.240 0.020 55);
+  --ink-2:     oklch(0.400 0.020 55);
+  --ink-3:     oklch(0.550 0.020 55);
+  --line:      oklch(0.820 0.025 70);
+  --green:     oklch(0.580 0.110 152);
+  --green-deep:oklch(0.450 0.090 152);
+  --shadow:    0 20px 50px -18px oklch(0.30 0.05 20 / 0.28);
+  --serif: "Fraunces","Songti SC","STSong","Noto Serif SC",Georgia,serif;
+  --sans:  "Figtree","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --ease:  cubic-bezier(.22,.61,.21,.99);
+  --maxw:  1120px;
+}
+/* 主题一：bloom 玫红（默认） */
+[data-theme="bloom"]{
+  --accent:       oklch(0.585 0.215 16);
+  --accent-deep:  oklch(0.440 0.190 15);
+  --accent-ink:   oklch(0.340 0.160 15);
+  --accent-soft:  oklch(0.870 0.060 16);
+  --accent-ghost: oklch(0.955 0.020 16);
+}
+/* 主题二：leaf 叶绿（纸底微偏冷绿） */
+[data-theme="leaf"]{
+  --accent:       oklch(0.580 0.110 152);
+  --accent-deep:  oklch(0.450 0.090 152);
+  --accent-ink:   oklch(0.340 0.080 152);
+  --accent-soft:  oklch(0.880 0.050 152);
+  --accent-ghost: oklch(0.955 0.018 152);
+  --paper:        oklch(0.973 0.009 145);
+  --paper-2:      oklch(0.947 0.012 145);
+  --paper-3:      oklch(0.923 0.015 145);
+  --line:         oklch(0.823 0.018 145);
+}
+/* 主题三：harvest 琥珀 */
+[data-theme="harvest"]{
+  --accent:       oklch(0.660 0.170 62);
+  --accent-deep:  oklch(0.480 0.140 55);
+  --accent-ink:   oklch(0.360 0.110 50);
+  --accent-soft:  oklch(0.900 0.060 75);
+  --accent-ghost: oklch(0.960 0.022 80);
+}
+/* 主题四：orchid 紫罗兰（兰科、紫色系；纸底转冷） */
+[data-theme="orchid"]{
+  --accent:       oklch(0.560 0.190 300);
+  --accent-deep:  oklch(0.430 0.160 298);
+  --accent-ink:   oklch(0.340 0.130 296);
+  --accent-soft:  oklch(0.880 0.050 300);
+  --accent-ghost: oklch(0.958 0.016 300);
+  --paper:        oklch(0.972 0.008 280);
+  --paper-2:      oklch(0.946 0.011 280);
+  --paper-3:      oklch(0.922 0.014 280);
+  --line:         oklch(0.822 0.018 280);
+}
+/* 主题五：aqua 黛蓝（蓝雪花、绣球；纸底转冷） */
+[data-theme="aqua"]{
+  --accent:       oklch(0.560 0.120 236);
+  --accent-deep:  oklch(0.430 0.110 238);
+  --accent-ink:   oklch(0.340 0.090 240);
+  --accent-soft:  oklch(0.890 0.040 232);
+  --accent-ghost: oklch(0.960 0.014 232);
+  --paper:        oklch(0.974 0.007 240);
+  --paper-2:      oklch(0.948 0.010 240);
+  --paper-3:      oklch(0.924 0.013 240);
+  --line:         oklch(0.824 0.016 240);
+}
+/* 主题六：frost 冰蓝（球根、白花、耐寒；纸底最冷） */
+[data-theme="frost"]{
+  --accent:       oklch(0.600 0.090 225);
+  --accent-deep:  oklch(0.450 0.095 228);
+  --accent-ink:   oklch(0.350 0.080 230);
+  --accent-soft:  oklch(0.900 0.035 222);
+  --accent-ghost: oklch(0.965 0.011 222);
+  --paper:        oklch(0.976 0.005 235);
+  --paper-2:      oklch(0.950 0.008 235);
+  --paper-3:      oklch(0.926 0.010 235);
+  --line:         oklch(0.828 0.012 235);
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sans);line-height:1.75;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+::selection{background:var(--accent);color:var(--paper)}
+a{color:inherit}
+img{max-width:100%;display:block}
+
+/* ---------- 顶栏 ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in oklab, var(--paper) 88%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-inner{
+  max-width:var(--maxw);margin:0 auto;padding:14px clamp(16px,4vw,40px);
+  display:flex;align-items:center;gap:16px;
+}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:600;letter-spacing:.02em}
+.brand svg{width:26px;height:26px;color:var(--accent-deep);flex:none}
+.brand small{display:block;font-family:var(--sans);font-weight:500;font-size:10px;letter-spacing:.22em;color:var(--ink-3);text-transform:uppercase}
+.navmenu{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.navmenu a{
+  font-size:13.5px;color:var(--ink-2);text-decoration:none;padding:6px 11px;border-radius:999px;
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.navmenu a:hover{background:var(--accent-ghost);color:var(--accent-deep)}
+.navmenu a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- 首屏 ---------- */
+.hero{
+  position:relative;max-width:var(--maxw);margin:0 auto;
+  padding:clamp(64px,10vw,120px) clamp(16px,4vw,40px) clamp(40px,6vw,72px);
+}
+.hero .kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:12px;font-weight:700;letter-spacing:.28em;color:var(--accent-deep);text-transform:uppercase;
+}
+.hero .kicker::before{content:"";width:44px;height:1px;background:var(--accent)}
+.hero h1{
+  font-family:var(--serif);font-weight:450;
+  font-size:clamp(2.6rem,7.2vw,5.4rem);
+  line-height:1.04;letter-spacing:-.01em;
+  max-width:16ch;margin:26px 0 22px;
+}
+.hero h1 em{
+  font-style:italic;color:var(--accent);
+  position:relative;white-space:nowrap;
+}
+.hero h1 em svg{
+  position:absolute;left:0;right:0;bottom:-.08em;width:100%;height:.32em;
+  color:var(--accent);opacity:.55;
+}
+.hero .lede{max-width:52ch;font-size:clamp(1.02rem,1.6vw,1.16rem);color:var(--ink-2)}
+.hero .lede strong{color:var(--ink);font-weight:700}
+.hero-grid{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);
+  align-items:center;margin-top:clamp(36px,5vw,56px);
+}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;border-top:2px solid var(--ink)}
+.stat{padding:20px 6px 6px 0}
+.stat .num{font-family:var(--serif);font-weight:500;font-size:clamp(1.7rem,3.2vw,2.5rem);line-height:1;color:var(--accent-deep)}
+.stat .num sup{font-size:.5em}
+.stat .lbl{margin-top:8px;font-size:13px;color:var(--ink-2)}
+.stat .lbl b{color:var(--ink);font-weight:600}
+.corner-card{
+  position:relative;background:var(--accent-deep);color:var(--paper);
+  padding:clamp(22px,3vw,34px);border-radius:14px;
+  box-shadow:var(--shadow);transform:rotate(1.2deg);font-family:var(--serif);
+}
+.corner-card::before{
+  content:"✦";position:absolute;top:-16px;right:-14px;
+  width:56px;height:56px;border-radius:50%;
+  background:var(--green);color:var(--paper);
+  display:grid;place-items:center;font-size:22px;
+  box-shadow:0 8px 20px -6px oklch(.3 .08 152 / .5);
+}
+.corner-card h3{font-size:1.3rem;font-weight:600;line-height:1.35;margin-bottom:12px}
+.corner-card p{font-family:var(--sans);font-size:14.5px;line-height:1.7;color:color-mix(in oklab, var(--paper) 88%, transparent)}
+.corner-card .tag{margin-top:18px;display:inline-block;padding:7px 14px;border-radius:999px;border:1px solid color-mix(in oklab, var(--paper) 55%, transparent);font-size:12.5px;font-family:var(--sans)}
+.flora-bloom{
+  position:absolute;top:clamp(10px,2vw,40px);right:clamp(10px,2vw,30px);
+  width:var(--fb-w,clamp(120px,16vw,220px));
+  transform:rotate(var(--fb-rot,0deg));
+  opacity:.85;pointer-events:none;
+  color:var(--accent);filter:saturate(.9);
+}
+.flora-bloom .fb{width:100%;height:auto;display:block}
+.flora-bloom.fb-sway{transform-origin:50% 100%;animation:fbSway 7s ease-in-out infinite}
+@keyframes fbSway{0%,100%{rotate:var(--fb-rot,0deg)}50%{rotate:calc(var(--fb-rot,0deg) + 4deg)}}
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:1fr}
+  .flora-bloom{width:120px;opacity:.5}
+  .navL{display:none}
+  .stat-row{grid-template-columns:1fr;gap:0}
+  .stat{border-bottom:1px solid var(--line);padding:14px 0}
+}
+
+/* ---------- 跑马灯条 ---------- */
+.strip{background:var(--ink);color:var(--paper);padding:16px 0;overflow:hidden;white-space:nowrap}
+.strip-track{display:inline-flex;animation:marquee 32s linear infinite}
+.strip span{display:inline-block;padding:0 28px;font-size:13px;letter-spacing:.18em;font-weight:600;text-transform:uppercase;color:var(--paper)}
+.strip .dot{color:var(--accent)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.strip:hover .strip-track{animation-play-state:paused}
+
+/* ---------- 章节骨架 ---------- */
+section{padding:clamp(64px,9vw,110px) clamp(16px,4vw,40px)}
+.wrap{max-width:var(--maxw);margin:0 auto}
+.sec-head{margin-bottom:clamp(32px,5vw,56px);position:relative}
+.sec-num{
+  font-family:var(--serif);font-style:italic;font-weight:300;
+  font-size:clamp(3rem,7vw,5rem);line-height:1;
+  color:var(--accent-soft);display:block;user-select:none;
+}
+.sec-title{
+  font-family:var(--serif);font-weight:520;
+  font-size:clamp(1.7rem,3.6vw,2.6rem);line-height:1.15;letter-spacing:-.01em;
+  margin-top:8px;max-width:24ch;
+}
+.sec-sub{margin-top:14px;max-width:60ch;color:var(--ink-2);font-size:clamp(.98rem,1.4vw,1.08rem)}
+.sec-sub b{color:var(--ink)}
+h4.blk{font-family:var(--serif);font-weight:600;font-size:1.14rem;display:flex;align-items:baseline;gap:10px;margin:0 0 14px}
+h4.blk::before{content:"";width:22px;height:2px;background:var(--accent);align-self:center;flex:none}
+
+.two{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(20px,3.4vw,44px)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.6vw,32px)}
+@media(max-width:820px){.two,.three{grid-template-columns:1fr}}
+
+.lead-block p{margin-bottom:1em;color:var(--ink-2)}
+.lead-block p strong{color:var(--ink);font-weight:700}
+
+/* ---------- 卡片（品种 / 要点） ---------- */
+.vcard{
+  background:var(--paper-2);border-radius:14px;padding:clamp(20px,2.6vw,30px);
+  transition:transform .35s var(--ease),background .35s var(--ease);
+}
+.vcard:hover{transform:translateY(-4px);background:var(--paper-3)}
+.vcard .name{font-family:var(--serif);font-weight:600;font-size:1.22rem}
+.vcard .name small{display:block;font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.16em;color:var(--accent-deep);text-transform:uppercase;margin-bottom:4px}
+.vcard p{margin-top:8px;font-size:14.5px;color:var(--ink-2)}
+.vcard .badge{margin-top:14px;display:inline-block;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink)}
+
+/* ---------- 提示条 ---------- */
+.tip{
+  display:flex;gap:16px;align-items:flex-start;
+  background:var(--accent-ghost);border-left:3px solid var(--accent);
+  padding:18px 20px;border-radius:0 12px 12px 0;margin-top:22px;
+}
+.tip .ic{font-size:1.3rem;line-height:1;flex:none;color:var(--accent-deep)}
+.tip p{font-size:14.5px;color:var(--ink-2)}
+.tip p b{color:var(--ink)}
+
+/* ---------- 对比表 ---------- */
+.tbl-wrap{overflow-x:auto}
+.compare{width:100%;border-collapse:collapse;font-size:14.5px}
+.compare th,.compare td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.compare thead th{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:700;border-bottom:2px solid var(--ink)}
+.compare td:first-child{font-weight:600;color:var(--ink)}
+.compare .no{color:var(--accent-deep);font-weight:600}
+.compare .yes{color:var(--green-deep);font-weight:600}
+.compare .dark-row{background:var(--ink);color:var(--paper)}
+.compare .dark-row td{color:color-mix(in oklab, var(--paper) 90%, transparent);border-color:oklch(.35 0.02 55)}
+.compare .dark-row td:first-child{color:var(--paper)}
+
+/* ---------- 编号步骤列表 ---------- */
+.ruler{list-style:none;counter-reset:r;display:grid;gap:0}
+.ruler li{
+  counter-increment:r;display:grid;grid-template-columns:70px 1fr;
+  gap:18px;padding:clamp(20px,3vw,32px) 0;border-top:1px solid var(--line);
+}
+.ruler li:last-child{border-bottom:1px solid var(--line)}
+.ruler li::before{
+  content:"0" counter(r);
+  font-family:var(--serif);font-style:italic;font-size:clamp(1.5rem,3vw,2.2rem);
+  color:var(--accent);line-height:1.1;
+}
+.ruler h4{font-family:var(--serif);font-weight:600;font-size:clamp(1.15rem,2vw,1.4rem)}
+.ruler p{margin-top:8px;color:var(--ink-2);font-size:14.5px;max-width:60ch}
+.ruler p b{color:var(--ink)}
+.ruler .subtag{display:inline-block;margin-left:10px;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--accent-deep);text-transform:uppercase;vertical-align:middle}
+/* 纯文本编号列表（不需要大号序号时） */
+.ruler.plain li{display:block;padding:16px 0}
+.ruler.plain li::before{content:none}
+
+/* ---------- 12 月养护月历 ---------- */
+.cal{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.cal{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.cal{grid-template-columns:1fr}}
+.mo{background:var(--paper-2);border-radius:12px;padding:18px;position:relative;transition:transform .3s var(--ease)}
+.mo:hover{transform:translateY(-3px)}
+.mo .m{font-family:var(--serif);font-weight:600;font-size:1.25rem}
+.mo .phase{
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;display:inline-block;margin:6px 0 10px;
+  background:var(--accent-soft);color:var(--accent-ink);
+}
+.mo .phase.cold{background:oklch(.90 .05 230);color:oklch(.40 .12 235)}
+.mo .phase.grow{background:oklch(.90 .05 152);color:var(--green-deep)}
+.mo ul{list-style:none}
+.mo li{font-size:13.5px;color:var(--ink-2);padding:4px 0 4px 18px;position:relative}
+.mo li::before{content:"·";position:absolute;left:2px;color:var(--accent);font-weight:700}
+.mo li b{color:var(--ink)}
+
+/* ---------- 大字强调块 ---------- */
+.callout{
+  display:grid;grid-template-columns:auto 1fr;gap:clamp(18px,3vw,34px);align-items:center;
+  background:var(--accent-deep);color:var(--paper);
+  border-radius:16px;padding:clamp(26px,4vw,48px);box-shadow:var(--shadow);
+  margin-top:clamp(28px,4vw,44px);
+}
+.callout .big{font-family:var(--serif);font-weight:500;font-size:clamp(3rem,7vw,5rem);line-height:1;color:var(--paper);display:flex;align-items:center;gap:14px}
+.callout .big span{font-size:.42em;font-family:var(--sans);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in oklab, var(--paper) 80%, transparent);max-width:9ch}
+.callout h3{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.25}
+.callout p{margin-top:12px;font-size:14.5px;color:color-mix(in oklab, var(--paper) 90%, transparent);max-width:60ch}
+.callout p b{color:var(--paper)}
+@media(max-width:720px){.callout{grid-template-columns:1fr}}
+
+/* ---------- FAQ ---------- */
+details{border-top:1px solid var(--line);padding:6px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{
+  cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px;
+  padding:20px 4px;font-family:var(--serif);font-weight:600;font-size:clamp(1.05rem,1.8vw,1.25rem);
+  min-height:44px;
+}
+summary::-webkit-details-marker{display:none}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+summary .q{flex:none;font-family:var(--sans);font-style:normal;font-weight:700;font-size:13px;letter-spacing:.1em;color:var(--accent-deep)}
+summary .arr{margin-left:auto;font-family:var(--sans);color:var(--accent);transition:transform .3s var(--ease);font-size:1.2rem}
+details[open] summary .arr{transform:rotate(45deg)}
+details .a{padding:0 4px 24px clamp(34px,5vw,60px);color:var(--ink-2);font-size:14.5px;max-width:72ch}
+details .a b{color:var(--ink)}
+
+/* ---------- 页脚 ---------- */
+footer{background:var(--ink);color:var(--paper);padding:clamp(48px,7vw,80px) clamp(16px,4vw,40px) 40px}
+footer .wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(24px,4vw,60px)}
+@media(max-width:720px){footer .wrap{grid-template-columns:1fr}}
+footer h5{font-family:var(--serif);font-size:1.35rem;font-weight:600;margin-bottom:14px}
+footer p{font-size:14px;color:color-mix(in oklab, var(--paper) 75%, transparent);max-width:52ch}
+footer .foot-note{margin-top:44px;padding-top:20px;border-top:1px solid oklch(.35 .02 55);font-size:12px;color:color-mix(in oklab, var(--paper) 55%, transparent)}
+
+/* ---------- 返回顶部 ---------- */
+.back-top{
+  position:fixed;right:22px;bottom:22px;z-index:40;
+  width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--accent);color:var(--paper);font-size:18px;
+  box-shadow:var(--shadow);transition:transform .25s var(--ease),background .25s,opacity .25s var(--ease);
+  display:grid;place-items:center;opacity:0;pointer-events:none;
+}
+.back-top.show{opacity:1;pointer-events:auto}
+.back-top:hover{background:var(--accent-deep);transform:translateY(-3px)}
+.back-top:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+
+/* ---------- 入场编排（一次序列，错峰 60–120ms） ---------- */
+.reveal{opacity:0;transform:translateY(24px)}
+.reveal.in{opacity:1;transform:none;transition:opacity var(--dur-base,640ms) var(--ease),transform var(--dur-base,640ms) var(--ease)}
+@media (min-width:861px){
+  .hero .kicker{animation:rise 700ms var(--ease) both}
+  .hero h1{animation:rise 700ms var(--ease) 80ms both}
+  .hero .lede{animation:rise 700ms var(--ease) 160ms both}
+  .hero-grid>.corner-card{animation:rise 700ms var(--ease) 240ms both}
+}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ---------- 打印 ---------- */
+@media print{
+  .topbar,.back-top,.flora-bloom{display:none!important}
+  body{background:#fff}
+  details{border-bottom:1px solid #ccc}
+  details .a{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar" id="top">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 4c2.6 0 4.6 1.4 5 3.4C19 6 21 6 22 7.4c1 1.3.4 3.2-1.5 4.4-1 .6-2.3.8-3.5.7 1.4 1.3 2.4 3 2.4 4.9 0 .8-.6 1.4-1.4 1.4-1.2 0-2.6-.5-3.8-1.4.3 1 .4 2 .2 3-.2.9-.9 1.4-2.4 1.4 0 0 0-3 .9-6.8-1 .7-2 1-2.9 1-.8 0-1.2-.7-1.2-1.6 0-2.5 1.5-5.3 3.4-7.2C11 5.6 11.1 4 12 4z" fill="currentColor"></path>
+      </svg>
+      <div>{{BRAND}}<small>{{BRAND_SUB}}</small></div>
+    </div>
+    <nav class="navmenu navL" aria-label="章节导航">
+      <!-- 每个 <a> 对应一个 section 的 id，最多 8 个 -->
+      <a href="#s1">{{NAV_1}}</a>
+      <a href="#s2">{{NAV_2}}</a>
+      <a href="#s3">{{NAV_3}}</a>
+      <a href="#s4">{{NAV_4}}</a>
+      <a href="#s5">{{NAV_5}}</a>
+      <a href="#s6">{{NAV_6}}</a>
+      <a href="#s7">{{NAV_7}}</a>
+      <a href="#s8">{{NAV_8}}</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ==================== HERO ==================== -->
+  <div class="hero">
+  <!-- 首屏装饰：由 scripts/new_guide.py --flora <形态> 注入（见 SKILL.md 装饰形态表）。
+       生成后如需微调：改 --fb-w 宽度、--fb-rot 旋转角，或给 span 加 class="fb-sway" 轻摆动画。 -->
+  {{FLORA_DECOR}}
+
+    <div class="hero-grid">
+      <div>
+        <p class="kicker">{{KICKER}}</p>
+        <h1>{{H1_A}}<em>{{H1_ACCENT}}<svg viewBox="0 0 300 24" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M2 16c60-10 130-12 296-6" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path></svg></em>{{H1_B}}</h1>
+        <p class="lede">{{LEDE}}</p>
+      </div>
+      <div class="corner-card">
+        <h3>{{CORNER_TITLE}}</h3>
+        <p>{{CORNER_BODY}}</p>
+        <span class="tag">{{CORNER_TAG}}</span>
+      </div>
+    </div>
+
+    <div class="stat-row" style="margin-top:clamp(40px,6vw,64px)">
+      <div class="stat"><div class="num">{{STAT1_NUM}}<sup>{{STAT1_SUP}}</sup></div><div class="lbl">{{STAT1_LBL}}</div></div>
+      <div class="stat"><div class="num">{{STAT2_NUM}}<sup>{{STAT2_SUP}}</sup></div><div class="lbl">{{STAT2_LBL}}</div></div>
+      <div class="stat"><div class="num">{{STAT3_NUM}}<sup>{{STAT3_SUP}}</sup></div><div class="lbl">{{STAT3_LBL}}</div></div>
+    </div>
+  </div>
+
+  <!-- 跑马灯：内容复制两遍以实现无缝滚动 -->
+  <div class="strip" aria-hidden="true">
+    <div class="strip-track">
+      <span>关键词一 <span class="dot">✦</span></span>
+      <span>关键词二 <span class="dot">✦</span></span>
+      <span>关键词三 <span class="dot">✦</span></span>
+      <span>关键词四 <span class="dot">✦</span></span>
+      <span>关键词五 <span class="dot">✦</span></span>
+      <span>关键词六 <span class="dot">✦</span></span>
+      <span>关键词一 <span class="dot">✦</span></span>
+      <span>关键词二 <span class="dot">✦</span></span>
+      <span>关键词三 <span class="dot">✦</span></span>
+      <span>关键词四 <span class="dot">✦</span></span>
+      <span>关键词五 <span class="dot">✦</span></span>
+      <span>关键词六 <span class="dot">✦</span></span>
+    </div>
+  </div>
+
+  <!-- ==================== 01 ==================== -->
+  <section id="s1">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">{{S1_TITLE}}</h2>
+        <p class="sec-sub">{{S1_SUB}}</p>
+      </div>
+      <div class="two reveal">
+        <div class="lead-block">
+          <h4 class="blk">{{S1_A_HEAD}}</h4>
+          <p>{{S1_A_P1}}</p>
+          <p>{{S1_A_P2}}</p>
+        </div>
+        <div>
+          <h4 class="blk">{{S1_B_HEAD}}</h4>
+          <div class="tbl-wrap">
+          <table class="compare">
+            <thead><tr><th>{{T1_C1}}</th><th>{{T1_C2}}</th><th>{{T1_C3}}</th></tr></thead>
+            <!-- 需要表达优劣时，给 td 加 class="yes"（有利，绿）或 class="no"（不利，强调色） -->
+            <tbody>
+              <tr><td>{{R1A}}</td><td>{{R1B}}</td><td>{{R1C}}</td></tr>
+              <tr><td>{{R2A}}</td><td>{{R2B}}</td><td>{{R2C}}</td></tr>
+              <tr><td>{{R3A}}</td><td>{{R3B}}</td><td>{{R3C}}</td></tr>
+              <tr><td>{{R4A}}</td><td>{{R4B}}</td><td>{{R4C}}</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <div class="tip">
+            <span class="ic">☝</span>
+            <p><b>结论先行：</b>{{S1_TIP}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 02 植物/品种选择 ==================== -->
+  <section id="s2" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">{{S2_TITLE}}</h2>
+        <p class="sec-sub">{{S2_SUB}}</p>
+      </div>
+      <div class="three reveal">
+        <article class="vcard">
+          <span class="name"><small>{{C1_TAG}}</small>{{C1_NAME}}</span>
+          <p>{{C1_DESC}}</p>
+          <span class="badge">{{C1_BADGE}}</span>
+        </article>
+        <article class="vcard">
+          <span class="name"><small>{{C2_TAG}}</small>{{C2_NAME}}</span>
+          <p>{{C2_DESC}}</p>
+          <span class="badge">{{C2_BADGE}}</span>
+        </article>
+        <article class="vcard">
+          <span class="name"><small>{{C3_TAG}}</small>{{C3_NAME}}</span>
+          <p>{{C3_DESC}}</p>
+          <span class="badge">{{C3_BADGE}}</span>
+        </article>
+        <article class="vcard">
+          <span class="name"><small>{{C4_TAG}}</small>{{C4_NAME}}</span>
+          <p>{{C4_DESC}}</p>
+          <span class="badge">{{C4_BADGE}}</span>
+        </article>
+        <article class="vcard">
+          <span class="name"><small>{{C5_TAG}}</small>{{C5_NAME}}</span>
+          <p>{{C5_DESC}}</p>
+          <span class="badge">{{C5_BADGE}}</span>
+        </article>
+        <article class="vcard">
+          <span class="name"><small>{{C6_TAG}}</small>{{C6_NAME}}</span>
+          <p>{{C6_DESC}}</p>
+          <span class="badge">{{C6_BADGE}}</span>
+        </article>
+      </div>
+      <div class="tip reveal" style="background:var(--paper);border-color:var(--green)">
+        <span class="ic" style="color:var(--green-deep)">◎</span>
+        <p><b>选品铁律：</b>{{S2_TIP}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 03 光照/位置 ==================== -->
+  <section id="s3">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title">{{S3_TITLE}}</h2>
+        <p class="sec-sub">{{S3_SUB}}</p>
+      </div>
+      <ol class="ruler reveal">
+        <li><div><h4>{{ST1_H}}<span class="subtag">{{ST1_TAG}}</span></h4><p>{{ST1_P}}</p></div></li>
+        <li><div><h4>{{ST2_H}}<span class="subtag">{{ST2_TAG}}</span></h4><p>{{ST2_P}}</p></div></li>
+        <li><div><h4>{{ST3_H}}<span class="subtag">{{ST3_TAG}}</span></h4><p>{{ST3_P}}</p></div></li>
+        <li><div><h4>{{ST4_H}}<span class="subtag">{{ST4_TAG}}</span></h4><p>{{ST4_P}}</p></div></li>
+        <li><div><h4>{{ST5_H}}<span class="subtag">{{ST5_TAG}}</span></h4><p>{{ST5_P}}</p></div></li>
+      </ol>
+      <div class="callout reveal">
+        <div class="big">{{CALL1_NUM}}<span>{{CALL1_UNIT}}</span></div>
+        <div>
+          <h3>{{CALL1_TITLE}}</h3>
+          <p>{{CALL1_BODY}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 04 浇水/湿度 ==================== -->
+  <section id="s4" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title">{{S4_TITLE}}</h2>
+        <p class="sec-sub">{{S4_SUB}}</p>
+      </div>
+      <div class="two reveal">
+        <div class="lead-block">
+          <h4 class="blk">{{S4_A_HEAD}}</h4>
+          <p>{{S4_A_P1}}</p>
+          <ul class="ruler plain">
+            <li>{{S4_A_L1}}</li>
+            <li>{{S4_A_L2}}</li>
+            <li>{{S4_A_L3}}</li>
+          </ul>
+        </div>
+        <div class="lead-block">
+          <h4 class="blk">{{S4_B_HEAD}}</h4>
+          <p>{{S4_B_P1}}</p>
+          <ol class="ruler plain">
+            <li>{{S4_B_L1}}</li>
+            <li>{{S4_B_L2}}</li>
+            <li>{{S4_B_L3}}</li>
+            <li>{{S4_B_L4}}</li>
+          </ol>
+          <div class="tip">
+            <span class="ic">✚</span>
+            <p><b>双保险：</b>{{S4_TIP}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 05 土肥 ==================== -->
+  <section id="s5">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">05</span>
+        <h2 class="sec-title">{{S5_TITLE}}</h2>
+        <p class="sec-sub">{{S5_SUB}}</p>
+      </div>
+      <div class="tbl-wrap reveal">
+      <table class="compare">
+        <thead><tr><th>{{T2_C1}}</th><th>{{T2_C2}}</th><th>{{T2_C3}}</th><th>{{T2_C4}}</th></tr></thead>
+        <tbody>
+          <tr><td>{{F1A}}</td><td>{{F1B}}</td><td>{{F1C}}</td><td>{{F1D}}</td></tr>
+          <tr><td>{{F2A}}</td><td>{{F2B}}</td><td>{{F2C}}</td><td>{{F2D}}</td></tr>
+          <tr><td>{{F3A}}</td><td>{{F3B}}</td><td>{{F3C}}</td><td>{{F3D}}</td></tr>
+          <tr class="dark-row"><td>{{F4A}}</td><td>{{F4B}}</td><td>{{F4C}}</td><td>{{F4D}}</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="tip reveal">
+        <span class="ic">⚠</span>
+        <p><b>{{S5_TIP_LABEL}}</b>{{S5_TIP}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 06 修剪整形 ==================== -->
+  <section id="s6" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">06</span>
+        <h2 class="sec-title">{{S6_TITLE}}</h2>
+        <p class="sec-sub">{{S6_SUB}}</p>
+      </div>
+      <div class="three reveal">
+        <article class="vcard">
+          <span class="name"><small>{{P1_TAG}}</small>{{P1_NAME}}</span>
+          <p>{{P1_DESC}}</p>
+        </article>
+        <article class="vcard">
+          <span class="name"><small>{{P2_TAG}}</small>{{P2_NAME}}</span>
+          <p>{{P2_DESC}}</p>
+        </article>
+        <article class="vcard">
+          <span class="name"><small>{{P3_TAG}}</small>{{P3_NAME}}</span>
+          <p>{{P3_DESC}}</p>
+        </article>
+      </div>
+      <div class="tip reveal" style="margin-top:28px">
+        <span class="ic">✂</span>
+        <p><b>{{S6_TIP_LABEL}}</b>{{S6_TIP}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 07 越冬/度夏（极端季） ==================== -->
+  <section id="s7">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">07</span>
+        <h2 class="sec-title">{{S7_TITLE}}</h2>
+        <p class="sec-sub">{{S7_SUB}}</p>
+      </div>
+      <div class="two reveal">
+        <div class="lead-block">
+          <h4 class="blk">{{S7_A_HEAD}}</h4>
+          <div class="tbl-wrap">
+          <table class="compare">
+            <thead><tr><th>{{T3_C1}}</th><th>{{T3_C2}}</th></tr></thead>
+            <!-- 危险温度行给 td 加 class="no" -->
+            <tbody>
+              <tr><td>{{W1A}}</td><td>{{W1B}}</td></tr>
+              <tr><td>{{W2A}}</td><td>{{W2B}}</td></tr>
+              <tr><td>{{W3A}}</td><td>{{W3B}}</td></tr>
+              <tr><td>{{W4A}}</td><td>{{W4B}}</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+        <div class="lead-block">
+          <h4 class="blk">{{S7_B_HEAD}}</h4>
+          <ol class="ruler plain">
+            <li>{{S7_B_L1}}</li>
+            <li>{{S7_B_L2}}</li>
+            <li>{{S7_B_L3}}</li>
+            <li>{{S7_B_L4}}</li>
+          </ol>
+        </div>
+      </div>
+      <div class="callout reveal" style="background:var(--ink)">
+        <div class="big">{{CALL2_NUM}}<span>{{CALL2_UNIT}}</span></div>
+        <div>
+          <h3>{{CALL2_TITLE}}</h3>
+          <p>{{CALL2_BODY}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 08 病虫害 ==================== -->
+  <section id="s8" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">08</span>
+        <h2 class="sec-title">{{S8_TITLE}}</h2>
+        <p class="sec-sub">{{S8_SUB}}</p>
+      </div>
+      <div class="tbl-wrap reveal">
+      <table class="compare">
+        <thead><tr><th>{{T4_C1}}</th><th>{{T4_C2}}</th><th>{{T4_C3}}</th><th>{{T4_C4}}</th></tr></thead>
+        <tbody>
+          <tr><td>{{D1A}}</td><td>{{D1B}}</td><td>{{D1C}}</td><td>{{D1D}}</td></tr>
+          <tr><td>{{D2A}}</td><td>{{D2B}}</td><td>{{D2C}}</td><td>{{D2D}}</td></tr>
+          <tr><td>{{D3A}}</td><td>{{D3B}}</td><td>{{D3C}}</td><td>{{D3D}}</td></tr>
+          <tr><td>{{D4A}}</td><td>{{D4B}}</td><td>{{D4C}}</td><td>{{D4D}}</td></tr>
+          <tr><td>{{D5A}}</td><td>{{D5B}}</td><td>{{D5C}}</td><td>{{D5D}}</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="tip reveal">
+        <span class="ic">◎</span>
+        <p><b>第一道防线：</b>{{S8_TIP}}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 09 全年月历 ==================== -->
+  <section id="s9">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">09</span>
+        <h2 class="sec-title">{{S9_TITLE}}</h2>
+        <p class="sec-sub">{{S9_SUB}}</p>
+      </div>
+      <div class="cal reveal">
+        <div class="mo"><span class="m">1 月</span><span class="phase cold">{{M1_PHASE}}</span><ul>{{M1_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">2 月</span><span class="phase cold">{{M2_PHASE}}</span><ul>{{M2_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">3 月</span><span class="phase grow">{{M3_PHASE}}</span><ul>{{M3_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">4 月</span><span class="phase grow">{{M4_PHASE}}</span><ul>{{M4_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">5 月</span><span class="phase">{{M5_PHASE}}</span><ul>{{M5_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">6 月</span><span class="phase">{{M6_PHASE}}</span><ul>{{M6_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">7–8 月</span><span class="phase">{{M78_PHASE}}</span><ul>{{M78_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">9 月</span><span class="phase">{{M9_PHASE}}</span><ul>{{M9_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">10 月</span><span class="phase grow">{{M10_PHASE}}</span><ul>{{M10_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">11 月</span><span class="phase cold">{{M11_PHASE}}</span><ul>{{M11_ITEMS}}</ul></div>
+        <div class="mo"><span class="m">12 月</span><span class="phase cold">{{M12_PHASE}}</span><ul>{{M12_ITEMS}}</ul></div>
+        <div class="mo" style="background:var(--accent-deep)">
+          <span class="m" style="color:var(--paper)">口诀</span>
+          <ul>
+            <li style="color:color-mix(in oklab, var(--paper) 92%, transparent)"><b style="color:var(--paper)">{{MNEMONIC_1}}</b></li>
+            <li style="color:color-mix(in oklab, var(--paper) 92%, transparent)"><b style="color:var(--paper)">{{MNEMONIC_2}}</b></li>
+            <li style="color:color-mix(in oklab, var(--paper) 92%, transparent)">{{MNEMONIC_3}}</li>
+            <li style="color:color-mix(in oklab, var(--paper) 92%, transparent)">{{MNEMONIC_4}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 10 FAQ ==================== -->
+  <section id="s10" style="background:var(--paper-2)">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-num">10</span>
+        <h2 class="sec-title">{{S10_TITLE}}</h2>
+        <p class="sec-sub">{{S10_SUB}}</p>
+      </div>
+      <div class="reveal">
+      <details open>
+        <summary><span class="q">Q1</span> {{Q1}}<span class="arr">+</span></summary>
+        <div class="a">{{A1}}</div>
+      </details>
+      <details>
+        <summary><span class="q">Q2</span> {{Q2}}<span class="arr">+</span></summary>
+        <div class="a">{{A2}}</div>
+      </details>
+      <details>
+        <summary><span class="q">Q3</span> {{Q3}}<span class="arr">+</span></summary>
+        <div class="a">{{A3}}</div>
+      </details>
+      <details>
+        <summary><span class="q">Q4</span> {{Q4}}<span class="arr">+</span></summary>
+        <div class="a">{{A4}}</div>
+      </details>
+      <details>
+        <summary><span class="q">Q5</span> {{Q5}}<span class="arr">+</span></summary>
+        <div class="a">{{A5}}</div>
+      </details>
+      <details>
+        <summary><span class="q">Q6</span> {{Q6}}<span class="arr">+</span></summary>
+        <div class="a">{{A6}}</div>
+      </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h5>{{FOOT_TITLE}}</h5>
+      <p>{{FOOT_BODY}}</p>
+    </div>
+    <div>
+      <h5>速记清单</h5>
+      <p>{{FOOT_CHECKLIST}}</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="foot-note">{{FOOT_NOTE}}</p>
+  </div>
+</footer>
+
+<button class="back-top" aria-label="返回顶部">↑</button>
+
+<script>
+// 滚动入场：只动 opacity 与 transform
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+// 返回顶部
+(function(){
+  var btn = document.querySelector('.back-top');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      btn.classList.toggle('show', window.scrollY > 600);
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+</script>
+
+</body>
+</html>

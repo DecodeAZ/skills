@@ -7,6 +7,7 @@
 | 技能 | 说明 |
 |---|---|
 | [html-uploader](skills/html-uploader/SKILL.md) | 将本地 HTML 文档上传到文档系统，多系统适配器架构（默认 htmlview-agent-api） |
+| [planting-guide](skills/planting-guide/SKILL.md) | 生成城市与场景定制的植物种植/养护指南，输出为单文件 HTML 网页（需 Python 3.10+） |
 
 ## 在线安装
 
@@ -15,7 +16,7 @@
 npx skills add DecodeAZ/skills
 
 # 只安装指定技能
-npx skills add DecodeAZ/skills --skill html-uploader
+npx skills add DecodeAZ/skills --skill planting-guide
 
 # 先列出仓库内可用技能，不安装
 npx skills add DecodeAZ/skills --list
