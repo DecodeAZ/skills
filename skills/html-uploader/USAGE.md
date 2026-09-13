@@ -95,6 +95,8 @@ done
 
 ### 读取与删除（htmlview-agent-api 的 web API，需鉴权头）
 
+> 以下 curl 仅用于**人工排查**读取/删除已入库文档。**上传链路一律走 `upload_skill.py`**，不要用 curl 代替脚本上传。
+
 ```bash
 # 元数据
 curl -H "Authorization: Bearer <token>" "<base_url>/api/articles/<id>"
@@ -109,6 +111,8 @@ curl -X DELETE -H "Authorization: Bearer <token>" "<base_url>/api/articles/<id>"
 | 现象 | 原因 | 处理 |
 |---|---|---|
 | 退出码 `3`，提示缺地址/密钥 | 配置未就绪 | 按 `check_config.py` 的 `ask` 一次性补齐 |
+| 退出码 `3`，提示「网络失败」 | 地址不可达：连接拒绝/超时/DNS/TLS | 核对基础地址与服务状态；本地可信测试可用 `--insecure` |
+| 退出码 `1`，提示文件不存在 | 路径笔误或指向目录 | 核对源文件绝对路径与 `.html/.htm` 扩展名 |
 | 退出码 `4` | 适配器文件不存在 | 复制 `adapters/generic-multipart.md` 改造后重试 |
 | 401 `invalid_key` | 密钥错误 | 重新获取密钥后重试一次 |
 | 403 `key_change_required` | 管理员仍用临时密钥 | 中止，先到网页端完成首次改密 |

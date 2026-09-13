@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """html-uploader 统一上传执行器（仅 Python 标准库，零依赖，不使用 curl）
 
-v1.1.1
-
 本脚本是 html-uploader 技能包唯一的实际请求执行体。按适配器文件（adapters/<系统名>.md）
 驱动的通用流程，所有 HTTP 请求均在本脚本内完成：
 
@@ -37,7 +35,7 @@ import urllib.request
 import uuid
 from pathlib import Path
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 MAX_DEFAULT_SIZE = 20 * 1024 * 1024
@@ -156,6 +154,10 @@ def make_opener(insecure: bool):
     return urllib.request.build_opener(urllib.request.HTTPSHandler(context=ctx))
 
 
+class TransportError(RuntimeError):
+    """网络层失败（连接拒绝、超时、DNS、TLS），与 HTTP 状态码失败区分开。"""
+
+
 def http_request(opener, method, url, headers=None, data=None, timeout=120):
     headers = dict(headers or {})
     headers.setdefault("User-Agent", DEFAULT_USER_AGENT)
@@ -166,6 +168,29 @@ def http_request(opener, method, url, headers=None, data=None, timeout=120):
             return resp.status, dict(resp.headers), resp.read()
     except urllib.error.HTTPError as e:
         return e.code, dict(e.headers), e.read()
+    except urllib.error.URLError as e:
+        raise TransportError(_transport_hint(url, e.reason)) from e
+    except (OSError, ssl.SSLError) as e:
+        raise TransportError(_transport_hint(url, e)) from e
+
+
+def _transport_hint(url, reason):
+    """把网络层异常翻译成可操作的排查建议。"""
+    text = str(reason)
+    low = text.lower()
+    if "certificate" in low or "ssl" in low or isinstance(reason, ssl.SSLError):
+        return (f"TLS 证书校验失败（{text}）。本地可信测试可加 --insecure，"
+                "生产环境请改用受信证书或核对域名")
+    if "refused" in low or "10054" in low or "10061" in low:
+        return (f"连接被拒绝（{text}）。目标服务可能未启动、端口错误，或地址被改写；"
+                "请与用户核对基础地址是否为实际部署地址")
+    if "timed out" in low or "timeout" in low:
+        return (f"连接超时（{text}）。请核对基础地址可达性与网络出口，"
+                "确认无代理/防火墙拦截后再重试")
+    if "name or service not known" in low or "getaddrinfo" in low or "11001" in low:
+        return f"域名解析失败（{text}）。请核对基础地址的域名拼写与 DNS 配置"
+    return (f"网络请求失败（{text}）。请核对基础地址 {url} 的可达性后重试；"
+            "不要反复重试同一组配置")
 
 
 def parse_json(body: bytes):
@@ -186,6 +211,17 @@ def extract_error(status, body):
             return data.get("code") or "", data.get("message") or ""
     msg = body.decode("utf-8", "replace") if isinstance(body, (bytes, bytearray)) else str(body)
     return "", " ".join(msg.split())[:200]
+
+
+def is_gateway_error(status, body):
+    """网关层错误（502/503/504）通常由反向代理在目标服务不可达时返回，
+    本质是地址或服务不可用，应与普通业务失败区分，归入"地址不可用"。"""
+    if status not in (502, 503, 504):
+        return False
+    text = (body.decode("utf-8", "replace") if isinstance(body, (bytes, bytearray)) else str(body)).lower()
+    markers = ("upstream", "connect failed", "actively refused", "无法连接", "积极拒绝",
+               "connection refused", "no live upstreams", "temporarily unavailable")
+    return any(m in text for m in markers)
 
 
 class Client:
@@ -230,6 +266,10 @@ class Client:
             return self.login()
         if status != 200:
             code, detail = extract_error(status, body)
+            if is_gateway_error(status, body):
+                raise TransportError(
+                    f"网关错误 {status}（{detail}）。反向代理无法连到目标服务，"
+                    "通常是服务未启动或端口不对；请与用户核对基础地址是否为实际部署地址")
             hint = ""
             if status == 403 and not parse_json(body):
                 hint = ("；服务端返回非 JSON（如 error code 1010 之类），多为 WAF/Cloudflare 拦截请求，"
@@ -317,6 +357,11 @@ def upload(client: Client, pkg_bytes, title, tags, summary, content_type="text/h
         return upload(client, pkg_bytes, title, tags, summary, content_type)
     if status != a["success_status"]:
         err = data.get("error", {}) if isinstance(data, dict) else {}
+        if is_gateway_error(status, resp):
+            _, detail = extract_error(status, resp)
+            raise TransportError(
+                f"网关错误 {status}（{detail}）。反向代理无法连到目标服务，"
+                "通常是服务未启动或端口不对；请与用户核对基础地址是否为实际部署地址")
         raise RuntimeError(f"上传失败 {status} {err.get('code', '')} {err.get('message', '')} {resp[:300]}")
     return data
 
@@ -356,6 +401,25 @@ def main():
         log(f"适配器文件不存在：{adapter['path']}")
         return 4
 
+    # 载荷：先校验文件本身（错误优先级高于配置，避免路径笔误被误报为配置缺失）
+    if args.file:
+        src = Path(args.file)
+        if not src.is_file():
+            log(f"文件不存在或不是普通文件：{args.file}")
+            return 1
+        if src.suffix.lower() not in (".html", ".htm"):
+            log(f"仅支持 .html/.htm，收到 {src.suffix}")
+            return 1
+        pkg = src.read_bytes()
+        title = args.title or src.stem
+        tags = args.tags
+        summary = args.summary
+    else:
+        pkg = None
+        title = args.title or "html-uploader 技能包（SKILL + 适配器）"
+        tags = args.tags or "skill,html-uploader"
+        summary = args.summary
+
     # 系统地址
     env_base_name = sys_default.upper().replace("-", "_") + "_BASE_URL"
     base_url = (args.base_url
@@ -374,25 +438,9 @@ def main():
         log(f"密钥未提供（环境变量 {env_name}）。请先运行 scripts/check_config.py 完成预检并获取密钥。")
         return 3
 
-    # 载荷：用户文件 或 技能自检打包
-    if args.file:
-        src = Path(args.file)
-        if not src.is_file():
-            log(f"文件不存在：{args.file}")
-            return 1
-        if src.suffix.lower() not in (".html", ".htm"):
-            log(f"仅支持 .html/.htm，收到 {src.suffix}")
-            return 1
-        pkg = src.read_bytes()
-        title = args.title or src.stem
-        tags = args.tags
-        summary = args.summary
-    else:
-        # 技能自上传（默认载荷 = SKILL.md + 适配器）
+    # 未传 --file 时以技能打包内容为载荷，此时才需要构造
+    if pkg is None:
         pkg = _build_skill_package()
-        title = args.title or "html-uploader 技能包（SKILL + 适配器）"
-        tags = args.tags or "skill,html-uploader"
-        summary = args.summary
 
     if len(pkg) > adapter["max_size"]:
         log(f"文件超过适配器上限 {adapter['max_size'] // (1024 * 1024)}MB")
@@ -412,6 +460,9 @@ def main():
         elif fid:
             log(f"访问地址：{base_url.rstrip('/')}/reader.html?id={fid}")
         return 0
+    except TransportError as e:
+        log(f"网络失败：{e}")
+        return 3
     except RuntimeError as e:
         log(f"失败：{e}")
         return 1

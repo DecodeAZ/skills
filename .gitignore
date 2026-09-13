@@ -6,6 +6,9 @@ skills/*/_user_meta.json
 __pycache__/
 *.py[cod]
 
+# 本地备份快照
+_backup/
+
 # 编辑器与系统
 .vscode/
 .idea/
