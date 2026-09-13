@@ -14,3 +14,4 @@ _backup/
 .idea/
 .DS_Store
 Thumbs.db
+.workbuddy/

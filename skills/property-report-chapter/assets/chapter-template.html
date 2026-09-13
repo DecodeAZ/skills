@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{DOC_TITLE}}</title>
+<meta name="description" content="{{META_DESC}}">
+<!--
+  楼盘评估报告章节模板
+  章节类型：{{CHAPTER_KEY}}（{{CHAPTER_NAME}}）  楼盘：{{PROJECT}}
+  设计令牌层与组件已固化，生成时只替换内容层，不修改 <style>。
+  图表：优先加载 CDN echarts；离线时降级为静态数据表（见脚本内降级逻辑）。
+-->
+<style>
+/* ==================== 设计令牌 ==================== */
+:root{
+  --accent:{{ACCENT}};
+  --accent-deep:{{ACCENT_DEEP}};
+  --accent-soft:{{ACCENT_SOFT}};
+  --success:#10b981;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --purple:#8b5cf6;
+  --bg:#f8f9fb;
+  --card:#ffffff;
+  --line:#e5e7eb;
+  --ink:#1a1f2e;
+  --ink-2:#4b5563;
+  --ink-3:#9ca3af;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px -8px rgba(16,24,40,.10);
+  --shadow-lg:0 2px 4px rgba(16,24,40,.04),0 20px 44px -14px rgba(16,24,40,.18);
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --num:"SF Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%;display:block}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ==================== 布局 ==================== */
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+section{margin:0 0 56px}
+@media(max-width:720px){.wrap{padding:0 16px}section{margin-bottom:36px}}
+
+/* ==================== 章节头部 ==================== */
+.chapter-head{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--accent-deep) 0%,var(--accent) 58%,var(--accent-soft) 130%);
+  color:#fff;padding:clamp(40px,7vw,76px) 0 clamp(34px,5vw,54px);
+}
+.chapter-head::after{
+  content:"";position:absolute;inset:auto -10% -55% auto;
+  width:min(560px,72vw);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.20) 0%,transparent 68%);
+}
+.chapter-head .wrap{position:relative;z-index:1}
+.chapter-head .crumb{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);
+  padding:6px 13px;border-radius:999px;margin-bottom:18px;backdrop-filter:blur(6px);
+}
+.chapter-head h1{
+  margin:0;font-size:clamp(1.7rem,3.6vw,2.6rem);
+  font-weight:700;line-height:1.25;letter-spacing:-.01em;
+}
+.chapter-head .sub{
+  margin:14px 0 0;max-width:60ch;font-size:clamp(.98rem,1.5vw,1.1rem);
+  color:rgba(255,255,255,.9);
+}
+.chapter-head .meta{
+  margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 22px;
+  font-size:13px;color:rgba(255,255,255,.82);
+}
+.chapter-head .meta b{color:#fff;font-weight:600}
+
+/* ==================== 数据卡片 ==================== */
+.metrics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));
+  gap:14px;margin:-30px 0 44px;position:relative;z-index:2;
+}
+.metric{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 18px 16px;box-shadow:var(--shadow);
+}
+.metric .k{font-size:12.5px;color:var(--ink-3);letter-spacing:.02em}
+.metric .v{
+  margin-top:6px;font-family:var(--num);font-weight:700;
+  font-size:clamp(1.3rem,2.4vw,1.7rem);line-height:1.1;color:var(--accent-deep);
+}
+.metric .v small{font-size:.55em;font-weight:600;color:var(--ink-2);margin-left:3px}
+.metric .d{margin-top:6px;font-size:12.5px;color:var(--ink-2)}
+.metric .d.up{color:var(--danger)}
+.metric .d.down{color:var(--success)}
+
+/* ==================== 标题层级 ==================== */
+h2.sec{
+  display:flex;align-items:baseline;gap:12px;
+  margin:0 0 6px;font-size:clamp(1.22rem,2.2vw,1.5rem);font-weight:700;letter-spacing:-.01em;
+}
+h2.sec .no{
+  font-family:var(--num);font-size:.72em;font-weight:700;
+  color:var(--accent);padding:3px 9px;border-radius:8px;background:color-mix(in srgb,var(--accent) 10%,transparent);
+}
+h3.sub{margin:30px 0 12px;font-size:1.06rem;font-weight:700}
+.sec-sub{margin:0 0 20px;color:var(--ink-2);font-size:14.5px;max-width:70ch}
+
+/* ==================== 卡片与容器 ==================== */
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:clamp(18px,3vw,28px);box-shadow:var(--shadow);margin-bottom:20px;
+}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:860px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* ==================== 图表 ==================== */
+figure.chart{margin:0 0 22px}
+figure.chart figcaption{
+  margin-top:10px;font-size:13px;color:var(--ink-2);
+  padding-left:11px;border-left:3px solid var(--accent);line-height:1.6;
+}
+.chart-box{width:100%;height:340px;min-height:260px}
+@media(max-width:720px){.chart-box{height:280px}}
+
+/* 图表离线降级：默认隐藏，echarts 不可用时由脚本显示 */
+.chart-fallback{display:none;overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.chart-fallback table{width:100%;border-collapse:collapse;font-size:13.5px}
+.chart-fallback th,.chart-fallback td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.chart-fallback th{background:color-mix(in srgb,var(--accent) 7%,transparent);font-weight:600}
+.chart-fallback tr:last-child td{border-bottom:0}
+.chart-unavailable .chart-box{display:none}
+.chart-unavailable .chart-fallback{display:block}
+
+/* ==================== 数据表 ==================== */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table.data{width:100%;border-collapse:collapse;font-size:14px}
+table.data th,table.data td{padding:11px 14px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+table.data th{background:color-mix(in srgb,var(--accent) 7%,transparent);font-weight:600;font-size:13.5px}
+table.data tr:last-child td{border-bottom:0}
+table.data td.num{font-family:var(--num);font-variant-numeric:tabular-nums}
+table.data .up{color:var(--danger);font-weight:600}
+table.data .down{color:var(--success);font-weight:600}
+
+/* ==================== 楼层/户型示意（CSS 网格绘制） ==================== */
+.floorplan{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;display:grid;gap:8px;
+}
+.room{
+  border:1.5px solid color-mix(in srgb,var(--accent) 45%,var(--line));
+  border-radius:8px;padding:12px 8px;text-align:center;
+  font-size:13px;color:var(--ink-2);
+  background:color-mix(in srgb,var(--accent) 5%,transparent);
+}
+.room b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+.room span{font-family:var(--num);font-size:12px}
+
+/* ==================== 位置示意图（内联 SVG） ==================== */
+.map-shell{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.map-legend{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px 0}
+.map-legend button{
+  font-family:inherit;font-size:13px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--ink-2);
+  padding:6px 13px;border-radius:999px;transition:.15s;
+}
+.map-legend button:hover{border-color:var(--accent);color:var(--accent)}
+.map-legend button[aria-pressed="true"]{
+  background:var(--accent);border-color:var(--accent);color:#fff;
+}
+.map-view{padding:10px 16px 16px}
+.map-view svg{width:100%;height:auto}
+.poi{transition:opacity .2s}
+.poi[data-hidden="1"]{opacity:.12;pointer-events:none}
+.poi .pulse{transform-origin:center;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.6);opacity:.12}}
+.map-panel{padding:0 16px 16px;font-size:13.5px;color:var(--ink-2)}
+.map-panel ul{margin:6px 0 0;padding-left:20px}
+@media(prefers-reduced-motion:reduce){
+  .poi .pulse{animation:none}
+}
+
+/* ==================== 评分条 ==================== */
+.score-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+.score-row:last-child{border-bottom:0}
+.score-row .name{flex:0 0 108px;font-size:14px;color:var(--ink)}
+.score-bar{flex:1;height:9px;border-radius:999px;background:var(--line);overflow:hidden}
+.score-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent-deep),var(--accent-soft))}
+.score-row .val{flex:0 0 52px;text-align:right;font-family:var(--num);font-weight:700;color:var(--accent-deep)}
+
+/* ==================== 要点列表 ==================== */
+.ruler{list-style:none;counter-reset:r;margin:0;padding:0}
+.ruler li{position:relative;padding:0 0 18px 52px;counter-increment:r}
+.ruler li::before{
+  content:counter(r,decimal-leading-zero);position:absolute;left:0;top:0;
+  font-family:var(--num);font-size:15px;font-weight:700;color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 9%,transparent);
+  width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+}
+.ruler li:last-child{padding-bottom:0}
+.ruler li b{display:block;font-size:14.5px;margin-bottom:3px}
+.ruler li p{margin:0;font-size:14px;color:var(--ink-2)}
+
+ul.plain{margin:0;padding-left:20px}
+ul.plain li{margin-bottom:7px;font-size:14.5px;color:var(--ink-2)}
+ul.plain li b{color:var(--ink)}
+
+/* ==================== 结论/提示块 ==================== */
+.tip{
+  display:flex;gap:13px;align-items:flex-start;
+  background:color-mix(in srgb,var(--accent) 6%,var(--card));
+  border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line));
+  border-radius:var(--radius);padding:16px 18px;margin:20px 0;
+}
+.tip .ico{
+  flex:0 0 26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;
+  display:grid;place-items:center;font-size:14px;font-weight:700;
+}
+.tip p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.tip p b{color:var(--ink)}
+.tip.warn{background:color-mix(in srgb,var(--warning) 9%,var(--card));border-color:color-mix(in srgb,var(--warning) 34%,var(--line))}
+.tip.warn .ico{background:var(--warning)}
+.tip.risk{background:color-mix(in srgb,var(--danger) 7%,var(--card));border-color:color-mix(in srgb,var(--danger) 28%,var(--line))}
+.tip.risk .ico{background:var(--danger)}
+
+/* ==================== 对比双栏 ==================== */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.compare>div{padding:16px 18px}
+.compare>div+div{border-left:1px solid var(--line)}
+.compare h4{margin:0 0 10px;font-size:14.5px;display:flex;align-items:center;gap:7px}
+.compare .yes h4{color:var(--success)}
+.compare .no h4{color:var(--danger)}
+@media(max-width:640px){.compare{grid-template-columns:1fr}.compare>div+div{border-left:0;border-top:1px solid var(--line)}}
+
+/* ==================== 时间线 ==================== */
+.timeline{position:relative;margin:8px 0 0;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.timeline li{list-style:none;position:relative;padding:0 0 20px}
+.timeline li::before{
+  content:"";position:absolute;left:-26px;top:6px;width:10px;height:10px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent);
+}
+.timeline li b{display:block;font-size:14px}
+.timeline li span{font-family:var(--num);font-size:12.5px;color:var(--accent-deep);font-weight:600}
+.timeline li p{margin:3px 0 0;font-size:13.5px;color:var(--ink-2)}
+
+/* ==================== 折叠问答 ==================== */
+details.faq{border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:10px;overflow:hidden}
+details.faq summary{
+  cursor:pointer;padding:14px 18px;font-weight:600;font-size:14.5px;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::after{content:"+";color:var(--accent);font-weight:700;font-size:17px;flex:0 0 auto}
+details.faq[open] summary::after{content:"−"}
+details.faq .body{padding:0 18px 16px;font-size:14px;color:var(--ink-2)}
+
+/* ==================== 页脚 ==================== */
+footer{
+  background:var(--ink);color:rgba(255,255,255,.78);
+  padding:clamp(28px,4vw,42px) 0;font-size:13.5px;
+}
+footer .wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:720px){footer .wrap{grid-template-columns:1fr}}
+footer h5{margin:0 0 8px;color:#fff;font-size:13.5px;font-weight:600;letter-spacing:.02em}
+footer p{margin:0;line-height:1.7}
+.disclaimer{
+  margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14);
+  font-size:12.5px;color:rgba(255,255,255,.6);
+}
+
+/* ==================== 滚动渐显 ==================== */
+/*
+  内容默认可见，仅在 JS 确认可用时才启用渐显动画。
+  这样在脚本被禁用、加载失败或用户偏好减少动效时，内容都不会被隐藏。
+*/
+.reveal{opacity:1;transform:none}
+html.js-reveal .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+html.js-reveal .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html.js-reveal .reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== 章节头部 ==================== -->
+<header class="chapter-head">
+  <div class="wrap">
+    <span class="crumb">{{PROJECT}} · {{CITY}} · 楼盘评估报告</span>
+    <h1>{{CHAPTER_NAME}}</h1>
+    <p class="sub">{{CHAPTER_SUB}}</p>
+    <div class="meta">
+      <span>数据截止 <b>{{DATA_DATE}}</b></span>
+      <span>数据来源 <b>{{DATA_SOURCE}}</b></span>
+      <span>报告生成 <b>{{GEN_DATE}}</b></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" style="padding-top:0">
+
+<!-- ==================== 指标概览 ==================== -->
+<div class="metrics">
+  <div class="metric">
+    <div class="k">{{M1_K}}</div>
+    <div class="v">{{M1_V}}<small>{{M1_U}}</small></div>
+    <div class="d">{{M1_D}}</div>
+  </div>
+  <div class="metric">
+    <div class="k">{{M2_K}}</div>
+    <div class="v">{{M2_V}}<small>{{M2_U}}</small></div>
+    <div class="d">{{M2_D}}</div>
+  </div>
+  <div class="metric">
+    <div class="k">{{M3_K}}</div>
+    <div class="v">{{M3_V}}<small>{{M3_U}}</small></div>
+    <div class="d">{{M3_D}}</div>
+  </div>
+  <div class="metric">
+    <div class="k">{{M4_K}}</div>
+    <div class="v">{{M4_V}}<small>{{M4_U}}</small></div>
+    <div class="d">{{M4_D}}</div>
+  </div>
+</div>
+
+<!-- ==================== 01 章节正文 ==================== -->
+<section class="reveal">
+  <h2 class="sec"><span class="no">01</span>{{S1_TITLE}}</h2>
+  <p class="sec-sub">{{S1_SUB}}</p>
+
+  <div class="card">
+    <p>{{S1_P1}}</p>
+    <p>{{S1_P2}}</p>
+  </div>
+
+  <!-- 图表：数据在 charts.js 中以同 id 注册 -->
+  <figure class="chart" data-chart="c1">
+    <div class="chart-box" id="chart-c1"></div>
+    <div class="chart-fallback">
+      <table>
+        <thead><tr><th>{{C1_H1}}</th><th>{{C1_H2}}</th><th>{{C1_H3}}</th></tr></thead>
+        <tbody>
+          <tr><td>{{C1_R1C1}}</td><td class="num">{{C1_R1C2}}</td><td class="num">{{C1_R1C3}}</td></tr>
+          <tr><td>{{C1_R2C1}}</td><td class="num">{{C1_R2C2}}</td><td class="num">{{C1_R2C3}}</td></tr>
+          <tr><td>{{C1_R3C1}}</td><td class="num">{{C1_R3C2}}</td><td class="num">{{C1_R3C3}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>{{C1_CAPTION}}</figcaption>
+  </figure>
+</section>
+
+<!-- ==================== 02 对比分析 ==================== -->
+<section class="reveal">
+  <h2 class="sec"><span class="no">02</span>{{S2_TITLE}}</h2>
+  <p class="sec-sub">{{S2_SUB}}</p>
+
+  <div class="tbl-wrap" style="margin-bottom:22px">
+    <table class="data">
+      <thead>
+        <tr><th>{{T1_H1}}</th><th>{{T1_H2}}</th><th>{{T1_H3}}</th><th>{{T1_H4}}</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>{{T1_R1C1}}</td><td class="num">{{T1_R1C2}}</td><td class="num">{{T1_R1C3}}</td><td>{{T1_R1C4}}</td></tr>
+        <tr><td>{{T1_R2C1}}</td><td class="num">{{T1_R2C2}}</td><td class="num">{{T1_R2C3}}</td><td>{{T1_R2C4}}</td></tr>
+        <tr><td>{{T1_R3C1}}</td><td class="num">{{T1_R3C2}}</td><td class="num">{{T1_R3C3}}</td><td>{{T1_R3C4}}</td></tr>
+        <tr><td>{{T1_R4C1}}</td><td class="num">{{T1_R4C2}}</td><td class="num">{{T1_R4C3}}</td><td>{{T1_R4C4}}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure class="chart" data-chart="c2">
+    <div class="chart-box" id="chart-c2"></div>
+    <div class="chart-fallback">
+      <table>
+        <thead><tr><th>{{C2_H1}}</th><th>{{C2_H2}}</th></tr></thead>
+        <tbody>
+          <tr><td>{{C2_R1C1}}</td><td class="num">{{C2_R1C2}}</td></tr>
+          <tr><td>{{C2_R2C1}}</td><td class="num">{{C2_R2C2}}</td></tr>
+          <tr><td>{{C2_R3C1}}</td><td class="num">{{C2_R3C2}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>{{C2_CAPTION}}</figcaption>
+  </figure>
+
+  <div class="compare">
+    <div class="yes">
+      <h4>✓ {{CMP_YES_TITLE}}</h4>
+      <ul class="plain">{{CMP_YES_ITEMS}}</ul>
+    </div>
+    <div class="no">
+      <h4>✕ {{CMP_NO_TITLE}}</h4>
+      <ul class="plain">{{CMP_NO_ITEMS}}</ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 03 分步解读 ==================== -->
+<section class="reveal">
+  <h2 class="sec"><span class="no">03</span>{{S3_TITLE}}</h2>
+  <p class="sec-sub">{{S3_SUB}}</p>
+
+  <ol class="ruler">
+    <li><b>{{R1_T}}</b><p>{{R1_P}}</p></li>
+    <li><b>{{R2_T}}</b><p>{{R2_P}}</p></li>
+    <li><b>{{R3_T}}</b><p>{{R3_P}}</p></li>
+    <li><b>{{R4_T}}</b><p>{{R4_P}}</p></li>
+  </ol>
+
+  <div class="tip">
+    <div class="ico">!</div>
+    <p><b>{{TIP1_TITLE}}</b> {{TIP1_BODY}}</p>
+  </div>
+
+  <!-- 图表 3（如章节不需要可整块删除，并同步清理 charts.js 中对应注册） -->
+  <figure class="chart" data-chart="c3">
+    <div class="chart-box" id="chart-c3"></div>
+    <div class="chart-fallback">
+      <table>
+        <thead><tr><th>{{C3_H1}}</th><th>{{C3_H2}}</th></tr></thead>
+        <tbody>
+          <tr><td>{{C3_R1C1}}</td><td class="num">{{C3_R1C2}}</td></tr>
+          <tr><td>{{C3_R2C1}}</td><td class="num">{{C3_R2C2}}</td></tr>
+          <tr><td>{{C3_R3C1}}</td><td class="num">{{C3_R3C2}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>{{C3_CAPTION}}</figcaption>
+  </figure>
+</section>
+
+<!-- ==================== 04 评分与结论 ==================== -->
+<section class="reveal">
+  <h2 class="sec"><span class="no">04</span>{{S4_TITLE}}</h2>
+  <p class="sec-sub">{{S4_SUB}}</p>
+
+  <div class="card">
+    <div class="score-row">
+      <span class="name">{{SC1_NAME}}</span>
+      <span class="score-bar"><i style="width:{{SC1_PCT}}%"></i></span>
+      <span class="val">{{SC1_VAL}}</span>
+    </div>
+    <div class="score-row">
+      <span class="name">{{SC2_NAME}}</span>
+      <span class="score-bar"><i style="width:{{SC2_PCT}}%"></i></span>
+      <span class="val">{{SC2_VAL}}</span>
+    </div>
+    <div class="score-row">
+      <span class="name">{{SC3_NAME}}</span>
+      <span class="score-bar"><i style="width:{{SC3_PCT}}%"></i></span>
+      <span class="val">{{SC3_VAL}}</span>
+    </div>
+    <div class="score-row">
+      <span class="name">{{SC4_NAME}}</span>
+      <span class="score-bar"><i style="width:{{SC4_PCT}}%"></i></span>
+      <span class="val">{{SC4_VAL}}</span>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="ico">✓</div>
+    <p><b>{{CONC_TITLE}}</b> {{CONC_BODY}}</p>
+  </div>
+
+  <div class="tip risk">
+    <div class="ico">!</div>
+    <p><b>风险提示</b> {{RISK_BODY}}</p>
+  </div>
+</section>
+
+<!-- ==================== 05 常见问题（可选，不需要则整块删除并把 04 保留为末章） ==================== -->
+<section class="reveal">
+  <h2 class="sec"><span class="no">05</span>{{S5_TITLE}}</h2>
+  <p class="sec-sub">{{S5_SUB}}</p>
+
+  <details class="faq" open>
+    <summary>{{Q1}}</summary>
+    <div class="body">{{A1}}</div>
+  </details>
+  <details class="faq">
+    <summary>{{Q2}}</summary>
+    <div class="body">{{A2}}</div>
+  </details>
+  <details class="faq">
+    <summary>{{Q3}}</summary>
+    <div class="body">{{A3}}</div>
+  </details>
+</section>
+
+</main>
+
+<!-- ==================== 页脚 ==================== -->
+<footer>
+  <div class="wrap">
+    <div>
+      <h5>数据说明</h5>
+      <p>{{FOOT_DATA_NOTE}}</p>
+    </div>
+    <div>
+      <h5>评估要点回顾</h5>
+      <p>{{FOOT_RECAP}}</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="disclaimer">{{FOOT_DISCLAIMER}}　生成时间：{{GEN_DATE}}</p>
+  </div>
+</footer>
+
+<!-- ==================== 图表脚本 ==================== -->
+<!--
+  ECharts 加载策略（自包含，无外部技能依赖）：
+  1. 若同目录存在 assets/echarts.min.js，优先本地加载（离线可用）；
+  2. 否则加载 CDN；
+  3. 两者都失败时，自动显示每个图表的静态数据表降级视图，页面信息不丢失。
+-->
+<script>
+(function(){
+  var CDN = "https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js";
+
+  function showFallbacks(){
+    document.querySelectorAll('figure.chart').forEach(function(fig){
+      fig.classList.add('chart-unavailable');
+    });
+    var note = document.createElement('p');
+    note.style.cssText = 'font-size:13px;color:var(--ink-3);margin:4px 0 18px';
+    note.textContent = '图表库未能加载（离线或 CDN 不可达），以下以数据表形式呈现相同数据。';
+    var first = document.querySelector('figure.chart');
+    if (first && first.parentNode) first.parentNode.insertBefore(note, first);
+  }
+
+  function loadScript(src, ok, fail){
+    var s = document.createElement('script');
+    s.src = src; s.async = true;
+    s.onload = ok; s.onerror = fail;
+    document.head.appendChild(s);
+  }
+
+  function boot(){
+    if (typeof echarts === 'undefined') { showFallbacks(); return; }
+    if (typeof window.__CHAPTER_CHARTS__ === 'function') {
+      try { window.__CHAPTER_CHARTS__(echarts); }
+      catch(e){ console.error('[charts] 渲染失败：', e); showFallbacks(); }
+    }
+  }
+
+  loadScript('assets/echarts.min.js', boot, function(){
+    loadScript(CDN, boot, showFallbacks);
+  });
+})();
+</script>
+
+<!-- ==================== 章节图表定义（按章节内容改写本段） ==================== -->
+<script>
+/*
+  window.__CHAPTER_CHARTS__ 由本段定义，接收 echarts 实例后渲染本页所有图表。
+  约定：
+  - 每个图表绑定到 id="chart-<key>" 的容器，与上方 figure 的 data-chart 对应；
+  - 颜色从 CSS 变量读取，保持与章节主题一致；
+  - animation 关闭（报告为静态阅读场景）；
+  - 统一注册 resize 监听。
+  下方示例按「户型面积分布」示范，实际生成时替换为本章节真实数据。
+*/
+window.__CHAPTER_CHARTS__ = function(echarts){
+  var css = getComputedStyle(document.documentElement);
+  var accent = css.getPropertyValue('--accent').trim() || '#2563eb';
+  var accentDeep = css.getPropertyValue('--accent-deep').trim() || '#1d4ed8';
+  var soft = css.getPropertyValue('--accent-soft').trim() || '#60a5fa';
+  var ink2 = css.getPropertyValue('--ink-2').trim() || '#4b5563';
+  var line = css.getPropertyValue('--line').trim() || '#e5e7eb';
+
+  var base = {
+    animation:false,
+    textStyle:{fontFamily:css.getPropertyValue('--sans').trim()},
+    grid:{left:8,right:16,top:34,bottom:8,containLabel:true},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'}}
+  };
+
+  var charts = [];
+
+  /* ---- c1：主力户型面积分布（柱状） ---- */
+  var el1 = document.getElementById('chart-c1');
+  if (el1) {
+    var c1 = echarts.init(el1, null, {renderer:'svg'});
+    c1.setOption(Object.assign({}, base, {
+      xAxis:{type:'category', data:{{C1_XDATA}}, axisLine:{lineStyle:{color:line}}, axisLabel:{color:ink2}},
+      yAxis:{type:'value', name:'套数', nameTextStyle:{color:ink2}, splitLine:{lineStyle:{color:line}}, axisLabel:{color:ink2}},
+      series:[{
+        type:'bar', data:{{C1_YDATA}}, barMaxWidth:44,
+        itemStyle:{color:accent, borderRadius:[6,6,0,0]},
+        label:{show:true, position:'top', color:ink2}
+      }]
+    }));
+    charts.push(c1);
+  }
+
+  /* ---- c2：面积段占比（环形） ---- */
+  var el2 = document.getElementById('chart-c2');
+  if (el2) {
+    var c2 = echarts.init(el2, null, {renderer:'svg'});
+    c2.setOption(Object.assign({}, base, {
+      tooltip:{trigger:'item'},
+      legend:{bottom:0, textStyle:{color:ink2}},
+      series:[{
+        type:'pie', radius:['46%','72%'], center:['50%','44%'],
+        data:{{C2_PIEDATA}},
+        label:{color:ink2, formatter:'{b} {d}%'},
+        itemStyle:{borderColor:'#fff', borderWidth:2}
+      }],
+      color:[accentDeep, accent, soft, css.getPropertyValue('--purple').trim() || '#8b5cf6']
+    }));
+    charts.push(c2);
+  }
+
+  /* ---- c3：评分雷达（示例：竞争力对比） ---- */
+  var el3 = document.getElementById('chart-c3');
+  if (el3) {
+    var c3 = echarts.init(el3, null, {renderer:'svg'});
+    c3.setOption(Object.assign({}, base, {
+      tooltip:{trigger:'item'},
+      radar:{
+        indicator:{{C3_RADAR_INDICATOR}},
+        radius:'64%',
+        splitLine:{lineStyle:{color:line}},
+        axisName:{color:ink2, fontSize:12},
+        splitArea:{areaStyle:{color:['transparent']}}
+      },
+      series:[{
+        type:'radar',
+        data:[{ value:{{C3_RADAR_VALUES}}, name:'本楼盘',
+                lineStyle:{color:accent, width:2},
+                itemStyle:{color:accent},
+                areaStyle:{color:accent, opacity:.22} }]
+      }]
+    }));
+    charts.push(c3);
+  }
+
+  window.addEventListener('resize', function(){ charts.forEach(function(c){ c.resize(); }); });
+};
+</script>
+
+<!-- ==================== 位置示意图筛选交互（如无地图章节可整块删除） ==================== -->
+<script>
+(function(){
+  var legend = document.querySelector('.map-legend');
+  if (!legend) return;
+  var buttons = legend.querySelectorAll('button');
+  var pois = document.querySelectorAll('.poi');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var type = btn.getAttribute('data-type');
+      var all = (type === 'all');
+      buttons.forEach(function(b){ b.setAttribute('aria-pressed', String(b === btn)); });
+      pois.forEach(function(p){
+        p.setAttribute('data-hidden', (!all && p.getAttribute('data-type') !== type) ? '1' : '0');
+      });
+    });
+  });
+})();
+</script>
+
+<!-- ==================== 滚动渐显 ==================== -->
+<script>
+(function(){
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return; // 内容保持默认可见，不做任何隐藏
+  }
+  document.documentElement.classList.add('js-reveal');
+  var nodes = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin:'0px 0px -8% 0px', threshold:.08 });
+  nodes.forEach(function(n){ io.observe(n); });
+  // 兜底：无论滚动与否，3 秒后全部显示，避免异常情况下内容被永久隐藏
+  setTimeout(function(){
+    nodes.forEach(function(n){ n.classList.add('in'); });
+  }, 3000);
+})();
+</script>
+
+</body>
+</html>
