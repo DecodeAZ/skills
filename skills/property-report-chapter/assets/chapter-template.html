@@ -341,7 +341,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
     <p>{{S1_P2}}</p>
   </div>
 
-  <!-- 图表：数据在 charts.js 中以同 id 注册 -->
+  <!-- 图表：数据在末尾 __CHAPTER_CHARTS__ 段中以同 id 注册 -->
   <figure class="chart" data-chart="c1">
     <div class="chart-box" id="chart-c1"></div>
     <div class="chart-fallback">
@@ -421,7 +421,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
     <p><b>{{TIP1_TITLE}}</b> {{TIP1_BODY}}</p>
   </div>
 
-  <!-- 图表 3（如章节不需要可整块删除，并同步清理 charts.js 中对应注册） -->
+  <!-- 图表 3（如章节不需要可整块删除，并同步清理末尾 __CHAPTER_CHARTS__ 中的对应注册） -->
   <figure class="chart" data-chart="c3">
     <div class="chart-box" id="chart-c3"></div>
     <div class="chart-fallback">
@@ -518,7 +518,7 @@ html.js-reveal .reveal.in{opacity:1;transform:none}
 <!-- ==================== 图表脚本 ==================== -->
 <!--
   ECharts 加载策略（自包含，无外部技能依赖）：
-  1. 若同目录存在 assets/echarts.min.js，优先本地加载（离线可用）；
+  1. 若同目录存在 assets/echarts.min.js，优先本地加载（该文件需自行放置，包内不附带，可离线渲染图表）；
   2. 否则加载 CDN；
   3. 两者都失败时，自动显示每个图表的静态数据表降级视图，页面信息不丢失。
 -->

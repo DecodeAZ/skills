@@ -1,6 +1,6 @@
 ---
 name: property-report-chapter
-version: "1.0.0"
+version: "1.1.0"
 description: 生成房地产楼盘评估报告的专题章节，输出为自包含的单文件 HTML 网页，含数据指标卡、ECharts 图表、对比表与位置示意图。支持户型产品分析、价格与竞品分析、交通与配套分析、总结与展望四类章节及完整报告。当用户要求「生成 XX 楼盘的户型分析 / 价格竞品分析 / 交通配套分析 / 总结展望」「做一份 XX 楼盘的评估报告 / 专题分析」「分析一下 XX 楼盘」或产出一个楼盘的章节网页时使用。必须确认楼盘名称与章节类型后才开始生成；缺失时主动询问。
 agent_created: true
 ---
@@ -15,7 +15,7 @@ agent_created: true
 1. **楼盘与章节类型是硬输入**。没有楼盘名，数据无从检索；没有章节类型，内容无从组织。缺失时必须先问。
 2. **数字优先且可溯源**。价格、面积、距离、评分——能用数字说清的不用形容词，且每个数字都要能追到来源。
 3. **样式不重写**。设计令牌与组件已固化在 `assets/chapter-template.html`，只替换内容层，不另造 CSS。
-4. **自包含交付**。产出的 HTML 不依赖任何外部技能、外部图片或需联网才能显示的资源；图表库不可用时自动降级为数据表。
+4. **自包含交付**。产出的 HTML 不依赖任何外部技能与外部图片；图表库缺省从 CDN 加载，离线或加载失败时自动降级为静态数据表，正文与数据表格始终完整可读。
 
 ---
 
@@ -35,9 +35,18 @@ agent_created: true
 
 ### 第 2 步 — 环境检查（只读）
 
+先跑包内自检（**须在技能目录内运行**，`file` 检查按当前工作目录解析）：
+
+```bash
+cd "<本Skill目录>" && python scripts/check_environment.py
+```
+
+`ready` / `partial` 进入第 3 步；`needs_setup` 只展示缺失项的修复步骤（见 `references/setup-guide.md`）；`unavailable` 停止并说明原因。依赖与降级矩阵见 `skill-dependencies.json`。
+
+其余依赖按需检查：
+
 | 依赖 | 检查方式 | 未就绪时 |
 |---|---|---|
-| Python 3.10+ | `python --version` | 脚本使用 `X \| None` 语法，低于 3.10 无法运行；提示用户升级，或改为手工复制模板 |
 | 高德地图 MCP（可选） | 尝试列出一个地图工具是否可见 | 仅影响位置示意图；按 `references/setup-guide.md` 降级，核心章节继续 |
 | 网络检索 | WebSearch 是否可用 | 检索不可用时停止数据收集型章节，说明原因，不用记忆中的数据替代 |
 
@@ -119,7 +128,7 @@ python "<本Skill目录>/scripts/new_chapter.py" \
 
 - 字体：中文 **Noto Sans SC**，数字用等宽字体 `--num`；不引入其它字体依赖。
 - 配色：冷白底 `#f8f9fb` + 单主题色（按章节类型）+ 语义色（success/warning/danger/purple）。
-- 图表：ECharts SVG 渲染；本地 `assets/echarts.min.js` 优先，CDN 次之，均失败则显示静态数据表。
+- 图表：ECharts SVG 渲染；缺省从 CDN 加载，加载失败则显示 `.chart-fallback` 静态数据表。包内**不附带** ECharts 库文件；若需图表离线渲染，把 `echarts.min.js` 放到产物同目录的 `assets/` 下，模板会优先加载它。
 - 动效：仅滚动渐显与楼盘中心点呼吸动画，均在 `prefers-reduced-motion: reduce` 下关闭。
 - 构成：渐变章节头部、悬浮于头部之上的指标卡、左侧强调线的图表说明。
 

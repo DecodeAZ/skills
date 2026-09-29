@@ -1,0 +1,339 @@
+{
+  "schema_version": "1",
+  "capabilities": [
+    "realtime-pricing",
+    "community-feedback",
+    "general-research",
+    "html-output"
+  ],
+  "functional_degradations": [
+    {
+      "capability": "realtime-pricing",
+      "trigger": "FlyAI CLI 缺失、安装失败、未登录或接口不可达",
+      "fallback": "改用宿主通用网络搜索检索机票、酒店、门票价格区间，全部按参考价或估算标注",
+      "user_input": "是否安装 FlyAI CLI 以获取实时报价；拒绝则接受全参考价预算",
+      "limitations": "预算中不再出现实查等级，机票与酒店价格可能与实际差异较大",
+      "evidence_label": "未验证",
+      "recovery": "npm i -g @fly-ai/flyai-cli 后重跑 scripts/check_environment.py 确认转为 partial 或 ready",
+      "stop_condition": "不得把检索到的区间价标注为实查，不得凭记忆填写航班号或具体票价"
+    },
+    {
+      "capability": "community-feedback",
+      "trigger": "mcporter 缺失、未配置小红书 MCP 服务，或检索返回空",
+      "fallback": "用宿主通用网络搜索检索小红书公开内容与攻略站，提取共性问题",
+      "user_input": "是否配置 mcporter 与小红书 MCP 服务；拒绝则接受来源降级",
+      "limitations": "拿不到原帖全文与收藏量排序，细节颗粒度下降，无法引用具体用户经历",
+      "evidence_label": "未验证",
+      "recovery": "npm i -g mcporter 并注册可用的小红书 MCP 服务后重跑自检",
+      "stop_condition": "不得声称获取到小红书原帖内容或引用不存在的笔记"
+    },
+    {
+      "capability": "general-research",
+      "trigger": "宿主环境无联网检索能力，或天气、高铁时刻等公开数据源均不可达",
+      "fallback": "无法替代。仅交付用户已提供的信息，并逐项标注未能核实",
+      "user_input": "请用户提供出行日期范围内的天气与班次信息",
+      "limitations": "行程的天气与衔接风险无法评估，产出可信度显著下降",
+      "evidence_label": "部分验证",
+      "recovery": "恢复网络或更换可用检索通道后重新执行采集",
+      "stop_condition": "交通与天气两类均无可靠数据时停止生成行程，不得凭记忆补齐"
+    },
+    {
+      "capability": "html-output",
+      "trigger": "包内 scripts/generate.py 或 assets/template.html 缺失损坏，或 tripData 不合法",
+      "fallback": "改由 Agent 按 references/html-spec.md 直接撰写单文件 HTML",
+      "user_input": "确认输出目录；如仍失败则接受 Markdown 版行程",
+      "limitations": "直接撰写的产物布局不受模板约束，需逐条走验收标准；Markdown 交付失去视觉呈现与响应式",
+      "evidence_label": "已验证",
+      "recovery": "重新安装本技能以恢复包内生成器，或按 html-spec.md 修正 tripData 后重试",
+      "stop_condition": "产物含未替换占位符或未转义的 </ 序列时不得交付"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "node-runtime",
+      "type": "runtime",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "realtime-pricing",
+        "community-feedback"
+      ],
+      "checks": [
+        {
+          "id": "node-presence",
+          "type": "cli",
+          "required": true,
+          "command": "node",
+          "min_version": "18"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://nodejs.org/",
+        "official_docs_url": "https://nodejs.org/en/download",
+        "steps": [
+          "从官网下载 LTS 安装包，或用系统包管理器安装（如 winget install OpenJS.NodeJS.LTS）",
+          "确认 node --version 输出 v20 或更高",
+          "不要使用 sudo 提权安装全局 npm 包"
+        ],
+        "verify": "node --version",
+        "security": "只从 nodejs.org 官方渠道获取安装包；无需凭据，不修改系统代理或证书",
+        "verified_at": "2026-09-13",
+        "applies_to_version": ">=18（mcporter 需 >=20）"
+      },
+      "degradation": [
+        {
+          "capability": "realtime-pricing",
+          "trigger": "Node.js 缺失导致 FlyAI CLI 无法运行",
+          "fallback": "改用宿主通用网络搜索获取价格区间",
+          "user_input": "是否安装 Node.js；拒绝则接受全参考价预算",
+          "limitations": "无实时报价，预算仅含参考价与估算",
+          "evidence_label": "未验证",
+          "recovery": "安装 Node.js >= 18 后重跑自检",
+          "stop_condition": "不得凭记忆填写价格"
+        },
+        {
+          "capability": "community-feedback",
+          "trigger": "Node.js 缺失或低于 20，导致 mcporter 无法运行",
+          "fallback": "改用宿主通用网络搜索检索小红书公开内容与攻略站",
+          "user_input": "是否安装 Node.js >= 20；拒绝则接受来源降级",
+          "limitations": "拿不到原帖全文与收藏量排序，只能引用共性问题",
+          "evidence_label": "未验证",
+          "recovery": "安装 Node.js >= 20 并配置 mcporter 后重跑自检",
+          "stop_condition": "不得声称拿到小红书原帖内容"
+        }
+      ]
+    },
+    {
+      "id": "flyai-cli",
+      "type": "cli",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "realtime-pricing"
+      ],
+      "checks": [
+        {
+          "id": "flyai-presence",
+          "type": "cli",
+          "required": true,
+          "command": "flyai"
+        },
+        {
+          "id": "flyai-probe",
+          "type": "cli_probe",
+          "required": true,
+          "target": "flyai keyword-search --query 杭州"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://open.fly.ai/",
+        "official_docs_url": "https://open.fly.ai/",
+        "steps": [
+          "确保 Node.js >= 18 已安装",
+          "执行 npm i -g @fly-ai/flyai-cli",
+          "验证 flyai keyword-search --query \"杭州\" 输出单行 JSON",
+          "可选：flyai config set FLYAI_API_KEY \"<key>\" 提升结果质量"
+        ],
+        "verify": "flyai keyword-search --query \"杭州\"",
+        "security": "无需密钥即可试用；如设置 API Key，由 CLI 自行存储，不得写入仓库或技能文件",
+        "verified_at": "2026-09-13",
+        "applies_to_version": "1.0.16"
+      },
+      "degradation": [
+        {
+          "capability": "realtime-pricing",
+          "trigger": "flyai 命令不存在，或探测返回非零退出码",
+          "fallback": "改用宿主通用网络搜索检索价格区间，全部降级为参考价或估算",
+          "user_input": "是否安装 FlyAI CLI；拒绝则接受全参考价预算",
+          "limitations": "无实查价格等级，无航班号与可预订链接",
+          "evidence_label": "部分验证",
+          "recovery": "npm i -g @fly-ai/flyai-cli 后重跑 scripts/check_environment.py",
+          "stop_condition": "不得把检索区间价标注为实查，不得编造航班号"
+        }
+      ]
+    },
+    {
+      "id": "mcporter-cli",
+      "type": "cli",
+      "required": false,
+      "auth_type": "none",
+      "capabilities": [
+        "community-feedback"
+      ],
+      "checks": [
+        {
+          "id": "mcporter-presence",
+          "type": "cli",
+          "required": false,
+          "command": "mcporter"
+        },
+        {
+          "id": "mcporter-probe",
+          "type": "cli_probe",
+          "required": true,
+          "target": "mcporter list"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://github.com/steipete/mcporter",
+        "official_docs_url": "https://github.com/steipete/mcporter#readme",
+        "steps": [
+          "确保 Node.js >= 20 已安装",
+          "执行 npm i -g mcporter，或直接使用 npx mcporter",
+          "验证 mcporter list 能列出服务",
+          "另行提供并按 mcporter 的方式注册一个具备小红书检索能力的 MCP 服务（无官方入口可核验，本技能不硬编码地址与端口）"
+        ],
+        "verify": "mcporter list",
+        "security": "mcporter 只连接你已配置的服务；凭据由该服务与 mcporter 配置自行管理，不得写入本技能",
+        "verified_at": "2026-09-13",
+        "applies_to_version": "0.13.12"
+      },
+      "degradation": [
+        {
+          "capability": "community-feedback",
+          "trigger": "mcporter 缺失，或未注册可用的 MCP 服务",
+          "fallback": "改用宿主通用网络搜索检索小红书公开内容与攻略站",
+          "user_input": "是否配置 mcporter 与 MCP 服务；拒绝则接受来源降级",
+          "limitations": "无法取得原帖全文、收藏量排序与具体用户经历",
+          "evidence_label": "未验证",
+          "recovery": "安装 mcporter 并注册服务后重跑自检",
+          "stop_condition": "不得声称拿到小红书原帖内容"
+        }
+      ]
+    },
+    {
+      "id": "host-web-search",
+      "type": "network",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "general-research"
+      ],
+      "checks": [
+        {
+          "id": "outbound-https",
+          "type": "url",
+          "required": true,
+          "url": "https://www.weather.com.cn/",
+          "method": "HEAD",
+          "expected_status": "200"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://www.weather.com.cn/",
+        "official_docs_url": "https://www.weather.com.cn/",
+        "steps": [
+          "确认宿主 Agent 环境提供可用的联网检索与网页抓取工具",
+          "确认可直连 weather.com.cn、12306、qweather.com 等公开数据源",
+          "如所在网络需要代理，配置宿主环境的代理而不是写入本技能"
+        ],
+        "verify": "在宿主环境中执行一次公开网页检索并确认返回内容",
+        "security": "只访问公开数据源；不传递任何凭据；不绕过登录或付费墙",
+        "verified_at": "2026-09-13",
+        "applies_to_version": "宿主环境相关"
+      },
+      "degradation": [
+        {
+          "capability": "general-research",
+          "trigger": "宿主无联网检索能力，或公开数据源全部不可达",
+          "fallback": "无法替代，仅交付用户已提供的信息并标注未能核实",
+          "user_input": "请用户提供天气与班次信息",
+          "limitations": "天气与衔接风险无法评估，产出可信度显著下降",
+          "evidence_label": "部分验证",
+          "recovery": "恢复网络后重新执行采集",
+          "stop_condition": "交通与天气均无可靠数据时停止生成行程"
+        }
+      ]
+    },
+    {
+      "id": "python-runtime",
+      "type": "runtime",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "html-output"
+      ],
+      "checks": [
+        {
+          "id": "python-version",
+          "type": "python",
+          "required": true,
+          "min_version": "3.9"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://www.python.org/",
+        "official_docs_url": "https://docs.python.org/3/",
+        "steps": [
+          "安装 Python 3.9 或更高版本",
+          "确认 python --version 可用",
+          "本技能脚本仅使用标准库，无需 pip 安装任何依赖"
+        ],
+        "verify": "python --version",
+        "security": "脚本纯标准库，无网络、无子进程、不读取凭据",
+        "verified_at": "2026-09-13",
+        "applies_to_version": ">=3.9"
+      },
+      "degradation": [
+        {
+          "capability": "html-output",
+          "trigger": "Python 缺失或版本低于 3.9",
+          "fallback": "改由 Agent 按 references/html-spec.md 直接撰写单文件 HTML",
+          "user_input": "确认是否接受由 Agent 直接撰写产物",
+          "limitations": "产物版式不受模板约束，需逐条走验收标准",
+          "evidence_label": "已验证",
+          "recovery": "安装 Python 3.9+ 后重试",
+          "stop_condition": "产物含未替换占位符时不得交付"
+        }
+      ]
+    },
+    {
+      "id": "bundled-generator",
+      "type": "local-tool",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "html-output"
+      ],
+      "checks": [
+        {
+          "id": "generator-file",
+          "type": "file",
+          "required": true,
+          "path": "scripts/generate.py"
+        },
+        {
+          "id": "template-file",
+          "type": "file",
+          "required": true,
+          "path": "assets/template.html"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://github.com/DecodeAZ/skills",
+        "official_docs_url": "https://github.com/DecodeAZ/skills/tree/main/skills/travel-planner",
+        "steps": [
+          "确认 scripts/generate.py 与 assets/template.html 均存在",
+          "用法：python scripts/generate.py <tripData.json> <输出.html>",
+          "退出码：0 成功、1 输入问题、2 模板问题"
+        ],
+        "verify": "python scripts/generate.py <tripData.json> <输出.html> 返回退出码 0",
+        "security": "生成器只读 tripData 与模板，只写指定输出路径；内联数据前会将 </ 转义为 <\\/",
+        "verified_at": "2026-09-13",
+        "applies_to_version": "1.0.0"
+      },
+      "degradation": [
+        {
+          "capability": "html-output",
+          "trigger": "生成器或模板缺失、损坏，或 tripData 非法 JSON",
+          "fallback": "改由 Agent 按 references/html-spec.md 直接撰写单文件 HTML",
+          "user_input": "确认输出目录；如仍失败则接受 Markdown 版行程",
+          "limitations": "失去确定性渲染，布局随撰写结果变化",
+          "evidence_label": "已验证",
+          "recovery": "重新安装本技能以恢复包内生成器",
+          "stop_condition": "产物含未替换占位符或未转义的 </ 序列时不得交付"
+        }
+      ]
+    }
+  ]
+}

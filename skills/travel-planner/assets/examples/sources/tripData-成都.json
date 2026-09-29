@@ -1,0 +1,395 @@
+{
+  "title": "成都 4 日 · 竹影茶香",
+  "dateRange": "2026-10-23 ~ 10-26",
+  "travelers": "2 成人",
+  "generationDate": "2026-09-13",
+  "weather": {
+    "summary": "历史同期以多云与阴天为主，日照少、湿度大",
+    "avgHigh": 20,
+    "avgLow": 14,
+    "rainfall": "35%",
+    "clothing": "薄外套 + 长袖，早晚备一件风衣",
+    "tips": "10 月下旬成都多阴云少直晒，紫外线仍中强；数据为历史同期气候均值，出行前 15 天内才做实时预报"
+  },
+  "days": [
+    {
+      "date": "10/23",
+      "weekday": "周五",
+      "theme": "落地成都 · 鹤鸣茶社",
+      "weather": {
+        "icon": "cloudy",
+        "high": 21,
+        "low": 14
+      },
+      "activities": [
+        {
+          "time": "07:50",
+          "name": "上海虹桥 → 成都天府",
+          "duration": "3h05m",
+          "cost": 0,
+          "transport": "春秋 9C8819",
+          "note": "直飞 10:55 落地天府机场，票价 1198 元/人为实查价"
+        },
+        {
+          "time": "11:40",
+          "name": "天府机场 → 春熙路（入住）",
+          "duration": "1h20m",
+          "cost": null,
+          "transport": "地铁 18 号线转 1 号线",
+          "note": "约 12 元/人，估算；行李多可考虑机场大巴"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "钟水饺（总府路店）",
+            "cuisine": "川味小吃",
+            "perPerson": 45,
+            "recommended": "红油水饺、担担面",
+            "location": "步行 6 分钟"
+          }
+        },
+        {
+          "time": "15:00",
+          "name": "人民公园 · 鹤鸣茶社",
+          "duration": "2h30m",
+          "cost": 0,
+          "transport": "地铁 2 号线人民公园站",
+          "note": "免费入园，盖碗茶约 30 元/位；成都慢生活的标准样本，别赶时间"
+        },
+        {
+          "time": "18:30",
+          "name": "晚餐",
+          "meal": {
+            "name": "马旺子川菜馆",
+            "cuisine": "地道川菜",
+            "perPerson": 90,
+            "recommended": "夫妻肺片、豆瓣鱼",
+            "location": "打车 12 分钟"
+          }
+        },
+        {
+          "time": "20:00",
+          "name": "锦江夜游",
+          "duration": "1h",
+          "cost": null,
+          "transport": "东门码头登船",
+          "note": "船票约 100 元/人（参考）；合江亭至九眼桥段灯光最密"
+        }
+      ]
+    },
+    {
+      "date": "10/24",
+      "weekday": "周六",
+      "theme": "都江堰 · 青城山",
+      "weather": {
+        "icon": "partlyCloudy",
+        "high": 19,
+        "low": 13
+      },
+      "activities": [
+        {
+          "time": "07:30",
+          "name": "市区 → 都江堰",
+          "duration": "1h10m",
+          "cost": null,
+          "transport": "城际列车 C 字头",
+          "note": "离堆公园站下车即景区，二等座约 15 元（参考）；青城山站更近后山"
+        },
+        {
+          "time": "09:00",
+          "name": "都江堰景区 · 秦堰楼",
+          "duration": "2h30m",
+          "cost": 80,
+          "transport": "步行 + 观光车",
+          "note": "门票约 80 元（参考）。秦堰楼是俯瞰三大水利工程与安澜桥的最佳机位"
+        },
+        {
+          "time": "12:00",
+          "name": "午餐",
+          "meal": {
+            "name": "尤兔头（都江堰店）",
+            "cuisine": "本地烧菜",
+            "perPerson": 60,
+            "recommended": "卤兔头、冷水鱼",
+            "location": "景区外步行 8 分钟"
+          }
+        },
+        {
+          "time": "13:30",
+          "name": "青城山 · 建福宫 → 天然阁 → 老君阁",
+          "duration": "4h",
+          "cost": 80,
+          "transport": "青城山前山索道",
+          "note": "门票约 80 元、索道往返约 60 元（均参考）。老君阁在青城第一峰绝顶，登顶往返约 4 小时，体力一般者可只到天然阁"
+        },
+        {
+          "time": "18:30",
+          "name": "都江堰 → 市区",
+          "duration": "1h10m",
+          "cost": null,
+          "transport": "城际列车",
+          "note": "末班约 21:00，别卡点；实在赶不上可打车回城约 150 元（估算）"
+        },
+        {
+          "time": "20:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "蜀大侠火锅（春熙路店）",
+            "cuisine": "川式火锅",
+            "perPerson": 130,
+            "recommended": "生抠鹅肠、千层肚",
+            "location": "打车 10 分钟"
+          }
+        }
+      ]
+    },
+    {
+      "date": "10/25",
+      "weekday": "周日",
+      "theme": "草堂水系 · 宽窄巷子",
+      "weather": {
+        "icon": "cloudy",
+        "high": 20,
+        "low": 14
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "杜甫草堂 + 浣花溪公园",
+          "duration": "3h",
+          "cost": 50,
+          "transport": "地铁 4 号线草堂北路站",
+          "note": "草堂门票约 50 元（参考），浣花溪公园免费且紧邻，一并走完"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "陈麻婆豆腐（青羊店）",
+            "cuisine": "川菜老字号",
+            "perPerson": 70,
+            "recommended": "麻婆豆腐、回锅肉",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "百花潭公园",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "步行 15 分钟",
+          "note": "免费。以川派盆景与兰花见长，人少清净，适合消化掉上午的步数"
+        },
+        {
+          "time": "16:00",
+          "name": "宽窄巷子",
+          "duration": "2h",
+          "cost": 0,
+          "transport": "地铁 4 号线宽窄巷子站",
+          "note": "免费。三条巷子格局各异，宽巷子最商业、井巷子最清静，傍晚灯亮后更好看"
+        },
+        {
+          "time": "18:30",
+          "name": "晚餐",
+          "meal": {
+            "name": "甘食记锅魁（宽窄巷子店）",
+            "cuisine": "成都小吃",
+            "perPerson": 50,
+            "recommended": "肥肠粉、军屯锅魁",
+            "location": "步行 5 分钟"
+          }
+        },
+        {
+          "time": "19:30",
+          "name": "川剧主题双层观光巴士",
+          "duration": "45m",
+          "cost": 60,
+          "transport": "春熙路站上车",
+          "note": "票价约 60 元（参考）。国内首个川剧观光巴士，车上品盖碗茶，途经春熙路、天府广场、九眼桥、宽窄巷子"
+        }
+      ]
+    },
+    {
+      "date": "10/26",
+      "weekday": "周一",
+      "theme": "太古里 · 返程",
+      "weather": {
+        "icon": "sunny",
+        "high": 22,
+        "low": 13
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "春熙路 · 太古里 + 大慈寺",
+          "duration": "2h30m",
+          "cost": 0,
+          "transport": "步行",
+          "note": "免费。大慈寺就在太古里街区里，古刹与商业体贴着，是成都最典型的一幕"
+        },
+        {
+          "time": "11:30",
+          "name": "午餐",
+          "meal": {
+            "name": "龙抄手（春熙路店）",
+            "cuisine": "成都小吃",
+            "perPerson": 55,
+            "recommended": "抄手、赖汤圆",
+            "location": "步行 5 分钟"
+          }
+        },
+        {
+          "time": "13:30",
+          "name": "天府艺术公园",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "地铁 27 号线",
+          "note": "免费入园，美术馆需另约；紧邻迎桂湖，下午光线适合拍建筑"
+        },
+        {
+          "time": "15:30",
+          "name": "市区 → 天府机场",
+          "duration": "1h20m",
+          "cost": null,
+          "transport": "地铁 1 号线转 18 号线",
+          "note": "周一下午机场方向会堵，务必留足 2.5 小时"
+        },
+        {
+          "time": "20:00",
+          "name": "成都天府 → 上海虹桥",
+          "duration": "2h35m",
+          "cost": 0,
+          "transport": "春秋 9C8820",
+          "note": "20:00 起飞 22:35 落地，票价 1001 元/人为实查价；比 12:30 那班贵 540 元，换来完整一个白天"
+        }
+      ]
+    }
+  ],
+  "hotels": [
+    {
+      "name": "成都太古里春熙路希尔顿花园酒店",
+      "area": "春熙路 / 牛王庙地铁站",
+      "pricePerNight": "4xx ~",
+      "highlights": "豪华型;近地铁;太古里步行可达"
+    },
+    {
+      "name": "成都宽窄巷子希尔顿花园酒店",
+      "area": "宽窄巷子景区",
+      "pricePerNight": "4xx ~",
+      "highlights": "豪华型;景区门口;适合第二天走草堂水系"
+    },
+    {
+      "name": "成都蓉城假日酒店（春熙太古里店）",
+      "area": "春熙路步行街",
+      "pricePerNight": "1xx ~",
+      "highlights": "舒适型;近春熙路步行街;性价比"
+    },
+    {
+      "name": "成都缘熙酒店公寓（春熙路太古里店）",
+      "area": "春熙路步行街",
+      "pricePerNight": "1xx ~",
+      "highlights": "经济型;公寓式;带简易厨房"
+    }
+  ],
+  "budget": {
+    "transport": {
+      "items": [
+        {
+          "name": "上海虹桥→成都天府 春秋 9C8819 ×2",
+          "cost": 2396
+        },
+        {
+          "name": "成都天府→上海虹桥 春秋 9C8820 ×2",
+          "cost": 2002
+        },
+        {
+          "name": "市内交通与都江堰往返 ~",
+          "cost": 300
+        }
+      ],
+      "subtotal": 4698
+    },
+    "accommodation": {
+      "items": [
+        {
+          "name": "春熙路区域 3 晚（参考档位 ¥4xx）~",
+          "cost": 1350
+        }
+      ],
+      "subtotal": 1350
+    },
+    "food": {
+      "items": [
+        {
+          "name": "餐饮 人均 120 × 2 人 × 4 天 ≈",
+          "cost": 960
+        }
+      ],
+      "subtotal": 960
+    },
+    "tickets": {
+      "items": [
+        {
+          "name": "都江堰 + 青城山（含索道）~",
+          "cost": 320
+        }
+      ],
+      "subtotal": 320
+    },
+    "other": {
+      "items": [
+        {
+          "name": "竹叶青茶叶、伴手礼与零散支出 ≈",
+          "cost": 300
+        }
+      ],
+      "subtotal": 300
+    },
+    "total": 7628,
+    "perPerson": 3814
+  },
+  "tips": [
+    "都江堰 + 青城山一天走完偏赶，若带老人小孩建议拆成两天，或只选青城山前山",
+    "城际列车到都江堰的末班约 21:00，返程别卡最后一班，留 1 小时缓冲",
+    "成都地铁 18 号线直连天府机场，比打车稳定，高峰期优势明显",
+    "火锅与川菜普遍偏辣，点单时说明「微辣」对本地店家来说仍是中辣",
+    "鹤鸣茶社可续水，坐一下午加钱很少，是理解成都节奏的关键一站"
+  ],
+  "theme": {
+    "name": "成都",
+    "bg": "#F3F0E7",
+    "surface": "#FFFFFF",
+    "ink": "#1F2A24",
+    "inkBody": "#3D4A42",
+    "muted": "#58635A",
+    "line": "#DFD9CB",
+    "primary": "#3F6B4E",
+    "primaryStrong": "#2C4E38",
+    "primarySoft": "#E3EAE2",
+    "primaryFaint": "#F1F5F0",
+    "primaryLine": "#C3D3C6",
+    "accent": "#C1552F",
+    "accentStrong": "#9C4223",
+    "accentSoft": "#F7EBE4",
+    "accentLine": "#E7CBBC",
+    "ok": "#356E52",
+    "okSoft": "#E4EFE8",
+    "warn": "#A8443A",
+    "warnSoft": "#F6E7E5",
+    "sun": "#B8860B",
+    "sky": "#3E7C8C",
+    "canvasA": "#3F6B4E",
+    "canvasB": "#22382C",
+    "orb1": "#C1552F",
+    "orb2": "#8A9A7B",
+    "seq1": "#3F6B4E",
+    "seq2": "#8A9A7B",
+    "seq3": "#C1552F",
+    "seq4": "#A8443A",
+    "seq5": "#6E7A70",
+    "landmark": "<svg viewBox=\"0 0 120 80\" role=\"img\"><title>成都 · 望江楼竹影</title><g fill=\"none\" stroke=\"#A8C6A8\" stroke-width=\"1.1\" stroke-linecap=\"round\" opacity=\"0.7\"><path d=\"M4 71q9-2.5 18 0t18 0t18 0t18 0t18 0t18 0\"/><path d=\"M10 77q9-2.5 18 0t18 0t18 0t18 0t18 0\"/></g><g stroke=\"#A8C6A8\" stroke-width=\"1.7\" stroke-linecap=\"round\" fill=\"none\"><path d=\"M18 76V38\"/><path d=\"M25 76V46\"/><path d=\"M32 76V32\"/><path d=\"M18 38l-8-7\"/><path d=\"M18 38l8-7\"/><path d=\"M32 32l-8-7\"/><path d=\"M32 32l9-7\"/><path d=\"M25 46l-8-6\"/><path d=\"M25 46l8-6\"/></g><path d=\"M74 60h38l3 6H71z\" fill=\"#F3F0E7\"/><rect x=\"85\" y=\"48\" width=\"16\" height=\"12\" fill=\"#A8C6A8\"/><path d=\"M74 48q6-7 8.4-8h19.2q2.4 1 8.4 8-19-5-36 0z\" fill=\"#F3F0E7\"/><rect x=\"87\" y=\"38\" width=\"12\" height=\"10\" fill=\"#A8C6A8\"/><path d=\"M79 38q5-6 6.2-7h15.6q1.2 1 6.2 7-14-4-28 0z\" fill=\"#F3F0E7\"/><rect x=\"89\" y=\"29\" width=\"8\" height=\"9\" fill=\"#A8C6A8\"/><path d=\"M84 29q3.2-5 4-6h8q.8 1 4 6-8-3-16 0z\" fill=\"#F3F0E7\"/><path d=\"M93 23l2-4-2-5-2 5z\" fill=\"#C1552F\"/></svg>",
+    "landmarkCaption": "望江楼 · 竹影 · 锦江",
+    "fontDisplay": "\"Kaiti SC\", \"STKaiti\", \"KaiTi\", \"Noto Serif SC\", serif"
+  }
+}

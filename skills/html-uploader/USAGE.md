@@ -6,16 +6,17 @@
 
 将本地 `.html` / `.htm` 文件上传到目标文档系统。不同系统的差异（能力发现、认证、接口路径、字段名、成功判据）全部封装在**适配器文件**中；新增一个目标系统 = 新增一个 `adapters/<系统名>.md`，无需改动脚本。
 
-内置适配器：
+可用的内置适配器：
 
 | 适配器 | 说明 |
 |---|---|
 | `htmlview-agent-api` | 密钥登录制文档系统（默认）。`/api/auth/login` 换令牌，`/api/agent/articles` 上传 |
-| `generic-multipart` | 通用 REST multipart 上传模板，接入新系统时复制改造 |
+
+`adapters/` 下以 `_` 开头的文件（`_generic-multipart.md`、`_template.md`）是接入新系统时复制改造的模板，不参与适配器发现与候选列出。
 
 ## 前置条件
 
-- Python 3.8+（脚本纯标准库，**零第三方依赖**，不使用 curl）
+- Python 3.9+（脚本纯标准库，**零第三方依赖**，不使用 curl）
 - 已确定两样东西（缺一会被脚本拦下并提示）：
   - **系统地址**：目标系统主机与端口，如 `http://localhost:8080` 或 `https://docs.example.com`
   - **访问密钥**：目标系统发放的 API Key / Token
@@ -31,7 +32,17 @@
 
 ## 快速上手
 
-### 1. 预检（每次任务先跑一次）
+### 1. 环境自检与配置预检（每次任务先跑一次）
+
+先确认运行时与包体（**须在技能目录内运行**）：
+
+```bash
+cd "<本Skill目录>" && python scripts/check_environment.py
+```
+
+返回 `ready` / `partial` 继续；`needs_setup` / `unavailable` 时按 [references/setup-guide.md](references/setup-guide.md) 修复后重跑。
+
+再确认地址与密钥：
 
 ```bash
 python "<本Skill目录>/scripts/check_config.py" [--system <适配器名>] [--base-url <地址>]
@@ -113,7 +124,7 @@ curl -X DELETE -H "Authorization: Bearer <token>" "<base_url>/api/articles/<id>"
 | 退出码 `3`，提示缺地址/密钥 | 配置未就绪 | 按 `check_config.py` 的 `ask` 一次性补齐 |
 | 退出码 `3`，提示「网络失败」 | 地址不可达：连接拒绝/超时/DNS/TLS | 核对基础地址与服务状态；本地可信测试可用 `--insecure` |
 | 退出码 `1`，提示文件不存在 | 路径笔误或指向目录 | 核对源文件绝对路径与 `.html/.htm` 扩展名 |
-| 退出码 `4` | 适配器文件不存在 | 复制 `adapters/generic-multipart.md` 改造后重试 |
+| 退出码 `4` | 适配器文件不存在 | 复制 `adapters/_generic-multipart.md` 改造后重试 |
 | 401 `invalid_key` | 密钥错误 | 重新获取密钥后重试一次 |
 | 403 `key_change_required` | 管理员仍用临时密钥 | 中止，先到网页端完成首次改密 |
 | 429 `rate_limited` | 登录过于频繁 | 脚本读 `Retry-After` 自动等待，令牌复用 |
@@ -123,7 +134,7 @@ curl -X DELETE -H "Authorization: Bearer <token>" "<base_url>/api/articles/<id>"
 
 ## 接入新系统
 
-1. 复制 `adapters/generic-multipart.md` 为 `adapters/<新系统名>.md`。
+1. 复制 `adapters/_generic-multipart.md` 为 `adapters/<新系统名>.md`（文件名不加下划线前缀，否则不会被当作可用适配器）。
 2. 逐项替换占位符：`base_url`、`auth`、`request`（端点/方法/字段映射）、`success`、`errors`。
 3. 按 [SKILL.md](SKILL.md)「新增适配器」流程，用一次真实小文件上传验证后再视为适配完成。
 
@@ -131,17 +142,21 @@ curl -X DELETE -H "Authorization: Bearer <token>" "<base_url>/api/articles/<id>"
 
 ```
 html-uploader/
-├── SKILL.md                  # 技能主文档：流程约定 + 适配器规范
-├── USAGE.md                  # 本文件：使用者快速上手
-├── config.example.json       # 非敏感配置模板（复制为 config.json 使用）
-├── config.json               # 本地配置（已 gitignore，不入库）
-├── _user_meta.json           # 本地安装记录（已 gitignore，不入库）
-├── adapters/                 # 各目标系统接口约定
-│   ├── htmlview-agent-api.md
-│   ├── generic-multipart.md  # 新系统模板
-│   └── template.md
+├── SKILL.md                      # 技能主文档：流程约定 + 适配器规范
+├── USAGE.md                      # 本文件：使用者快速上手
+├── skill-dependencies.json       # 依赖、检查项与功能降级映射
+├── config.example.json           # 非敏感配置模板（复制为 config.json 使用）
+├── config.json                   # 本地配置（已 gitignore，不入库）
+├── _user_meta.json               # 本地安装记录（已 gitignore，不入库）
+├── adapters/                     # 各目标系统接口约定
+│   ├── htmlview-agent-api.md     # 可用适配器
+│   ├── _generic-multipart.md     # 新系统模板（下划线开头，不参与适配器发现）
+│   └── _template.md              # 适配器骨架模板
+├── references/
+│   └── setup-guide.md            # 运行时与凭据配置、排错
 └── scripts/
-    ├── check_config.py       # 预检：确认地址/密钥是否就绪
-    ├── upload_skill.py       # 统一上传执行器（纯 Python 标准库）
-    └── example_upload.py     # 可运行示例脚本
+    ├── check_environment.py      # 环境自检：运行时与包体
+    ├── check_config.py           # 配置预检：确认地址/密钥是否就绪
+    ├── upload_skill.py           # 统一上传执行器（纯 Python 标准库）
+    └── example_upload.py         # 可运行示例脚本
 ```

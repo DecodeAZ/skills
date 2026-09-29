@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>重庆 4 日 · 江城夜渡</title>
+<style>
+  /* ---- 主题令牌：由 tripData.theme 覆盖，未提供时用此处的中性默认 ---- */
+  :root {
+    --t-bg: #F4F2ED;
+    --t-surface: #FFFFFF;
+    --t-ink: #23262A;
+    --t-ink-body: #4A4E54;
+    --t-ink-muted: #7B8087;
+    --t-line: #E2DFD8;
+    --t-primary: #3E4A55;
+    --t-primary-strong: #2A333C;
+    --t-primary-soft: #E6E9EC;
+    --t-primary-faint: #F3F5F7;
+    --t-primary-line: #C9D0D6;
+    --t-accent: #B4813A;
+    --t-accent-strong: #8E6329;
+    --t-accent-soft: #F7EFE2;
+    --t-accent-line: #E5D3B4;
+    --t-ok: #3F7A5E;
+    --t-ok-soft: #E4EFE8;
+    --t-warn: #A8443A;
+    --t-warn-soft: #F6E7E5;
+    --t-sun: #B8860B;
+    --t-sky: #3E7C8C;
+    --t-canvas-a: #3E4A55;
+    --t-canvas-b: #232B33;
+    --t-orb-1: #B4813A;
+    --t-orb-2: #6E7C88;
+    --t-seq-1: #3E4A55;
+    --t-seq-2: #6E7C88;
+    --t-seq-3: #B4813A;
+    --t-seq-4: #A8443A;
+    --t-seq-5: #7B8087;
+    --font-display: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+  }
+
+  /* ---- 组件层：既有变量全部指向主题令牌 ---- */
+  :root {
+    --primary: var(--t-primary);
+    --primary-dark: var(--t-primary-strong);
+    --primary-light: var(--t-primary-soft);
+    --primary-50: var(--t-primary-faint);
+    --accent: var(--t-accent);
+    --accent-dark: var(--t-accent-strong);
+    --accent-light: var(--t-accent-soft);
+    --success: var(--t-ok);
+    --success-light: var(--t-ok-soft);
+    --bg: var(--t-bg);
+    --card: var(--t-surface);
+    --text: var(--t-ink);
+    --text-body: var(--t-ink-body);
+    --text-muted: var(--t-ink-muted);
+    --border: var(--t-line);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 28px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: 200ms ease-out;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text-body); line-height: 1.65; -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 24px 20px 48px; }
+
+  /* ---- SVG Icon System ---- */
+  .icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; flex-shrink: 0;
+  }
+  .icon svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .icon-sm { width: 16px; height: 16px; }
+  .icon-lg { width: 24px; height: 24px; }
+
+  /* ---- Hero ---- */
+  .hero {
+    position: relative; border-radius: var(--radius); padding: 56px 44px 48px;
+    margin-bottom: 36px; overflow: hidden; color: white;
+    background: linear-gradient(135deg, var(--t-canvas-a) 0%, var(--t-canvas-b) 100%);
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(0,0,0,0.14));
+    background:
+      radial-gradient(ellipse 600px 400px at 20% 80%, color-mix(in srgb, var(--t-orb-1) 26%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 500px at 80% 20%, color-mix(in srgb, var(--t-orb-2) 34%, transparent) 0%, transparent 60%),
+      radial-gradient(ellipse 300px 300px at 60% 60%, rgba(255,255,255,0.06) 0%, transparent 50%);
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 2.1rem; font-weight: 700;
+    letter-spacing: 0.01em; margin-bottom: 10px; line-height: 1.25;
+  }
+  .hero-caption {
+    position: relative; z-index: 1; font-size: 0.76rem; letter-spacing: 0.16em;
+    opacity: 0.7; margin-bottom: 16px;
+  }
+  .hero-caption[hidden] { display: none; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.92rem; opacity: 0.92; }
+  .hero-meta-item { display: flex; align-items: center; gap: 7px; }
+  .hero-meta-item .icon { color: rgba(255,255,255,0.85); }
+  .hero-orb {
+    position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.12; pointer-events: none;
+    animation: orbFloat 10s ease-in-out infinite alternate;
+  }
+  .hero-orb-1 { width: 300px; height: 300px; background: var(--t-orb-1); top: -80px; right: -60px; }
+  .hero-orb-2 { width: 200px; height: 200px; background: var(--t-orb-2); bottom: -60px; left: -40px; animation-delay: -5s; }
+  .hero-landmark {
+    position: absolute; right: 34px; bottom: 24px; z-index: 1;
+    width: 172px; height: 115px; opacity: 0.92; pointer-events: none;
+  }
+  .hero-landmark[hidden] { display: none; }
+  .hero-landmark svg { width: 100%; height: 100%; display: block; }
+
+  @keyframes orbFloat {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(20px, -15px) scale(1.1); }
+  }
+
+  /* ---- Section Nav ---- */
+  .section-nav {
+    display: flex; gap: 8px; margin-bottom: 32px; overflow-x: auto;
+    padding-bottom: 4px; -webkit-overflow-scrolling: touch;
+  }
+  .section-nav::-webkit-scrollbar { height: 0; }
+  .nav-pill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+    border-radius: 99px; font-size: 0.85rem; font-weight: 500; white-space: nowrap;
+    background: var(--card); border: 1px solid var(--border); color: var(--text-muted);
+    cursor: pointer; transition: all var(--transition); text-decoration: none;
+  }
+  .nav-pill:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+  .nav-pill .icon { width: 16px; height: 16px; }
+
+  /* ---- Section ---- */
+  .section { margin-bottom: 40px; scroll-margin-top: 20px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .section-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: var(--radius-sm);
+    background: var(--primary-light); color: var(--primary);
+  }
+  .section-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+
+  /* ---- Weather ---- */
+  .weather-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .weather-bar::-webkit-scrollbar { height: 4px; }
+  .weather-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+  .weather-card {
+    flex: 0 0 auto; min-width: 108px; background: var(--card); border-radius: var(--radius-sm);
+    padding: 14px 12px; text-align: center; box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    transition: all var(--transition);
+  }
+  .weather-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .weather-card .w-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
+  .weather-card .w-icon { font-size: 28px; line-height: 1; margin: 4px 0 8px; }
+  .weather-card .w-icon svg { width: 32px; height: 32px; }
+  .weather-card .w-temp { font-size: 0.88rem; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+  .weather-card .w-temp-low { color: var(--text-muted); font-weight: 400; }
+  .weather-tip {
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; padding: 14px 18px;
+    background: var(--primary-50); border: 1px solid var(--t-primary-line); border-radius: var(--radius-sm); font-size: 0.88rem; color: var(--primary-dark);
+  }
+  .weather-tip .icon { flex-shrink: 0; margin-top: 1px; }
+
+  /* ---- Day Card ---- */
+  .day-card {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden;
+    transition: box-shadow var(--transition);
+  }
+  .day-card:hover { box-shadow: var(--shadow-md); }
+  .day-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 22px; cursor: pointer; user-select: none;
+    transition: background var(--transition);
+  }
+  .day-header:hover { background: var(--primary-50); }
+  .day-header:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+  .day-num {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, var(--primary), var(--t-seq-2));
+    color: white; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; margin-right: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .day-header-left { display: flex; align-items: center; }
+  .day-header-info h3 { font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .day-header-info .day-meta { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; display: flex; align-items: center; gap: 6px; }
+  .day-header .toggle-icon {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--text-muted); transition: all var(--transition);
+  }
+  .day-card.collapsed .toggle-icon { transform: rotate(-90deg); }
+  .day-body {
+    padding: 4px 22px 22px; border-top: 1px solid var(--border);
+    max-height: 3000px; overflow: hidden; transition: max-height 0.35s ease-out, padding 0.35s ease-out;
+  }
+  .day-card.collapsed .day-body { max-height: 0; padding-top: 0; padding-bottom: 0; border-top-color: transparent; }
+
+  /* ---- Timeline ---- */
+  .timeline { position: relative; padding-left: 32px; padding-top: 18px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 10px; top: 24px; bottom: 12px;
+    width: 2px; background: linear-gradient(to bottom, var(--primary), var(--border));
+    border-radius: 2px;
+  }
+  .tl-item { position: relative; margin-bottom: 22px; }
+  .tl-item:last-child { margin-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -28px; top: 4px; width: 14px; height: 14px;
+    border-radius: 50%; border: 2.5px solid var(--primary); background: var(--card); z-index: 1;
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+  .tl-item.is-meal .tl-dot { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 3px var(--accent-light); }
+  .tl-time { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+  .tl-content h4 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .tl-content p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+  .tl-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.73rem; padding: 3px 10px; border-radius: 99px; font-weight: 500;
+  }
+  .tag-cost { background: var(--accent-light); color: var(--accent-dark); }
+  .tag-transport { background: var(--success-light); color: var(--t-ok); }
+  .tag-free { background: var(--primary-light); color: var(--primary-dark); }
+
+  /* ---- Meal Card ---- */
+  .meal-card {
+    display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+    background: linear-gradient(135deg, var(--t-accent-soft), var(--t-surface)); border: 1px solid var(--t-accent-line);
+    border-radius: var(--radius-sm); margin-top: 6px;
+  }
+  .meal-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--card); display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm); color: var(--accent); flex-shrink: 0;
+  }
+  .meal-info { flex: 1; min-width: 0; }
+  .meal-name { font-weight: 600; font-size: 0.9rem; color: var(--text); }
+  .meal-detail { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meal-price { font-weight: 700; color: var(--accent-dark); white-space: nowrap; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+
+  /* ---- Hotels ---- */
+  .hotel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .hotel-card {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    border: 1px solid var(--border); padding: 22px; position: relative;
+    cursor: default; transition: all var(--transition);
+  }
+  .hotel-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+  .hotel-badge {
+    position: absolute; top: 14px; right: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--t-seq-2));
+    color: white; font-size: 0.72rem; font-weight: 600;
+    padding: 3px 12px; border-radius: 99px;
+  }
+  .hotel-name { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 6px; padding-right: 60px; }
+  .hotel-area { display: flex; align-items: center; gap: 5px; font-size: 0.83rem; color: var(--text-muted); margin-bottom: 12px; }
+  .hotel-price-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 12px; }
+  .hotel-price { font-size: 1.3rem; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .hotel-price-unit { font-size: 0.8rem; color: var(--text-muted); }
+  .hotel-highlights { font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; }
+  .hotel-tag { display: inline-block; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; background: var(--primary-light); color: var(--primary-dark); margin-right: 4px; margin-bottom: 4px; }
+
+  /* ---- Budget ---- */
+  .budget-wrapper {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .budget-chart { display: flex; height: 8px; overflow: hidden; }
+  .budget-chart-seg { transition: width 0.6s ease-out; }
+  .budget-table { width: 100%; border-collapse: collapse; }
+  .budget-table th, .budget-table td { padding: 12px 18px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+  .budget-table th { background: var(--bg); color: var(--text-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .budget-table .cat-row td { font-weight: 600; color: var(--text); background: var(--primary-50); }
+  .budget-table .cat-row .cat-icon { display: inline-flex; align-items: center; gap: 8px; }
+  .budget-table .cat-row .cat-icon .icon { color: var(--primary); }
+  .budget-table .sub-row td { color: var(--text-muted); padding-left: 48px; }
+  .budget-table .subtotal { text-align: right; font-weight: 600; color: var(--primary); font-variant-numeric: tabular-nums; }
+  .budget-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .budget-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, var(--t-canvas-a) 0%, var(--t-canvas-b) 100%);
+    border-radius: var(--radius); color: white; margin-top: 16px;
+  }
+  .budget-total-label { font-size: 0.95rem; font-weight: 500; opacity: 0.9; }
+  .budget-total-per { font-size: 0.85rem; opacity: 0.75; margin-top: 2px; }
+  .budget-total-amount { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+  /* ---- Tips ---- */
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .tip-card {
+    display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px;
+    background: var(--accent-light); border: 1px solid var(--t-accent-line); border-radius: var(--radius-sm);
+    font-size: 0.88rem; color: var(--text-body);
+  }
+  .tip-icon {
+    width: 28px; height: 28px; border-radius: 8px; background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm); color: var(--accent); flex-shrink: 0;
+  }
+  .tip-icon .icon { width: 14px; height: 14px; }
+
+  /* ---- Footer ---- */
+  .footer { text-align: center; padding: 28px 20px; color: var(--text-muted); font-size: 0.78rem; margin-top: 20px; }
+  .footer-line { width: 48px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--t-seq-2)); border-radius: 99px; margin: 0 auto 12px; }
+
+  /* ---- Print ---- */
+  @media print {
+    body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .container { padding: 0; max-width: 100%; }
+    .hero { break-inside: avoid; }
+    .day-card { break-inside: avoid; }
+    .day-card.collapsed .day-body { max-height: none !important; padding: 4px 22px 22px !important; border-top: 1px solid var(--border) !important; }
+    .toggle-icon, .section-nav { display: none !important; }
+    .hotel-card:hover, .weather-card:hover, .day-card:hover { transform: none; box-shadow: var(--shadow); }
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 640px) {
+    .container { padding: 16px 14px 32px; }
+    .hero { padding: 36px 24px 32px; }
+    .hero h1 { font-size: 1.55rem; }
+    .hero-meta { gap: 12px; font-size: 0.85rem; }
+    .hero-landmark { width: 108px; height: 72px; right: 12px; bottom: 12px; opacity: 0.5; }
+    .hero-caption { font-size: 0.7rem; letter-spacing: 0.12em; }
+    .day-header { padding: 14px 16px; }
+    .day-num { width: 34px; height: 34px; font-size: 0.78rem; margin-right: 10px; }
+    .day-body { padding: 4px 16px 16px; }
+    .timeline { padding-left: 26px; }
+    .hotel-grid { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr; }
+    .budget-total { flex-direction: column; text-align: center; gap: 8px; padding: 18px; }
+    .section-nav { gap: 6px; }
+    .nav-pill { padding: 6px 12px; font-size: 0.8rem; }
+  }
+
+  /* ---- Reduced Motion ---- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    .day-body { transition: none; }
+  }
+
+  /* ---- Focus ---- */
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero" role="banner">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-landmark" id="heroLandmark" aria-hidden="true" hidden></div>
+    <div class="hero-content">
+      <h1 id="heroTitle">重庆 4 日 · 江城夜渡</h1>
+      <p class="hero-caption" id="heroCaption" hidden></p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span id="heroDate">2026-10-23 ~ 10-26</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <span id="heroTravelers">2 成人</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+          <span>预估 <strong id="heroBudget">¥5440</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Nav -->
+  <nav class="section-nav" aria-label="快速导航">
+    <a class="nav-pill" href="#sec-weather"><span class="icon"><svg viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/><path d="M12 2v2M2 12h2m16 0h2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/></svg></span>天气</a>
+    <a class="nav-pill" href="#sec-days"><span class="icon"><svg viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>行程</a>
+    <a class="nav-pill" href="#sec-hotels"><span class="icon"><svg viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M6 7V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg></span>住宿</a>
+    <a class="nav-pill" href="#sec-budget"><span class="icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span>预算</a>
+    <a class="nav-pill" href="#sec-tips"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span>贴士</a>
+  </nav>
+
+  <!-- Weather -->
+  <div class="section" id="sec-weather">
+    <div class="section-header">
+      <div class="section-icon"><span class="icon icon-lg"><svg viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/><path d="M12 2v2M2 12h2m16 0h2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"/></svg></span></div>
+      <h2 class="section-title">天气概览</h2>
+    </div>
+    <div class="weather-bar" id="weatherBar"></div>
+    <div class="weather-tip" id="weatherTip"></div>
+  </div>
+
+  <!-- Daily Itinerary -->
+  <div class="section" id="sec-days">
+    <div class="section-header">
+      <div class="section-icon"><span class="icon icon-lg"><svg viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></span></div>
+      <h2 class="section-title">每日行程</h2>
+    </div>
+    <div id="daysContainer"></div>
+  </div>
+
+  <!-- Hotels -->
+  <div class="section" id="sec-hotels">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--accent-light);color:var(--accent);"><span class="icon icon-lg"><svg viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M6 7V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg></span></div>
+      <h2 class="section-title">住宿推荐</h2>
+    </div>
+    <div class="hotel-grid" id="hotelGrid"></div>
+  </div>
+
+  <!-- Budget -->
+  <div class="section" id="sec-budget">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--success-light);color:var(--success);"><span class="icon icon-lg"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span></div>
+      <h2 class="section-title">预算明细</h2>
+    </div>
+    <div class="budget-wrapper">
+      <div class="budget-chart" id="budgetChart"></div>
+      <table class="budget-table" id="budgetTable">
+        <thead><tr><th>分类</th><th>项目</th><th style="text-align:right">费用</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="budget-total" id="budgetTotal">
+      <div>
+        <div class="budget-total-label">预估总费用</div>
+        <div class="budget-total-per">人均 ¥2720</div>
+      </div>
+      <div class="budget-total-amount">¥5440</div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="section" id="sec-tips">
+    <div class="section-header">
+      <div class="section-icon" style="background:var(--t-warn-soft);color:var(--t-warn);"><span class="icon icon-lg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span></div>
+      <h2 class="section-title">实用贴士</h2>
+    </div>
+    <div class="tips-grid" id="tipsList"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-line"></div>
+    <p>由 AI 生成 · 价格与信息仅供参考，请以实际为准 · 2026-09-13</p>
+  </footer>
+
+</div>
+
+<script>
+const tripData = {
+  "title": "重庆 4 日 · 江城夜渡",
+  "dateRange": "2026-10-23 ~ 10-26",
+  "travelers": "2 成人",
+  "generationDate": "2026-09-13",
+  "weather": {
+    "summary": "历史同期多阴雨与秋雾，日照极少，湿度高",
+    "avgHigh": 21,
+    "avgLow": 15,
+    "rainfall": "45%",
+    "clothing": "长袖 + 防风外套，备一把结实雨伞",
+    "tips": "10 月下旬是重庆秋雾高发期，能见度可能影响观景台与两江游；数据为历史同期气候均值"
+  },
+  "days": [
+    {
+      "date": "10/23",
+      "weekday": "周五",
+      "theme": "落地山城 · 解放碑夜色",
+      "weather": {
+        "icon": "overcast",
+        "high": 21,
+        "low": 16
+      },
+      "activities": [
+        {
+          "time": "16:05",
+          "name": "上海虹桥 → 重庆江北",
+          "duration": "2h55m",
+          "cost": 0,
+          "transport": "春秋 9C8995",
+          "note": "直飞 19:00 落地，票价 900 元/人为实查价。订这班是为了第一晚就接上夜景"
+        },
+        {
+          "time": "20:00",
+          "name": "江北机场 → 解放碑（入住）",
+          "duration": "50m",
+          "cost": null,
+          "transport": "地铁 10 号线转 2 号线",
+          "note": "约 8 元/人（估算）；打车约 90 元（估算）"
+        },
+        {
+          "time": "21:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "解放碑火锅一条街",
+            "cuisine": "重庆火锅",
+            "perPerson": 120,
+            "recommended": "毛肚、鸭肠、老肉片",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "22:00",
+          "name": "壹华里夜景公园",
+          "duration": "1h",
+          "cost": 0,
+          "transport": "打车 25 分钟",
+          "note": "免费。南山最佳夜景观赏点，可同时看到渝中、南岸、九龙坡等主城 5 区夜景"
+        }
+      ]
+    },
+    {
+      "date": "10/24",
+      "weekday": "周六",
+      "theme": "母城 · 江与岸",
+      "weather": {
+        "icon": "cloudy",
+        "high": 22,
+        "low": 16
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "湖广会馆",
+          "duration": "1h30m",
+          "cost": 30,
+          "transport": "地铁 1 号线小什字站",
+          "note": "建于清乾隆二十四年，门票约 30 元（参考）。现存最大的移民会馆建筑群"
+        },
+        {
+          "time": "11:00",
+          "name": "朝天门 · 怀旧轮渡",
+          "duration": "1h",
+          "cost": null,
+          "transport": "步行 15 分钟",
+          "note": "轮渡是很多老重庆的生活记忆，票价约 2-5 元（估算），比两江游船便宜得多"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "花市豌杂面",
+            "cuisine": "重庆小面",
+            "perPerson": 30,
+            "recommended": "豌杂面、小面加蛋",
+            "location": "步行 8 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "魁星楼",
+          "duration": "1h",
+          "cost": null,
+          "transport": "地铁 1 号线临江门站",
+          "note": "又名魁星阁，供神魁星。楼前平台是俯瞰长江滨江路的机位"
+        },
+        {
+          "time": "16:00",
+          "name": "戴家巷崖壁步道",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "步行 10 分钟",
+          "note": "免费。依附嘉陵江崖壁的悬空步道，视角与洪崖洞互补，人比洪崖洞少很多"
+        },
+        {
+          "time": "18:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "珮姐老火锅",
+            "cuisine": "老灶火锅",
+            "perPerson": 130,
+            "recommended": "现炸酥肉、麻辣牛肉",
+            "location": "打车 8 分钟"
+          }
+        },
+        {
+          "time": "20:00",
+          "name": "重庆两江游",
+          "duration": "1h30m",
+          "cost": 100,
+          "transport": "朝天门码头登船",
+          "note": "船票约 100 元/人（参考）。夜游长江与嘉陵江，是理解重庆立体城市格局的捷径"
+        }
+      ]
+    },
+    {
+      "date": "10/25",
+      "weekday": "周日",
+      "theme": "立体交通 · 抗战遗迹",
+      "weather": {
+        "icon": "rainy",
+        "high": 20,
+        "low": 15
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "李子坝抗战遗址公园",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "地铁 2 号线李子坝站",
+          "note": "免费。轻轨穿楼就在站旁，公园全长 1.8 公里、背靠鹅岭、北面嘉陵江"
+        },
+        {
+          "time": "11:00",
+          "name": "鹅岭公园",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "地铁 1 号线鹅岭站",
+          "note": "免费。地处长江与嘉陵江挟持的狭长山岭，环抱重庆半岛，是少数能同时看两江的公园"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "胡记蹄花汤",
+            "cuisine": "重庆家常菜",
+            "perPerson": 60,
+            "recommended": "蹄花汤、粉蒸肉",
+            "location": "步行 12 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "白公馆旧址",
+          "duration": "2h",
+          "cost": 0,
+          "transport": "打车 30 分钟",
+          "note": "免费但需预约。原为四川军阀白驹别墅，1943 年后曾作美军招待所与特别看守所"
+        },
+        {
+          "time": "16:30",
+          "name": "重庆都市观光巴士",
+          "duration": "1h",
+          "cost": 30,
+          "transport": "解放碑发车",
+          "note": "票价约 30 元（参考）。串联洪崖洞、长江索道、朝天门等主城地标，适合雨天移动"
+        },
+        {
+          "time": "18:30",
+          "name": "晚餐",
+          "meal": {
+            "name": "三样菜",
+            "cuisine": "渝派江湖菜",
+            "perPerson": 90,
+            "recommended": "来凤鱼、辣子鸡",
+            "location": "打车 15 分钟"
+          }
+        }
+      ]
+    },
+    {
+      "date": "10/26",
+      "weekday": "周一",
+      "theme": "江北扫尾 · 返程",
+      "weather": {
+        "icon": "cloudy",
+        "high": 21,
+        "low": 15
+      },
+      "activities": [
+        {
+          "time": "09:30",
+          "name": "解放碑 · 观音桥",
+          "duration": "2h30m",
+          "cost": null,
+          "transport": "地铁 3 号线",
+          "note": "伴手礼集中在观音桥，火锅底料、陈麻花都在这儿买更全"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "小滨楼",
+            "cuisine": "渝派川菜",
+            "perPerson": 80,
+            "recommended": "开水白菜、鱼香肉丝",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "17:30",
+          "name": "市区 → 江北机场",
+          "duration": "1h",
+          "cost": null,
+          "transport": "地铁 10 号线",
+          "note": "从解放碑到机场约 50 分钟，周一晚高峰前出发更稳"
+        },
+        {
+          "time": "20:10",
+          "name": "重庆江北 → 上海虹桥",
+          "duration": "2h15m",
+          "cost": 0,
+          "transport": "春秋 9C8996",
+          "note": "20:10 起飞 22:25 落地，票价 510 元/人为实查价"
+        }
+      ]
+    }
+  ],
+  "hotels": [
+    {
+      "name": "S·city 地标高空江景酒店（解放碑洪崖洞店）",
+      "area": "解放碑步行街",
+      "pricePerNight": "2xx ~",
+      "highlights": "舒适型;高空江景;洪崖洞步行可达"
+    },
+    {
+      "name": "今禧酒店（重庆解放碑洪崖洞店）",
+      "area": "解放碑步行街",
+      "pricePerNight": "2xx ~",
+      "highlights": "高档型;近解放碑;两江游码头近"
+    },
+    {
+      "name": "重庆 JW 万豪酒店",
+      "area": "解放碑步行街",
+      "pricePerNight": "8xx ~",
+      "highlights": "豪华型;近解放碑步行街;高层江景"
+    },
+    {
+      "name": "重庆海曼高空江景酒店（解放碑洪崖洞店）",
+      "area": "解放碑步行街",
+      "pricePerNight": "1xx ~",
+      "highlights": "经济型;高空江景;预算优先"
+    }
+  ],
+  "budget": {
+    "transport": {
+      "items": [
+        {
+          "name": "上海虹桥→重庆江北 春秋 9C8995 ×2",
+          "cost": 1800
+        },
+        {
+          "name": "重庆江北→上海虹桥 春秋 9C8996 ×2",
+          "cost": 1020
+        },
+        {
+          "name": "市内交通与索道轮渡 ~",
+          "cost": 300
+        }
+      ],
+      "subtotal": 3120
+    },
+    "accommodation": {
+      "items": [
+        {
+          "name": "解放碑区域 3 晚（参考档位 ¥2xx）~",
+          "cost": 840
+        }
+      ],
+      "subtotal": 840
+    },
+    "food": {
+      "items": [
+        {
+          "name": "餐饮 人均 120 × 2 人 × 4 天 ≈",
+          "cost": 960
+        }
+      ],
+      "subtotal": 960
+    },
+    "tickets": {
+      "items": [
+        {
+          "name": "两江游 + 湖广会馆 + 观光巴士 ~",
+          "cost": 260
+        }
+      ],
+      "subtotal": 260
+    },
+    "other": {
+      "items": [
+        {
+          "name": "火锅底料、陈麻花与零散支出 ≈",
+          "cost": 260
+        }
+      ],
+      "subtotal": 260
+    },
+    "total": 5440,
+    "perPerson": 2720
+  },
+  "tips": [
+    "重庆景点搜索会返回大量远郊区县（大足石刻、酉阳桃花源、奉节三峡之巅），离主城数百公里，4 天行程排不下，别被搜索结果带偏",
+    "秋雾高发期能见度说不准，观景台与两江游尽量安排在抵达后的一两天内，留出改期空间",
+    "导航在重庆经常失效，多依赖轨道交通 + 步行，别只信自驾导航的最短路径",
+    "火锅点单先说清辣度与锅底，老灶锅底默认偏辣偏油",
+    "返程 22:25 落地虹桥，当晚地铁仍有末班，比 23:00 后落地的方案更稳"
+  ],
+  "theme": {
+    "name": "重庆",
+    "bg": "#0E1620",
+    "surface": "#16212E",
+    "ink": "#EDF2F6",
+    "inkBody": "#C3CED8",
+    "muted": "#8A9AA8",
+    "line": "#263443",
+    "primary": "#4FA0B3",
+    "primaryStrong": "#7CC3D4",
+    "primarySoft": "#16303A",
+    "primaryFaint": "#122530",
+    "primaryLine": "#2C5563",
+    "accent": "#EA6238",
+    "accentStrong": "#FF7A4D",
+    "accentSoft": "#3A1D14",
+    "accentLine": "#6B3524",
+    "ok": "#4FBF9A",
+    "okSoft": "#13302A",
+    "warn": "#F0A93B",
+    "warnSoft": "#382A14",
+    "sun": "#F2C14E",
+    "sky": "#5BB8D4",
+    "canvasA": "#16323F",
+    "canvasB": "#080F17",
+    "orb1": "#E4572E",
+    "orb2": "#3E8C9E",
+    "seq1": "#4FA0B3",
+    "seq2": "#5BB8D4",
+    "seq3": "#E4572E",
+    "seq4": "#F2C14E",
+    "seq5": "#8A9AA8",
+    "landmark": "<svg viewBox=\"0 0 120 80\" role=\"img\"><title>重庆 · 洪崖洞与两江<\/title><g fill=\"#E4572E\" fill-opacity=\"0.15\" stroke=\"#E4572E\" stroke-width=\"1.2\" stroke-linejoin=\"round\"><path d=\"M6 52h38l-2 6H8z\"/><path d=\"M9 42h32l-2 6H11z\"/><path d=\"M12 32h26l-2 6H14z\"/><path d=\"M15 22h20l-2 6H17z\"/><path d=\"M8 58h34v14H8z\"/><path d=\"M11 48h28v10H11z\"/><path d=\"M14 38h22v10H14z\"/><path d=\"M17 28h16v10H17z\"/><\/g><g fill=\"#F2C14E\"><rect x=\"11\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"18\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"25\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"32\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"14\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"21\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"28\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"17\" y=\"40.5\" width=\"3\" height=\"3\"/><rect x=\"24\" y=\"40.5\" width=\"3\" height=\"3\"/><rect x=\"20\" y=\"30.5\" width=\"3\" height=\"3\"/><\/g><g stroke=\"#3E8C9E\" fill=\"none\" stroke-linecap=\"round\"><path d=\"M60 47h56\" stroke-width=\"2.4\"/><path d=\"M88 78V20\" stroke-width=\"2.4\"/><g stroke-width=\"1\" opacity=\"0.85\"><path d=\"M88 21L64 47\"/><path d=\"M88 21L72 47\"/><path d=\"M88 21L80 47\"/><path d=\"M88 21L96 47\"/><path d=\"M88 21L104 47\"/><path d=\"M88 21L112 47\"/><\/g><path d=\"M70 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/><path d=\"M106 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/><\/g><g stroke=\"#5BB8D4\" fill=\"none\"><path d=\"M44 10L84 18\" stroke-width=\"1.2\" opacity=\"0.8\"/><path d=\"M64 14v3.5\" stroke-width=\"1.2\"/><\/g><rect x=\"58\" y=\"17.5\" width=\"13\" height=\"10\" rx=\"2\" fill=\"#5BB8D4\" fill-opacity=\"0.85\"/><g fill=\"none\" stroke=\"#5BB8D4\" stroke-width=\"1\" stroke-linecap=\"round\" opacity=\"0.45\"><path d=\"M3 75q9-2.5 18 0t18 0t18 0t18 0t18 0t18 0\"/><\/g><\/svg>",
+    "landmarkCaption": "洪崖洞 · 斜拉桥 · 过江索道",
+    "fontDisplay": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Source Han Sans SC\", sans-serif"
+  }
+};
+
+/* 主题字段 → CSS 令牌；未提供 theme 时沿用 :root 中的中性默认 */
+const THEME_VARS = {
+  bg: '--t-bg', surface: '--t-surface', ink: '--t-ink', inkBody: '--t-ink-body', muted: '--t-ink-muted',
+  line: '--t-line',
+  primary: '--t-primary', primaryStrong: '--t-primary-strong', primarySoft: '--t-primary-soft',
+  primaryFaint: '--t-primary-faint', primaryLine: '--t-primary-line',
+  accent: '--t-accent', accentStrong: '--t-accent-strong', accentSoft: '--t-accent-soft', accentLine: '--t-accent-line',
+  ok: '--t-ok', okSoft: '--t-ok-soft', warn: '--t-warn', warnSoft: '--t-warn-soft',
+  sun: '--t-sun', sky: '--t-sky',
+  canvasA: '--t-canvas-a', canvasB: '--t-canvas-b',
+  orb1: '--t-orb-1', orb2: '--t-orb-2',
+  seq1: '--t-seq-1', seq2: '--t-seq-2', seq3: '--t-seq-3', seq4: '--t-seq-4', seq5: '--t-seq-5'
+};
+
+const HEX_COLOR = /^#[0-9a-fA-F]{3,8}$/;
+/* 地标 SVG 不许带脚本、内联样式、事件属性、外部引用 */
+const LANDMARK_BLOCKED = /<\s*script|<\s*style|<\s*foreignObject|<\s*iframe|<\s*object|<\s*embed|<\s*link|<\s*meta|\son[a-z]+\s*=|javascript:|expression\s*\(/i;
+const LANDMARK_EXTERNAL = /(?:href|xlink:href)\s*=\s*["']?\s*(?:https?:)?\/\//i;
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  const src = theme && typeof theme === 'object' ? theme : {};
+  Object.keys(THEME_VARS).forEach(function (key) {
+    const raw = typeof src[key] === 'string' ? src[key].trim() : '';
+    if (!raw || !HEX_COLOR.test(raw)) return;
+    root.style.setProperty(THEME_VARS[key], raw);
+  });
+  const face = typeof src.fontDisplay === 'string' ? src.fontDisplay.trim() : '';
+  if (face && !/[;{}<>]/.test(face)) root.style.setProperty('--font-display', face);
+}
+
+function safeLandmark(markup) {
+  if (typeof markup !== 'string') return '';
+  const text = markup.trim();
+  if (!/^<svg[\s>]/i.test(text)) return '';
+  if (LANDMARK_BLOCKED.test(text) || LANDMARK_EXTERNAL.test(text)) return '';
+  return text;
+}
+
+function renderLandmark(theme) {
+  const slot = document.getElementById('heroLandmark');
+  const caption = document.getElementById('heroCaption');
+  const svg = safeLandmark(theme && theme.landmark);
+  if (slot) {
+    slot.innerHTML = svg;
+    slot.hidden = !svg;
+  }
+  if (caption) {
+    const text = svg && typeof theme.landmarkCaption === 'string' ? theme.landmarkCaption : '';
+    caption.textContent = text;
+    caption.hidden = !text;
+  }
+}
+
+// SVG icon templates (inline, no external deps)
+const SVG = {
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>',
+  cloud: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
+  cloudSun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M4 12H2M19.07 4.93l-1.41 1.41"/><circle cx="12" cy="9" r="4" opacity=".5"/><path d="M18 13h-1.26A7 7 0 0 0 6 15.26 5 5 0 1 0 9 23h9a5 5 0 0 0 0-10z"/></svg>',
+  rain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 13V4a4 4 0 0 0-8 0v1H6a4 4 0 0 0 0 8h10a4 4 0 0 0 0-8Z"/><path d="M8 19v2M12 19v2M16 19v2"/></svg>',
+  storm: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><path d="m13 12-3 5h4l-3 5"/></svg>',
+  snow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><path d="M8 18l.01 0M12 18l.01 0M16 18l.01 0"/></svg>',
+  utensils: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>',
+  mapPin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  lightbulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  plane: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>',
+  hotel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M3 7v14M21 7v14M6 7V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3"/><rect x="7" y="10" width="3" height="3" rx=".5"/><rect x="14" y="10" width="3" height="3" rx=".5"/><path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/></svg>',
+  ticket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg>',
+  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
+  chevDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>'
+};
+
+const weatherIcons = { sunny: SVG.sun, cloudy: SVG.cloud, rainy: SVG.rain, stormy: SVG.storm, snowy: SVG.snow, partlyCloudy: SVG.cloudSun, overcast: SVG.cloud };
+/* 分类色与天气色全部走主题令牌，换城市自动跟随 */
+const budgetColors = { transport: 'var(--t-seq-1)', accommodation: 'var(--t-seq-2)', food: 'var(--t-seq-3)', tickets: 'var(--t-seq-4)', other: 'var(--t-seq-5)' };
+const budgetIcons = { transport: SVG.plane, accommodation: SVG.hotel, food: SVG.utensils, tickets: SVG.ticket, other: SVG.box };
+const budgetLabels = { transport: '交通', accommodation: '住宿', food: '餐饮', tickets: '门票', other: '其他' };
+const weatherTone = { sunny: 'var(--t-sun)', partlyCloudy: 'var(--t-sun)', cloudy: 'var(--t-ink-muted)', overcast: 'var(--t-ink-muted)', rainy: 'var(--t-sky)', snowy: 'var(--t-sky)', stormy: 'var(--t-warn)' };
+
+function toneOf(icon) { return weatherTone[icon] || 'var(--t-ink-muted)'; }
+
+function renderWeather(weather, days) {
+  const bar = document.getElementById('weatherBar');
+  bar.innerHTML = days.map(d => {
+    const icon = weatherIcons[d.weather.icon] || SVG.cloudSun;
+    return `<div class="weather-card">
+      <div class="w-date">${d.date} ${d.weekday}</div>
+      <div class="w-icon" style="color:${toneOf(d.weather.icon)}">${icon}</div>
+      <div class="w-temp">${d.weather.high}° <span class="w-temp-low">/ ${d.weather.low}°</span></div>
+    </div>`;
+  }).join('');
+
+  const tip = document.getElementById('weatherTip');
+  tip.innerHTML = `<span class="icon" style="color:var(--primary)">${SVG.info}</span>
+    <span>${weather.clothing} · 降水概率 ${weather.rainfall} · ${weather.tips}</span>`;
+}
+
+function renderDays(days) {
+  const container = document.getElementById('daysContainer');
+  container.innerHTML = days.map((day, i) => {
+    const wIcon = weatherIcons[day.weather.icon] || SVG.cloudSun;
+    const acts = day.activities.map(a => {
+      const isMeal = a.meal || /[午晚早]餐/.test(a.name);
+      let html = `<div class="tl-item${isMeal ? ' is-meal' : ''}"><div class="tl-dot"></div>`;
+      html += `<div class="tl-time">${a.time}${a.duration ? ' · ' + a.duration : ''}</div><div class="tl-content">`;
+      html += `<h4>${a.name}</h4>`;
+      if (a.note) html += `<p>${a.note}</p>`;
+      if (a.meal) {
+        html += `<div class="meal-card">
+          <div class="meal-icon"><span class="icon">${SVG.utensils}</span></div>
+          <div class="meal-info">
+            <div class="meal-name">${a.meal.name}</div>
+            <div class="meal-detail">${a.meal.cuisine} · ${a.meal.location}${a.meal.recommended ? ' · 推荐：' + a.meal.recommended : ''}</div>
+          </div>
+          <div class="meal-price">¥${a.meal.perPerson}/人</div>
+        </div>`;
+      }
+      const tags = [];
+      if (a.cost === 0) tags.push(`<span class="tag tag-free">免费</span>`);
+      else if (a.cost) tags.push(`<span class="tag tag-cost">¥${a.cost}</span>`);
+      if (a.transport) tags.push(`<span class="tag tag-transport">${a.transport}</span>`);
+      if (tags.length) html += `<div class="tl-tags">${tags.join('')}</div>`;
+      html += `</div></div>`;
+      return html;
+    }).join('');
+
+    return `<div class="day-card">
+      <div class="day-header" tabindex="0" role="button" aria-expanded="true"
+           onclick="toggleDay(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDay(this)}">
+        <div class="day-header-left">
+          <div class="day-num">D${i + 1}</div>
+          <div class="day-header-info">
+            <h3>${day.theme}</h3>
+            <div class="day-meta">
+              <span>${day.date} ${day.weekday}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;color:${toneOf(day.weather.icon)}">
+                <span class="icon icon-sm">${wIcon}</span> ${day.weather.high}°/${day.weather.low}°
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="toggle-icon"><span class="icon icon-sm">${SVG.chevDown}</span></div>
+      </div>
+      <div class="day-body"><div class="timeline">${acts}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function toggleDay(el) {
+  const card = el.closest('.day-card');
+  const expanded = !card.classList.contains('collapsed');
+  card.classList.toggle('collapsed');
+  el.setAttribute('aria-expanded', !expanded);
+}
+
+function renderHotels(hotels) {
+  document.getElementById('hotelGrid').innerHTML = hotels.map((h, i) => {
+    const tags = h.highlights.split(/[;；、,，]/).filter(Boolean).map(t => `<span class="hotel-tag">${t.trim()}</span>`).join('');
+    return `<div class="hotel-card">
+      ${i === 0 ? '<div class="hotel-badge">推荐</div>' : ''}
+      <div class="hotel-name">${h.name}</div>
+      <div class="hotel-area"><span class="icon icon-sm" style="color:var(--accent)">${SVG.mapPin}</span>${h.area}</div>
+      <div class="hotel-price-row"><span class="hotel-price">¥${h.pricePerNight}</span><span class="hotel-price-unit">/晚</span></div>
+      <div class="hotel-highlights">${tags}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderBudget(budget) {
+  // Chart bar
+  const cats = Object.entries(budget).filter(([k]) => !['total', 'perPerson'].includes(k));
+  const total = budget.total || cats.reduce((s, [, d]) => s + d.subtotal, 0);
+  document.getElementById('budgetChart').innerHTML = cats.map(([cat, data]) =>
+    `<div class="budget-chart-seg" style="width:${(data.subtotal / total * 100).toFixed(1)}%;background:${budgetColors[cat] || 'var(--t-seq-5)'}"></div>`
+  ).join('');
+
+  // Table
+  const tbody = document.querySelector('#budgetTable tbody');
+  tbody.innerHTML = cats.map(([cat, data]) => {
+    const icon = budgetIcons[cat] || SVG.box;
+    const label = budgetLabels[cat] || cat;
+    let rows = `<tr class="cat-row"><td colspan="2"><span class="cat-icon"><span class="icon icon-sm" style="color:${budgetColors[cat]}">${icon}</span>${label}</span></td><td class="subtotal">¥${data.subtotal.toLocaleString()}</td></tr>`;
+    data.items.forEach(item => { rows += `<tr class="sub-row"><td></td><td>${item.name}</td><td>¥${item.cost.toLocaleString()}</td></tr>`; });
+    return rows;
+  }).join('');
+
+  // Total bar
+  const el = document.getElementById('budgetTotal');
+  el.querySelector('.budget-total-amount').textContent = `¥${total.toLocaleString()}`;
+  el.querySelector('.budget-total-per').textContent = `人均 ¥${(budget.perPerson || 0).toLocaleString()}`;
+}
+
+function renderTips(tips) {
+  document.getElementById('tipsList').innerHTML = tips.map(t =>
+    `<div class="tip-card"><div class="tip-icon"><span class="icon">${SVG.lightbulb}</span></div><span>${t}</span></div>`
+  ).join('');
+}
+
+if (tripData) {
+  applyTheme(tripData.theme);
+  renderLandmark(tripData.theme);
+  document.getElementById('heroTitle').textContent = tripData.title;
+  if (tripData.dateRange) document.getElementById('heroDate').textContent = tripData.dateRange;
+  if (tripData.travelers) document.getElementById('heroTravelers').textContent = tripData.travelers;
+  if (tripData.budget) document.getElementById('heroBudget').textContent = `¥${(tripData.budget.total || 0).toLocaleString()}`;
+  renderWeather(tripData.weather, tripData.days);
+  renderDays(tripData.days);
+  renderHotels(tripData.hotels);
+  renderBudget(tripData.budget);
+  renderTips(tripData.tips);
+}
+</script>
+</body>
+</html>

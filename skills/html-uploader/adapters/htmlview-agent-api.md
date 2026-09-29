@@ -1,8 +1,8 @@
-# htmlview-agent-api（v1·实测确认）
+# htmlview-agent-api
 
-验证过的适配器（密钥登录架构）。接口约定供 `scripts/upload_skill.py` 解析执行，本文件**不使用 curl**。
+密钥登录架构。接口约定供 `scripts/upload_skill.py` 解析执行，本文件**不使用 curl**。
 
-> **接口版本说明（2026-09 实测）**：探测目标系统发现 `/api/v2/*` 全部返回 404「资源不存在」，且能力发现端点 `/api/agent/capabilities` 返回 `version: 1`，登录为 `/api/auth/login`。即**当前部署仍为 v1**，故本适配器使用 `/api/...`（v1）路径。通知称“改到 v2”但服务器端未生效——若日后服务器确实发布 v2，再把下列 `/api/` 前缀批量替换为 `/api/v2/` 即可。
+> **路径前缀为 `/api/`（v1）**：能力发现端点 `/api/agent/capabilities` 返回 `version: 1`。若目标系统整体返回 404，说明服务端已升级，把本文件所有 `/api/` 替换为 `/api/v2/` 后重试。
 
 - base_url: （空 → 按 SKILL.md 第 0 段解析：当次提供 → 环境变量 `HTMLVIEW_BASE_URL` → `config.json` → 提问获取；常见为 http://localhost:<端口> 或 https://<域名>）
 - max_size: 20MB
@@ -49,6 +49,8 @@ python "<本Skill目录>/scripts/upload_skill.py" --file <报告路径> --system
 ## success
 
 HTTP 201 Created，响应 JSON 含 `id`、`title`。向用户报告 id、标题、标签、`word_count` 与 `added_at`。
+
+- reader_url: /reader.html?id={id}
 
 ## errors
 

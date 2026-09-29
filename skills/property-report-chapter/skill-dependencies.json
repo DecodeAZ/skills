@@ -1,0 +1,132 @@
+{
+  "schema_version": "1",
+  "capabilities": [
+    "chapter-generation",
+    "data-research",
+    "map-location"
+  ],
+  "functional_degradations": [
+    {
+      "capability": "chapter-generation",
+      "trigger": "Python 低于 3.10，或包内 new_chapter.py / assets/chapter-template.html 缺失损坏",
+      "fallback": "无法生成骨架；改为按 references/chapter-blueprint.md 手工撰写单文件 HTML",
+      "user_input": "确认是否升级 Python 或重新安装本技能；拒绝时接受 Markdown 版章节",
+      "limitations": "失去模板固化的令牌层与组件结构，需逐条走交付前质检单",
+      "evidence_label": "已验证",
+      "recovery": "安装 Python 3.10+ 或重新安装本技能后重跑 scripts/check_environment.py",
+      "stop_condition": "产物含未替换的 {{ 占位符或缺少来源标注时不得交付"
+    },
+    {
+      "capability": "data-research",
+      "trigger": "宿主联网检索不可用，或目标楼盘在公开渠道无有效信息",
+      "fallback": "停止数据收集型章节：不生成该章节，改为输出检索式与数据清单供用户补充",
+      "user_input": "请用户提供可公开引用的数据，或确认跳过该章节",
+      "limitations": "无法给出价格、面积、距离等具体数字，章节结论不成立",
+      "evidence_label": "部分验证",
+      "recovery": "恢复联网或用户补齐数据后重新执行第 3 步",
+      "stop_condition": "不得用记忆中的数据或邻近楼盘数据替代，不得编造数字"
+    },
+    {
+      "capability": "map-location",
+      "trigger": "高德地图 MCP 未注册、未授权或调用失败",
+      "fallback": "位置示意图改用静态降级视图（内联 SVG + 文字标注），正文照常生成",
+      "user_input": "是否配置高德地图 MCP 以获取真实经纬度与周边 POI；拒绝则接受静态示意",
+      "limitations": "无法给出按半径检索的真实周边配套与实测距离，图上的位置关系仅为示意",
+      "evidence_label": "未验证",
+      "recovery": "按 references/setup-guide.md 注册并授权高德地图 MCP 后重试",
+      "stop_condition": "不得声称图上的距离或配套为实测结果"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "python-runtime",
+      "type": "runtime",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "chapter-generation"
+      ],
+      "checks": [
+        {
+          "id": "python-version",
+          "type": "python",
+          "required": true,
+          "min_version": "3.10"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://www.python.org/",
+        "official_docs_url": "https://docs.python.org/3/",
+        "steps": [
+          "安装 Python 3.10 或更高版本",
+          "确认 python --version 可执行",
+          "本技能脚本只用标准库，无需 pip 安装任何依赖"
+        ],
+        "verify": "python --version",
+        "security": "脚本纯标准库；只读模板并写入用户指定的输出路径，无网络与子进程",
+        "verified_at": "2026-09-13",
+        "applies_to_version": ">=3.10"
+      },
+      "degradation": [
+        {
+          "capability": "chapter-generation",
+          "trigger": "Python 缺失或版本低于 3.10（脚本使用 dict | None 联合类型语法）",
+          "fallback": "无法运行骨架脚本；改为手工复制模板或输出 Markdown 版章节",
+          "user_input": "是否升级 Python 3.10+；拒绝则接受 Markdown 交付",
+          "limitations": "拿不到模板固化的版式与图表容器，需人工补齐",
+          "evidence_label": "已验证",
+          "recovery": "安装 Python 3.10+ 后重跑 scripts/check_environment.py",
+          "stop_condition": "不得交付含未替换占位符的产物"
+        }
+      ]
+    },
+    {
+      "id": "bundled-template",
+      "type": "local-tool",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "chapter-generation"
+      ],
+      "checks": [
+        {
+          "id": "generator-script",
+          "type": "file",
+          "required": true,
+          "path": "scripts/new_chapter.py"
+        },
+        {
+          "id": "chapter-template",
+          "type": "file",
+          "required": true,
+          "path": "assets/chapter-template.html"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://github.com/DecodeAZ/skills",
+        "official_docs_url": "https://github.com/DecodeAZ/skills/tree/main/skills/property-report-chapter",
+        "steps": [
+          "确认 scripts/new_chapter.py 与 assets/chapter-template.html 均存在",
+          "用法：python scripts/new_chapter.py --out <输出路径> --chapter <章节类型> --project <楼盘名>",
+          "目标已存在时脚本拒绝覆盖，需显式加 --force"
+        ],
+        "verify": "python scripts/new_chapter.py --out <输出路径> --chapter price --project 测试 返回退出码 0",
+        "security": "只读模板，只写用户指定的输出路径；不覆盖已有文件，除非显式加 --force",
+        "verified_at": "2026-09-13",
+        "applies_to_version": "1.1.0"
+      },
+      "degradation": [
+        {
+          "capability": "chapter-generation",
+          "trigger": "包内骨架脚本或章节模板缺失、损坏",
+          "fallback": "无法生成骨架；改为按 references/chapter-blueprint.md 手工撰写单文件 HTML",
+          "user_input": "确认是否重新安装本技能",
+          "limitations": "版式与图表降级逻辑不再由模板保证，需人工逐条落实",
+          "evidence_label": "已验证",
+          "recovery": "重新安装本技能以恢复包内文件",
+          "stop_condition": "不得在模板缺失时声称已按设计系统产出"
+        }
+      ]
+    }
+  ]
+}

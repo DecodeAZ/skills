@@ -1,0 +1,397 @@
+{
+  "title": "厦门 4 日 · 海上花园",
+  "dateRange": "2026-10-23 ~ 10-26",
+  "travelers": "2 成人",
+  "generationDate": "2026-09-13",
+  "weather": {
+    "summary": "历史同期晴到多云，海风明显，昼夜温差小于内陆",
+    "avgHigh": 26,
+    "avgLow": 20,
+    "rainfall": "25%",
+    "clothing": "短袖 + 薄外套，海边加一件防风衣",
+    "tips": "10 月下旬仍有台风尾影响的可能，出发前 15 天内必须复核台风路径；数据为历史同期气候均值"
+  },
+  "days": [
+    {
+      "date": "10/23",
+      "weekday": "周五",
+      "theme": "落地鹭岛 · 中山路",
+      "weather": {
+        "icon": "sunny",
+        "high": 27,
+        "low": 21
+      },
+      "activities": [
+        {
+          "time": "07:45",
+          "name": "上海浦东 → 厦门高崎",
+          "duration": "2h05m",
+          "cost": 0,
+          "transport": "春秋 9C8805",
+          "note": "直飞 09:50 落地，票价 490 元/人为实查价，是本次最便宜的去程"
+        },
+        {
+          "time": "10:40",
+          "name": "高崎机场 → 中山路（入住）",
+          "duration": "40m",
+          "cost": null,
+          "transport": "地铁 1 号线转 BRT",
+          "note": "约 10 元/人（估算）；打车约 50 元（估算）"
+        },
+        {
+          "time": "12:00",
+          "name": "午餐",
+          "meal": {
+            "name": "局口拌面",
+            "cuisine": "厦门小吃",
+            "perPerson": 45,
+            "recommended": "沙茶面、土笋冻",
+            "location": "步行 8 分钟"
+          }
+        },
+        {
+          "time": "14:30",
+          "name": "白鹭洲公园",
+          "duration": "2h",
+          "cost": 0,
+          "transport": "步行 20 分钟",
+          "note": "免费。厦门最大的全开放广场公园，白鹭女神雕塑在南侧游艇码头"
+        },
+        {
+          "time": "17:00",
+          "name": "中山路步行街",
+          "duration": "1h30m",
+          "cost": null,
+          "transport": "步行",
+          "note": "骑楼老街，伴手礼与小吃集中；傍晚人流最大"
+        },
+        {
+          "time": "19:30",
+          "name": "鹭江夜游",
+          "duration": "1h30m",
+          "cost": null,
+          "transport": "和平码头登船",
+          "note": "船票约 120 元/人（参考）。航线经演武大桥、海沧大桥，看两岸灯光"
+        }
+      ]
+    },
+    {
+      "date": "10/24",
+      "weekday": "周六",
+      "theme": "鼓浪屿一整天",
+      "weather": {
+        "icon": "sunny",
+        "high": 26,
+        "low": 21
+      },
+      "activities": [
+        {
+          "time": "08:00",
+          "name": "东渡邮轮码头 → 三丘田码头",
+          "duration": "30m",
+          "cost": 35,
+          "transport": "轮渡",
+          "note": "游客必须走东渡邮轮码头，首班 07:10；往返船票约 35 元/人（参考），实名制需提前订"
+        },
+        {
+          "time": "09:00",
+          "name": "日光岩",
+          "duration": "1h30m",
+          "cost": 50,
+          "transport": "步行上山",
+          "note": "鼓浪屿制高点，门票约 50 元（参考）。9 点前人少，10 点后团队涌上"
+        },
+        {
+          "time": "11:00",
+          "name": "菽庄花园 · 十二洞天",
+          "duration": "1h30m",
+          "cost": 30,
+          "transport": "步行 12 分钟",
+          "note": "门票约 30 元（参考）。十二洞天是砂岩垒叠的假山，分 12 洞室按十二地支编号"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "龙头路小吃街",
+            "cuisine": "闽南小吃",
+            "perPerson": 70,
+            "recommended": "海蛎煎、沙茶面",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "万国建筑博览 · 八卦楼",
+          "duration": "2h30m",
+          "cost": null,
+          "transport": "步行",
+          "note": "岛上千余座中西合璧建筑：八卦楼、海天堂构、番婆楼、黄荣远堂。部分老别墅单收门票 80 元左右（参考）"
+        },
+        {
+          "time": "16:30",
+          "name": "皓月园",
+          "duration": "1h",
+          "cost": 15,
+          "transport": "步行 15 分钟",
+          "note": "门票约 15 元（参考）。郑成功巨型花岗岩雕像，与海中剑石、印斗石鼎足而立"
+        },
+        {
+          "time": "18:00",
+          "name": "三丘田码头 → 厦门岛",
+          "duration": "30m",
+          "cost": null,
+          "transport": "轮渡",
+          "note": "末班船约 21:00，节假日加班；建议 18:00 前返程避开拥挤"
+        }
+      ]
+    },
+    {
+      "date": "10/25",
+      "weekday": "周日",
+      "theme": "环岛路 · 集美学村",
+      "weather": {
+        "icon": "partlyCloudy",
+        "high": 26,
+        "low": 20
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "胡里山炮台",
+          "duration": "1h30m",
+          "cost": 25,
+          "transport": "公交 22 路",
+          "note": "国家级重点文保单位，门票约 25 元（参考）；克虏伯大炮是镇台之宝"
+        },
+        {
+          "time": "11:00",
+          "name": "铁路文化公园",
+          "duration": "1h",
+          "cost": 0,
+          "transport": "步行 15 分钟",
+          "note": "免费。废弃铁路改造，宽约 3 米、长 4.5 公里，树荫覆盖率高"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "阿杰五香（大元路店）",
+            "cuisine": "闽南风味",
+            "perPerson": 60,
+            "recommended": "五香卷、烧肉粽",
+            "location": "打车 10 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "环岛路 · 黄金海岸",
+          "duration": "2h30m",
+          "cost": null,
+          "transport": "共享单车",
+          "note": "被誉为世界最美马拉松赛道，路间绿化带是《鼓浪屿之波》乐谱。可远眺金门"
+        },
+        {
+          "time": "17:00",
+          "name": "集美学村 · 归来堂 + 嘉庚公园",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "地铁 1 号线跨海段",
+          "note": "免费。归来堂即陈嘉庚先生故居，白石砌墙绿瓦盖顶；地铁跨海段本身也是景观"
+        },
+        {
+          "time": "19:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "小眼镜大排档",
+            "cuisine": "闽南海鲜",
+            "perPerson": 130,
+            "recommended": "酱油水海鲜、炒面线",
+            "location": "打车 15 分钟"
+          }
+        }
+      ]
+    },
+    {
+      "date": "10/26",
+      "weekday": "周一",
+      "theme": "海上世界 · 返程",
+      "weather": {
+        "icon": "partlyCloudy",
+        "high": 25,
+        "low": 20
+      },
+      "activities": [
+        {
+          "time": "09:30",
+          "name": "厦门园林博览苑",
+          "duration": "2h",
+          "cost": null,
+          "transport": "地铁 1 号线",
+          "note": "园博苑按园林展园格局布局，园内步行距离长，可租电动车"
+        },
+        {
+          "time": "12:00",
+          "name": "午餐",
+          "meal": {
+            "name": "乌糖沙茶面",
+            "cuisine": "厦门本地面",
+            "perPerson": 50,
+            "recommended": "沙茶面加料",
+            "location": "打车 20 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "厦门海上世界摩天轮",
+          "duration": "1h30m",
+          "cost": 70,
+          "transport": "打车 15 分钟",
+          "note": "门票约 70 元（参考）。高空看海上世界与鹭江两岸，日落时段最值"
+        },
+        {
+          "time": "17:30",
+          "name": "市区 → 高崎机场",
+          "duration": "40m",
+          "cost": null,
+          "transport": "地铁 1 号线",
+          "note": "国内航班建议提前 2 小时到达"
+        },
+        {
+          "time": "21:05",
+          "name": "厦门高崎 → 上海浦东",
+          "duration": "1h55m",
+          "cost": 0,
+          "transport": "吉祥 HO1112",
+          "note": "21:05 起飞 23:00 落地，票价 290 元/人为实查价；落地后地铁已停运，需打车"
+        }
+      ]
+    }
+  ],
+  "hotels": [
+    {
+      "name": "厦门源昌凯宾斯基大酒店",
+      "area": "厦门站 / 市中心",
+      "pricePerNight": "6xx ~",
+      "highlights": "豪华型;近厦门站;交通枢纽"
+    },
+    {
+      "name": "夏商·怡翔酒店（华都店）",
+      "area": "厦门站",
+      "pricePerNight": "2xx ~",
+      "highlights": "高档型;近厦门站;去鼓浪屿码头方便"
+    },
+    {
+      "name": "厦门瑞颐大酒店",
+      "area": "中山路步行街",
+      "pricePerNight": "6xx ~",
+      "highlights": "豪华型;近中山路;坐拥鹭江景"
+    },
+    {
+      "name": "白玉兰酒店（厦门大学世茂双子塔店）",
+      "area": "中山路步行街",
+      "pricePerNight": "1xx ~",
+      "highlights": "舒适型;近中山路步行街;性价比"
+    }
+  ],
+  "budget": {
+    "transport": {
+      "items": [
+        {
+          "name": "上海浦东→厦门高崎 春秋 9C8805 ×2",
+          "cost": 980
+        },
+        {
+          "name": "厦门高崎→上海浦东 吉祥 HO1112 ×2",
+          "cost": 580
+        },
+        {
+          "name": "市内交通与轮渡 ~",
+          "cost": 200
+        }
+      ],
+      "subtotal": 1760
+    },
+    "accommodation": {
+      "items": [
+        {
+          "name": "中山路区域 3 晚（参考档位 ¥2xx）~",
+          "cost": 780
+        }
+      ],
+      "subtotal": 780
+    },
+    "food": {
+      "items": [
+        {
+          "name": "餐饮 人均 150 × 2 人 × 4 天 ≈",
+          "cost": 1200
+        }
+      ],
+      "subtotal": 1200
+    },
+    "tickets": {
+      "items": [
+        {
+          "name": "鼓浪屿船票 + 日光岩 + 菽庄 + 胡里山 ~",
+          "cost": 350
+        }
+      ],
+      "subtotal": 350
+    },
+    "other": {
+      "items": [
+        {
+          "name": "馅饼、茶叶与零散支出 ≈",
+          "cost": 250
+        }
+      ],
+      "subtotal": 250
+    },
+    "total": 4340,
+    "perPerson": 2170
+  },
+  "tips": [
+    "上鼓浪屿游客只能走东渡邮轮码头或海沧嵩屿码头，中山路附近的轮渡码头只对本地居民开放",
+    "鼓浪屿船票实名制且旺季常售满，抵达当天就去官网订次日早班",
+    "10 月下旬仍是台风季尾巴，出发前 15 天内必须查一次台风路径，必要时调整前后顺序",
+    "环岛路骑行注意单行与共享单车禁停区，曾厝垵一带查得较严",
+    "返程航班 23:00 落地浦东，地铁已停运，提前安排接机或机场大巴"
+  ],
+  "theme": {
+    "name": "厦门",
+    "bg": "#F6F2EA",
+    "surface": "#FFFFFF",
+    "ink": "#1B2A2E",
+    "inkBody": "#374A4F",
+    "muted": "#57696E",
+    "line": "#DED8CB",
+    "primary": "#1B6B7A",
+    "primaryStrong": "#114C58",
+    "primarySoft": "#DFEBED",
+    "primaryFaint": "#EFF5F6",
+    "primaryLine": "#B7D0D5",
+    "accent": "#A8443A",
+    "accentStrong": "#83322A",
+    "accentSoft": "#F5E7E4",
+    "accentLine": "#E2C4BF",
+    "ok": "#286B54",
+    "okSoft": "#E1EFE9",
+    "warn": "#9C4708",
+    "warnSoft": "#F8EBDA",
+    "sun": "#C2872B",
+    "sky": "#1B6B7A",
+    "canvasA": "#1B6B7A",
+    "canvasB": "#0E3C46",
+    "orb1": "#E0A96D",
+    "orb2": "#7FB2B8",
+    "seq1": "#1B6B7A",
+    "seq2": "#5E9AA4",
+    "seq3": "#A8443A",
+    "seq4": "#C2872B",
+    "seq5": "#6E8085",
+    "landmark": "<svg viewBox=\"0 0 120 80\" role=\"img\"><title>厦门 · 日光岩与八卦楼</title><g fill=\"none\" stroke=\"#F6F2EA\" stroke-width=\"1.1\" stroke-linecap=\"round\" opacity=\"0.38\"><path d=\"M3 71q9-2.5 18 0t18 0t18 0t18 0t18 0t18 0\"/><path d=\"M14 77q9-2.5 18 0t18 0t18 0t18 0t18 0\"/></g><path d=\"M4 64C6 50 12 39 22 35c11-4 21 9 23 29z\" fill=\"#E0A96D\"/><path d=\"M22 35c6 3 12 12 14 29H45c-2-20-12-33-23-29z\" fill=\"#E0A96D\" fill-opacity=\"0.55\"/><path d=\"M18 34l4-7h8l4 7z\" fill=\"#F6F2EA\"/><path d=\"M16 27l9-6 9 6z\" fill=\"#A8443A\"/><path d=\"M70 44c0-13 8-21 17-21s17 8 17 21z\" fill=\"#F6F2EA\"/><g stroke=\"#A8443A\" stroke-width=\"0.9\" fill=\"none\" opacity=\"0.85\"><path d=\"M87 23v21\"/><path d=\"M78.5 27q8.5 4 17 0\"/><path d=\"M74.5 35q12.5 5 25 0\"/></g><path d=\"M87 23V16\" stroke=\"#F6F2EA\" stroke-width=\"1.6\"/><circle cx=\"87\" cy=\"14.5\" r=\"2\" fill=\"#A8443A\"/><rect x=\"72\" y=\"44\" width=\"30\" height=\"20\" fill=\"#F6F2EA\"/><rect x=\"77\" y=\"48\" width=\"6.5\" height=\"16\" fill=\"#A8443A\"/><rect x=\"90.5\" y=\"48\" width=\"6.5\" height=\"16\" fill=\"#A8443A\"/><path d=\"M69 64h36v3.5H69z\" fill=\"#F6F2EA\"/><path d=\"M53 62V50l11 12z\" fill=\"#F6F2EA\"/><path d=\"M47 62h20l-3 6H50z\" fill=\"#E0A96D\"/></svg>",
+    "landmarkCaption": "日光岩 · 八卦楼 · 帆影",
+    "fontDisplay": "\"FangSong\", \"STFangsong\", \"FangSong_GB2312\", \"Noto Serif SC\", serif"
+  }
+}

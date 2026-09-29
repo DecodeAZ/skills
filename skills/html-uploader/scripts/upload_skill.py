@@ -76,6 +76,9 @@ def read_adapter(system: str) -> dict:
         "fields": {"file": "file", "title": "title", "tags": "tags", "summary": "summary"},
         "success_status": 201,
         "success_field": "id",
+        "reader_url": "",
+        "discovery": "",
+        "tool": "",
     }
     if not path.is_file():
         return info
@@ -84,6 +87,13 @@ def read_adapter(system: str) -> dict:
         m = re.match(r"^\s*[-*]\s*base_url\s*:\s*(.+?)\s*$", line)
         if m and not m.group(1).strip().startswith(("<", "（")):
             info["base_url"] = m.group(1).strip()
+            continue
+        m = re.match(r"^\s*[-*]\s*discovery\s*:\s*(.+?)\s*$", line)
+        if m:
+            info["discovery"] = m.group(1).strip()
+            tm = re.search(r"`([A-Za-z_][A-Za-z0-9_]*)`\s*工具", info["discovery"])
+            if tm:
+                info["tool"] = tm.group(1)
             continue
         m = re.match(r"^\s*[-*]\s*max_size\s*:\s*(\d+)\s*[Mm]?B?\s*$", line, re.I)
         if m:
@@ -112,8 +122,8 @@ def read_adapter(system: str) -> dict:
             continue
 
     # 方法 + 端点
-    req = _section(text, "## request")
-    m = re.search(r"\b(POST|PUT|PATCH|GET)\b[^:]*[:，进行>]*\s*<base_url>(\S+)", req)
+    req = _section(text, "request")
+    m = re.search(r"\b(POST|PUT|PATCH|GET)\b[^:]*[:，进行>]*\s*<base_url>([^\s`，,）)】]+)", req)
     if m:
         info["method"] = m.group(1).upper()
         info["endpoint"] = m.group(2).rstrip("，,）)")
@@ -126,13 +136,16 @@ def read_adapter(system: str) -> dict:
         info["fields"][fm.group(1)] = fm.group(2).strip()
 
     # 成功判据
-    succ = _section(text, "## success")
+    succ = _section(text, "success")
     m = re.search(r"\b(\d{3})\b", succ)
     if m:
         info["success_status"] = int(m.group(1))
     m = re.search(r"含\s*[`]?(\w+)[`]?", succ)
     if m:
         info["success_field"] = m.group(1)
+    m = re.search(r"reader_url\s*[:：]\s*(\S+)", succ)
+    if m:
+        info["reader_url"] = m.group(1).strip()
     if re.search(r"contentBase64|base64", req):
         info["content_type"] = "json"
     return info
@@ -314,17 +327,22 @@ def multipart(fields, file_field, file_name, file_bytes, ctype):
 def discover(client: Client):
     """可选能力发现：仅当适配器声明 discovery 非 none 时启用。"""
     a = client.a
-    disc = _section(Path(a["path"]).read_text(encoding="utf-8"), "discovery")
-    if not disc or "none" in disc:
+    disc = a.get("discovery", "")
+    if not disc or disc.strip().lower().startswith("none") or not a.get("tool"):
         return a["endpoint"], a["method"]
-    # 从 discovery 段找 GET 路径与期望 service/工具
     m = re.search(r"GET\s*<base_url>(\S+)", disc)
-    if m:
-        status, _, body = client.request("GET", m.group(1).rstrip("，,）)"))
-        data = parse_json(body) or {}
-        tool = next((t for t in data.get("tools", []) if t.get("name") == a.get("tool", "")), None)
-        if tool:
-            return tool.get("path", a["endpoint"]), tool.get("method", a["method"])
+    if not m:
+        return a["endpoint"], a["method"]
+    try:
+        _, _, body = client.request("GET", m.group(1).rstrip("，,）)"))
+    except (TransportError, RuntimeError) as exc:
+        log(f"能力发现失败（{exc}），改用适配器声明的默认端点")
+        return a["endpoint"], a["method"]
+    data = parse_json(body) or {}
+    tool = next((t for t in data.get("tools", []) if t.get("name") == a["tool"]), None)
+    if tool:
+        log(f"已按能力发现结果覆盖端点：{tool.get('path', a['endpoint'])}")
+        return tool.get("path", a["endpoint"]), tool.get("method", a["method"])
     return a["endpoint"], a["method"]
 
 
@@ -458,7 +476,11 @@ def main():
         if fid and str(fid).startswith("http"):
             log(f"访问地址：{fid}")
         elif fid:
-            log(f"访问地址：{base_url.rstrip('/')}/reader.html?id={fid}")
+            reader = adapter.get("reader_url", "")
+            if reader:
+                log(f"访问地址：{base_url.rstrip('/')}{reader.replace('{id}', str(fid))}")
+            else:
+                log(f"仅返回 id：{fid}（适配器未声明 reader_url，无阅读地址）")
         return 0
     except TransportError as e:
         log(f"网络失败：{e}")

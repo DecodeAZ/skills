@@ -1,0 +1,376 @@
+{
+  "title": "重庆 4 日 · 江城夜渡",
+  "dateRange": "2026-10-23 ~ 10-26",
+  "travelers": "2 成人",
+  "generationDate": "2026-09-13",
+  "weather": {
+    "summary": "历史同期多阴雨与秋雾，日照极少，湿度高",
+    "avgHigh": 21,
+    "avgLow": 15,
+    "rainfall": "45%",
+    "clothing": "长袖 + 防风外套，备一把结实雨伞",
+    "tips": "10 月下旬是重庆秋雾高发期，能见度可能影响观景台与两江游；数据为历史同期气候均值"
+  },
+  "days": [
+    {
+      "date": "10/23",
+      "weekday": "周五",
+      "theme": "落地山城 · 解放碑夜色",
+      "weather": {
+        "icon": "overcast",
+        "high": 21,
+        "low": 16
+      },
+      "activities": [
+        {
+          "time": "16:05",
+          "name": "上海虹桥 → 重庆江北",
+          "duration": "2h55m",
+          "cost": 0,
+          "transport": "春秋 9C8995",
+          "note": "直飞 19:00 落地，票价 900 元/人为实查价。订这班是为了第一晚就接上夜景"
+        },
+        {
+          "time": "20:00",
+          "name": "江北机场 → 解放碑（入住）",
+          "duration": "50m",
+          "cost": null,
+          "transport": "地铁 10 号线转 2 号线",
+          "note": "约 8 元/人（估算）；打车约 90 元（估算）"
+        },
+        {
+          "time": "21:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "解放碑火锅一条街",
+            "cuisine": "重庆火锅",
+            "perPerson": 120,
+            "recommended": "毛肚、鸭肠、老肉片",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "22:00",
+          "name": "壹华里夜景公园",
+          "duration": "1h",
+          "cost": 0,
+          "transport": "打车 25 分钟",
+          "note": "免费。南山最佳夜景观赏点，可同时看到渝中、南岸、九龙坡等主城 5 区夜景"
+        }
+      ]
+    },
+    {
+      "date": "10/24",
+      "weekday": "周六",
+      "theme": "母城 · 江与岸",
+      "weather": {
+        "icon": "cloudy",
+        "high": 22,
+        "low": 16
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "湖广会馆",
+          "duration": "1h30m",
+          "cost": 30,
+          "transport": "地铁 1 号线小什字站",
+          "note": "建于清乾隆二十四年，门票约 30 元（参考）。现存最大的移民会馆建筑群"
+        },
+        {
+          "time": "11:00",
+          "name": "朝天门 · 怀旧轮渡",
+          "duration": "1h",
+          "cost": null,
+          "transport": "步行 15 分钟",
+          "note": "轮渡是很多老重庆的生活记忆，票价约 2-5 元（估算），比两江游船便宜得多"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "花市豌杂面",
+            "cuisine": "重庆小面",
+            "perPerson": 30,
+            "recommended": "豌杂面、小面加蛋",
+            "location": "步行 8 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "魁星楼",
+          "duration": "1h",
+          "cost": null,
+          "transport": "地铁 1 号线临江门站",
+          "note": "又名魁星阁，供神魁星。楼前平台是俯瞰长江滨江路的机位"
+        },
+        {
+          "time": "16:00",
+          "name": "戴家巷崖壁步道",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "步行 10 分钟",
+          "note": "免费。依附嘉陵江崖壁的悬空步道，视角与洪崖洞互补，人比洪崖洞少很多"
+        },
+        {
+          "time": "18:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "珮姐老火锅",
+            "cuisine": "老灶火锅",
+            "perPerson": 130,
+            "recommended": "现炸酥肉、麻辣牛肉",
+            "location": "打车 8 分钟"
+          }
+        },
+        {
+          "time": "20:00",
+          "name": "重庆两江游",
+          "duration": "1h30m",
+          "cost": 100,
+          "transport": "朝天门码头登船",
+          "note": "船票约 100 元/人（参考）。夜游长江与嘉陵江，是理解重庆立体城市格局的捷径"
+        }
+      ]
+    },
+    {
+      "date": "10/25",
+      "weekday": "周日",
+      "theme": "立体交通 · 抗战遗迹",
+      "weather": {
+        "icon": "rainy",
+        "high": 20,
+        "low": 15
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "李子坝抗战遗址公园",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "地铁 2 号线李子坝站",
+          "note": "免费。轻轨穿楼就在站旁，公园全长 1.8 公里、背靠鹅岭、北面嘉陵江"
+        },
+        {
+          "time": "11:00",
+          "name": "鹅岭公园",
+          "duration": "1h30m",
+          "cost": 0,
+          "transport": "地铁 1 号线鹅岭站",
+          "note": "免费。地处长江与嘉陵江挟持的狭长山岭，环抱重庆半岛，是少数能同时看两江的公园"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "胡记蹄花汤",
+            "cuisine": "重庆家常菜",
+            "perPerson": 60,
+            "recommended": "蹄花汤、粉蒸肉",
+            "location": "步行 12 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "白公馆旧址",
+          "duration": "2h",
+          "cost": 0,
+          "transport": "打车 30 分钟",
+          "note": "免费但需预约。原为四川军阀白驹别墅，1943 年后曾作美军招待所与特别看守所"
+        },
+        {
+          "time": "16:30",
+          "name": "重庆都市观光巴士",
+          "duration": "1h",
+          "cost": 30,
+          "transport": "解放碑发车",
+          "note": "票价约 30 元（参考）。串联洪崖洞、长江索道、朝天门等主城地标，适合雨天移动"
+        },
+        {
+          "time": "18:30",
+          "name": "晚餐",
+          "meal": {
+            "name": "三样菜",
+            "cuisine": "渝派江湖菜",
+            "perPerson": 90,
+            "recommended": "来凤鱼、辣子鸡",
+            "location": "打车 15 分钟"
+          }
+        }
+      ]
+    },
+    {
+      "date": "10/26",
+      "weekday": "周一",
+      "theme": "江北扫尾 · 返程",
+      "weather": {
+        "icon": "cloudy",
+        "high": 21,
+        "low": 15
+      },
+      "activities": [
+        {
+          "time": "09:30",
+          "name": "解放碑 · 观音桥",
+          "duration": "2h30m",
+          "cost": null,
+          "transport": "地铁 3 号线",
+          "note": "伴手礼集中在观音桥，火锅底料、陈麻花都在这儿买更全"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "小滨楼",
+            "cuisine": "渝派川菜",
+            "perPerson": 80,
+            "recommended": "开水白菜、鱼香肉丝",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "17:30",
+          "name": "市区 → 江北机场",
+          "duration": "1h",
+          "cost": null,
+          "transport": "地铁 10 号线",
+          "note": "从解放碑到机场约 50 分钟，周一晚高峰前出发更稳"
+        },
+        {
+          "time": "20:10",
+          "name": "重庆江北 → 上海虹桥",
+          "duration": "2h15m",
+          "cost": 0,
+          "transport": "春秋 9C8996",
+          "note": "20:10 起飞 22:25 落地，票价 510 元/人为实查价"
+        }
+      ]
+    }
+  ],
+  "hotels": [
+    {
+      "name": "S·city 地标高空江景酒店（解放碑洪崖洞店）",
+      "area": "解放碑步行街",
+      "pricePerNight": "2xx ~",
+      "highlights": "舒适型;高空江景;洪崖洞步行可达"
+    },
+    {
+      "name": "今禧酒店（重庆解放碑洪崖洞店）",
+      "area": "解放碑步行街",
+      "pricePerNight": "2xx ~",
+      "highlights": "高档型;近解放碑;两江游码头近"
+    },
+    {
+      "name": "重庆 JW 万豪酒店",
+      "area": "解放碑步行街",
+      "pricePerNight": "8xx ~",
+      "highlights": "豪华型;近解放碑步行街;高层江景"
+    },
+    {
+      "name": "重庆海曼高空江景酒店（解放碑洪崖洞店）",
+      "area": "解放碑步行街",
+      "pricePerNight": "1xx ~",
+      "highlights": "经济型;高空江景;预算优先"
+    }
+  ],
+  "budget": {
+    "transport": {
+      "items": [
+        {
+          "name": "上海虹桥→重庆江北 春秋 9C8995 ×2",
+          "cost": 1800
+        },
+        {
+          "name": "重庆江北→上海虹桥 春秋 9C8996 ×2",
+          "cost": 1020
+        },
+        {
+          "name": "市内交通与索道轮渡 ~",
+          "cost": 300
+        }
+      ],
+      "subtotal": 3120
+    },
+    "accommodation": {
+      "items": [
+        {
+          "name": "解放碑区域 3 晚（参考档位 ¥2xx）~",
+          "cost": 840
+        }
+      ],
+      "subtotal": 840
+    },
+    "food": {
+      "items": [
+        {
+          "name": "餐饮 人均 120 × 2 人 × 4 天 ≈",
+          "cost": 960
+        }
+      ],
+      "subtotal": 960
+    },
+    "tickets": {
+      "items": [
+        {
+          "name": "两江游 + 湖广会馆 + 观光巴士 ~",
+          "cost": 260
+        }
+      ],
+      "subtotal": 260
+    },
+    "other": {
+      "items": [
+        {
+          "name": "火锅底料、陈麻花与零散支出 ≈",
+          "cost": 260
+        }
+      ],
+      "subtotal": 260
+    },
+    "total": 5440,
+    "perPerson": 2720
+  },
+  "tips": [
+    "重庆景点搜索会返回大量远郊区县（大足石刻、酉阳桃花源、奉节三峡之巅），离主城数百公里，4 天行程排不下，别被搜索结果带偏",
+    "秋雾高发期能见度说不准，观景台与两江游尽量安排在抵达后的一两天内，留出改期空间",
+    "导航在重庆经常失效，多依赖轨道交通 + 步行，别只信自驾导航的最短路径",
+    "火锅点单先说清辣度与锅底，老灶锅底默认偏辣偏油",
+    "返程 22:25 落地虹桥，当晚地铁仍有末班，比 23:00 后落地的方案更稳"
+  ],
+  "theme": {
+    "name": "重庆",
+    "bg": "#0E1620",
+    "surface": "#16212E",
+    "ink": "#EDF2F6",
+    "inkBody": "#C3CED8",
+    "muted": "#8A9AA8",
+    "line": "#263443",
+    "primary": "#4FA0B3",
+    "primaryStrong": "#7CC3D4",
+    "primarySoft": "#16303A",
+    "primaryFaint": "#122530",
+    "primaryLine": "#2C5563",
+    "accent": "#EA6238",
+    "accentStrong": "#FF7A4D",
+    "accentSoft": "#3A1D14",
+    "accentLine": "#6B3524",
+    "ok": "#4FBF9A",
+    "okSoft": "#13302A",
+    "warn": "#F0A93B",
+    "warnSoft": "#382A14",
+    "sun": "#F2C14E",
+    "sky": "#5BB8D4",
+    "canvasA": "#16323F",
+    "canvasB": "#080F17",
+    "orb1": "#E4572E",
+    "orb2": "#3E8C9E",
+    "seq1": "#4FA0B3",
+    "seq2": "#5BB8D4",
+    "seq3": "#E4572E",
+    "seq4": "#F2C14E",
+    "seq5": "#8A9AA8",
+    "landmark": "<svg viewBox=\"0 0 120 80\" role=\"img\"><title>重庆 · 洪崖洞与两江</title><g fill=\"#E4572E\" fill-opacity=\"0.15\" stroke=\"#E4572E\" stroke-width=\"1.2\" stroke-linejoin=\"round\"><path d=\"M6 52h38l-2 6H8z\"/><path d=\"M9 42h32l-2 6H11z\"/><path d=\"M12 32h26l-2 6H14z\"/><path d=\"M15 22h20l-2 6H17z\"/><path d=\"M8 58h34v14H8z\"/><path d=\"M11 48h28v10H11z\"/><path d=\"M14 38h22v10H14z\"/><path d=\"M17 28h16v10H17z\"/></g><g fill=\"#F2C14E\"><rect x=\"11\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"18\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"25\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"32\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"14\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"21\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"28\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"17\" y=\"40.5\" width=\"3\" height=\"3\"/><rect x=\"24\" y=\"40.5\" width=\"3\" height=\"3\"/><rect x=\"20\" y=\"30.5\" width=\"3\" height=\"3\"/></g><g stroke=\"#3E8C9E\" fill=\"none\" stroke-linecap=\"round\"><path d=\"M60 47h56\" stroke-width=\"2.4\"/><path d=\"M88 78V20\" stroke-width=\"2.4\"/><g stroke-width=\"1\" opacity=\"0.85\"><path d=\"M88 21L64 47\"/><path d=\"M88 21L72 47\"/><path d=\"M88 21L80 47\"/><path d=\"M88 21L96 47\"/><path d=\"M88 21L104 47\"/><path d=\"M88 21L112 47\"/></g><path d=\"M70 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/><path d=\"M106 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/></g><g stroke=\"#5BB8D4\" fill=\"none\"><path d=\"M44 10L84 18\" stroke-width=\"1.2\" opacity=\"0.8\"/><path d=\"M64 14v3.5\" stroke-width=\"1.2\"/></g><rect x=\"58\" y=\"17.5\" width=\"13\" height=\"10\" rx=\"2\" fill=\"#5BB8D4\" fill-opacity=\"0.85\"/><g fill=\"none\" stroke=\"#5BB8D4\" stroke-width=\"1\" stroke-linecap=\"round\" opacity=\"0.45\"><path d=\"M3 75q9-2.5 18 0t18 0t18 0t18 0t18 0t18 0\"/></g></svg>",
+    "landmarkCaption": "洪崖洞 · 斜拉桥 · 过江索道",
+    "fontDisplay": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Source Han Sans SC\", sans-serif"
+  }
+}

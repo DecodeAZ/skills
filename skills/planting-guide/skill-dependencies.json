@@ -1,0 +1,121 @@
+{
+  "schema_version": "1",
+  "capabilities": [
+    "guide-generation",
+    "climate-lookup"
+  ],
+  "functional_degradations": [
+    {
+      "capability": "guide-generation",
+      "trigger": "Python 低于 3.10，或包内 new_guide.py / assets/guide-template.html 缺失损坏",
+      "fallback": "无法生成骨架；改为按 references/content-blueprint.md 手工撰写单文件 HTML，或只在对话中输出指南正文",
+      "user_input": "确认是否升级 Python 或重新安装本技能；拒绝时接受纯文本交付",
+      "limitations": "失去模板固化的版式与响应式布局，需逐条走内容蓝图的质检清单",
+      "evidence_label": "已验证",
+      "recovery": "安装 Python 3.10+ 或重新安装本技能后重跑 scripts/check_environment.py",
+      "stop_condition": "产物含未替换的 {{ 占位符时不得交付"
+    },
+    {
+      "capability": "climate-lookup",
+      "trigger": "目标城市不在 references/climate-zones.md 收录范围内，且联网核查不可用",
+      "fallback": "只输出与城市无关的通用养护要点，并逐条标注未能核实",
+      "user_input": "请用户提供该城市的年均温、极端低温、日照时数等气候参数",
+      "limitations": "光照、浇水与越冬建议缺乏城市特异性，可信度显著下降",
+      "evidence_label": "部分验证",
+      "recovery": "恢复联网后重新核查该城市气候档案",
+      "stop_condition": "不得用邻近城市气候外推冒充该城市数据"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "python-runtime",
+      "type": "runtime",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "guide-generation"
+      ],
+      "checks": [
+        {
+          "id": "python-version",
+          "type": "python",
+          "required": true,
+          "min_version": "3.10"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://www.python.org/",
+        "official_docs_url": "https://docs.python.org/3/",
+        "steps": [
+          "安装 Python 3.10 或更高版本",
+          "确认 python --version 可执行",
+          "本技能脚本只用标准库，无需 pip 安装任何依赖"
+        ],
+        "verify": "python --version",
+        "security": "脚本纯标准库；只读模板并写入用户指定的输出路径，无网络与子进程",
+        "verified_at": "2026-09-13",
+        "applies_to_version": ">=3.10"
+      },
+      "degradation": [
+        {
+          "capability": "guide-generation",
+          "trigger": "Python 缺失或版本低于 3.10（脚本使用 int | None 联合类型语法）",
+          "fallback": "无法运行骨架脚本；改为手工复制模板或输出 Markdown 版正文",
+          "user_input": "是否升级 Python 3.10+；拒绝则接受纯文本交付",
+          "limitations": "拿不到模板固化的版式，需手工保证响应式与组件结构",
+          "evidence_label": "已验证",
+          "recovery": "安装 Python 3.10+ 后重跑 scripts/check_environment.py",
+          "stop_condition": "不得交付含未替换占位符的产物"
+        }
+      ]
+    },
+    {
+      "id": "bundled-template",
+      "type": "local-tool",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "guide-generation"
+      ],
+      "checks": [
+        {
+          "id": "generator-script",
+          "type": "file",
+          "required": true,
+          "path": "scripts/new_guide.py"
+        },
+        {
+          "id": "guide-template",
+          "type": "file",
+          "required": true,
+          "path": "assets/guide-template.html"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://github.com/DecodeAZ/skills",
+        "official_docs_url": "https://github.com/DecodeAZ/skills/tree/main/skills/planting-guide",
+        "steps": [
+          "确认 scripts/new_guide.py 与 assets/guide-template.html 均存在",
+          "用法：python scripts/new_guide.py --out <输出路径> --theme <主题> --flora <装饰形态>",
+          "目标已存在时脚本拒绝覆盖，需显式加 --force"
+        ],
+        "verify": "python scripts/new_guide.py --out <输出路径> --theme leaf 返回退出码 0",
+        "security": "只读模板，只写用户指定的输出路径；不覆盖已有文件，除非显式加 --force",
+        "verified_at": "2026-09-13",
+        "applies_to_version": "1.1.0"
+      },
+      "degradation": [
+        {
+          "capability": "guide-generation",
+          "trigger": "包内骨架脚本或设计模板缺失、损坏",
+          "fallback": "无法生成骨架；改为按 references/content-blueprint.md 手工撰写单文件 HTML",
+          "user_input": "确认是否重新安装本技能",
+          "limitations": "版式不再由模板固化，需人工保证组件结构与响应式规则",
+          "evidence_label": "已验证",
+          "recovery": "重新安装本技能以恢复包内文件",
+          "stop_condition": "不得在模板缺失时声称已按设计系统产出"
+        }
+      ]
+    }
+  ]
+}

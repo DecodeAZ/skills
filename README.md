@@ -8,7 +8,8 @@
 |---|---|
 | [html-uploader](skills/html-uploader/SKILL.md) | 将本地 HTML 文档上传到文档系统，多系统适配器架构（默认 htmlview-agent-api） |
 | [planting-guide](skills/planting-guide/SKILL.md) | 生成城市与场景定制的植物种植/养护指南，输出为单文件 HTML 网页（需 Python 3.10+） |
-| [property-report-chapter](skills/property-report-chapter/SKILL.md) | 生成楼盘评估报告的专题章节（户型/价格竞品/交通配套/总结展望），输出为自包含单文件 HTML（需 Python 3.10+，图表支持离线降级） |
+| [property-report-chapter](skills/property-report-chapter/SKILL.md) | 生成楼盘评估报告的专题章节（户型/价格竞品/交通配套/总结展望），输出为自包含单文件 HTML（需 Python 3.10+，图表 CDN 不可用时降级为静态数据表） |
+| [travel-planner](skills/travel-planner/SKILL.md) | 生成多日旅行计划，输出为单文件 HTML 网页，按目的地定调专属配色、地标与展示字体（逐日天气/行程/餐饮/酒店/分级预算，需 Python 3.9+ 与 Node.js 18+；实时报价依赖 FlyAI CLI，小红书反馈依赖 mcporter，缺失时降级为通用检索） |
 
 ## 在线安装
 
@@ -36,10 +37,13 @@ npx skills add DecodeAZ/skills --list
 ```
 skills/
   <skill-name>/
-    SKILL.md            # 必需：frontmatter 含 name / description，供 CLI 发现
-    scripts/            # 可选：技能执行脚本
-    adapters/           # 可选：配置或适配文件
-    config.example.json # 可选：非敏感配置模板（使用时复制为 config.json）
+    SKILL.md                # 必需：frontmatter 含 name / description，供 CLI 发现
+    skill-dependencies.json # 依赖型技能：机器可读的依赖、检查项与功能降级映射
+    scripts/                # 可选：技能执行脚本（含 check_environment.py 环境自检）
+    references/             # 可选：领域参考与配置指南（如 setup-guide.md）
+    assets/                 # 可选：产物模板与成品示例（如 template.html、examples/）
+    adapters/               # 可选：配置或适配文件
+    config.example.json     # 可选：非敏感配置模板（使用时复制为 config.json）
 ```
 
 ## 新增技能

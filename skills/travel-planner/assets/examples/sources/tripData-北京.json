@@ -1,0 +1,387 @@
+{
+  "title": "北京 4 日 · 中轴与长城",
+  "dateRange": "2026-10-23 ~ 10-26",
+  "travelers": "2 成人",
+  "generationDate": "2026-09-13",
+  "weather": {
+    "summary": "历史同期秋高气爽，晴天多，昼夜温差大",
+    "avgHigh": 17,
+    "avgLow": 7,
+    "rainfall": "15%",
+    "clothing": "毛衣 + 外套，早晚需抓绒或薄羽绒",
+    "tips": "10 月下旬昼夜温差可达 10℃ 以上，登长城务必带防风层；银杏要等 11 月上旬才全黄；数据为历史同期气候均值"
+  },
+  "days": [
+    {
+      "date": "10/23",
+      "weekday": "周五",
+      "theme": "落地京城 · 前门正阳",
+      "weather": {
+        "icon": "sunny",
+        "high": 18,
+        "low": 8
+      },
+      "activities": [
+        {
+          "time": "07:50",
+          "name": "上海浦东 → 北京大兴",
+          "duration": "2h20m",
+          "cost": 0,
+          "transport": "南航 CZ8881",
+          "note": "直飞 10:10 落地大兴，票价 960 元/人为实查价"
+        },
+        {
+          "time": "11:30",
+          "name": "大兴机场 → 前门（入住）",
+          "duration": "1h10m",
+          "cost": null,
+          "transport": "大兴机场线转 2 号线",
+          "note": "机场线 35 元 + 地铁（参考）；大兴机场线是北京最快的进城方式"
+        },
+        {
+          "time": "13:00",
+          "name": "午餐",
+          "meal": {
+            "name": "四季民福烤鸭（前门店）",
+            "cuisine": "京菜",
+            "perPerson": 160,
+            "recommended": "挂炉烤鸭、芥末鸭掌",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "15:00",
+          "name": "天安门城楼",
+          "duration": "1h",
+          "cost": 15,
+          "transport": "地铁 1 号线天安门东站",
+          "note": "登城楼需提前实名预约，门票约 15 元（参考）；安检严格，别带大件行李"
+        },
+        {
+          "time": "17:00",
+          "name": "铛铛车 · 前门大街",
+          "duration": "1h",
+          "cost": 30,
+          "transport": "正阳门楼前发车",
+          "note": "票价约 30 元（参考）。复古观光车串起王府井、前门等 10 余处地标，线路 8.7 公里"
+        },
+        {
+          "time": "19:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "护国寺小吃（前门店）",
+            "cuisine": "北京小吃",
+            "perPerson": 60,
+            "recommended": "豆汁儿、焦圈、豌豆黄",
+            "location": "步行 8 分钟"
+          }
+        }
+      ]
+    },
+    {
+      "date": "10/24",
+      "weekday": "周六",
+      "theme": "故宫 · 中轴线",
+      "weather": {
+        "icon": "sunny",
+        "high": 18,
+        "low": 7
+      },
+      "activities": [
+        {
+          "time": "08:30",
+          "name": "午门 · 故宫博物院",
+          "duration": "4h",
+          "cost": 60,
+          "transport": "地铁 1 号线天安门东站",
+          "note": "门票约 60 元（参考），必须提前 7 天在官网预约，现场不售票。午门是紫禁城最大的城门，平面呈「凹」字形"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "故宫角楼咖啡",
+            "cuisine": "简餐",
+            "perPerson": 70,
+            "recommended": "角楼主题点心",
+            "location": "神武门内"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "景山公园 · 万春亭",
+          "duration": "1h30m",
+          "cost": 2,
+          "transport": "步行 10 分钟",
+          "note": "门票约 2 元（参考）。中峰万春亭是老北京城制高点，俯瞰故宫全景与整条中轴线的最佳位置"
+        },
+        {
+          "time": "16:00",
+          "name": "北海公园",
+          "duration": "1h30m",
+          "cost": null,
+          "transport": "步行 15 分钟",
+          "note": "中国古代皇家园林，全园以北海为中心；与中海、南海合称三海"
+        },
+        {
+          "time": "18:00",
+          "name": "晚餐",
+          "meal": {
+            "name": "局气（什刹海店）",
+            "cuisine": "京味儿菜",
+            "perPerson": 120,
+            "recommended": "兔爷土豆泥、炒肝",
+            "location": "步行 12 分钟"
+          }
+        },
+        {
+          "time": "19:30",
+          "name": "什刹海观光游船",
+          "duration": "1h",
+          "cost": null,
+          "transport": "荷花市场码头",
+          "note": "票价约 60 元/船（参考）。荷花市场、后海野鸭岛等码头均可上船，秋季湖面凉爽"
+        }
+      ]
+    },
+    {
+      "date": "10/25",
+      "weekday": "周日",
+      "theme": "八达岭长城",
+      "weather": {
+        "icon": "sunny",
+        "high": 15,
+        "low": 5
+      },
+      "activities": [
+        {
+          "time": "07:00",
+          "name": "市区 → 八达岭",
+          "duration": "1h30m",
+          "cost": null,
+          "transport": "市郊铁路 S2 线 / 旅游专线",
+          "note": "S2 线从北京北站发车，全程约 1.5 小时；也可从德胜门坐 877 路。务必赶早班避开高速拥堵"
+        },
+        {
+          "time": "09:00",
+          "name": "八达岭长城",
+          "duration": "4h",
+          "cost": 40,
+          "transport": "步行 + 缆车",
+          "note": "门票约 40 元、缆车往返约 140 元（均参考）。史称天下九塞之一，明长城中最具代表性的一段，北八楼坡度大"
+        },
+        {
+          "time": "13:00",
+          "name": "午餐",
+          "meal": {
+            "name": "八达岭景区内简餐",
+            "cuisine": "简餐",
+            "perPerson": 60,
+            "recommended": "自带干粮更稳妥",
+            "location": "长城脚下"
+          }
+        },
+        {
+          "time": "14:30",
+          "name": "八达岭 → 市区",
+          "duration": "2h",
+          "cost": null,
+          "transport": "市郊铁路 S2 线",
+          "note": "周日下午返程排队久，建议 15:00 前上车；末班约 19:00"
+        },
+        {
+          "time": "18:30",
+          "name": "晚餐",
+          "meal": {
+            "name": "东来顺（王府井店）",
+            "cuisine": "涮羊肉",
+            "perPerson": 150,
+            "recommended": "手切鲜羊肉、麻酱小料",
+            "location": "地铁 8 号线"
+          }
+        }
+      ]
+    },
+    {
+      "date": "10/26",
+      "weekday": "周一",
+      "theme": "天坛 · 返程",
+      "weather": {
+        "icon": "cloudy",
+        "high": 16,
+        "low": 6
+      },
+      "activities": [
+        {
+          "time": "09:00",
+          "name": "天坛公园 · 祈年殿 → 圜丘 → 七星石",
+          "duration": "3h",
+          "cost": 35,
+          "transport": "地铁 5 号线天坛东门站",
+          "note": "联票约 35 元（参考）。祈年殿是天坛标志性建筑，三重檐圆形大殿；圜丘为冬至祭天之所；七星石按北斗方位排列"
+        },
+        {
+          "time": "12:30",
+          "name": "午餐",
+          "meal": {
+            "name": "老北京炸酱面（天坛店）",
+            "cuisine": "京味面食",
+            "perPerson": 50,
+            "recommended": "炸酱面、麻豆腐",
+            "location": "步行 10 分钟"
+          }
+        },
+        {
+          "time": "14:00",
+          "name": "恭王府",
+          "duration": "2h",
+          "cost": 40,
+          "transport": "地铁 6 号线北海北站",
+          "note": "门票约 40 元（参考）。清代规模最大的王府，曾先后为和珅、永璘宅邸，需预约"
+        },
+        {
+          "time": "17:00",
+          "name": "市区 → 大兴机场",
+          "duration": "1h20m",
+          "cost": null,
+          "transport": "地铁转大兴机场线",
+          "note": "周一晚高峰，建议留足 2 小时；从什刹海一带出发约 80 分钟"
+        },
+        {
+          "time": "20:30",
+          "name": "北京大兴 → 上海浦东",
+          "duration": "2h20m",
+          "cost": 0,
+          "transport": "南航 CZ8889",
+          "note": "20:30 起飞 22:50 落地，票价 370 元/人为实查价"
+        }
+      ]
+    }
+  ],
+  "hotels": [
+    {
+      "name": "和家宾馆（北京后海鼓楼店）",
+      "area": "什刹海 / 鼓楼",
+      "pricePerNight": "2xx ~",
+      "highlights": "经济型;近什刹海;胡同里位置好"
+    },
+    {
+      "name": "假日港湾服务式酒店（北京北站店）",
+      "area": "北京北站",
+      "pricePerNight": "4xx ~",
+      "highlights": "经济型;北京北站旁;去长城乘 S2 线极方便"
+    },
+    {
+      "name": "7 天酒店·北京西客站丽泽桥店",
+      "area": "六里桥地铁站",
+      "pricePerNight": "1xx ~",
+      "highlights": "经济型;近地铁;预算优先"
+    },
+    {
+      "name": "北京十里春风青年旅舍",
+      "area": "潘家园地铁站",
+      "pricePerNight": "6x ~",
+      "highlights": "经济型;近地铁;单人出行友好"
+    }
+  ],
+  "budget": {
+    "transport": {
+      "items": [
+        {
+          "name": "上海浦东→北京大兴 南航 CZ8881 ×2",
+          "cost": 1920
+        },
+        {
+          "name": "北京大兴→上海浦东 南航 CZ8889 ×2",
+          "cost": 740
+        },
+        {
+          "name": "市内交通与八达岭往返 ~",
+          "cost": 400
+        }
+      ],
+      "subtotal": 3060
+    },
+    "accommodation": {
+      "items": [
+        {
+          "name": "什刹海区域 3 晚（参考档位 ¥2xx）~",
+          "cost": 720
+        }
+      ],
+      "subtotal": 720
+    },
+    "food": {
+      "items": [
+        {
+          "name": "餐饮 人均 150 × 2 人 × 4 天 ≈",
+          "cost": 1200
+        }
+      ],
+      "subtotal": 1200
+    },
+    "tickets": {
+      "items": [
+        {
+          "name": "故宫 + 八达岭 + 天坛联票 + 恭王府 ~",
+          "cost": 230
+        }
+      ],
+      "subtotal": 230
+    },
+    "other": {
+      "items": [
+        {
+          "name": "稻香村点心、伴手礼与零散支出 ≈",
+          "cost": 300
+        }
+      ],
+      "subtotal": 300
+    },
+    "total": 5510,
+    "perPerson": 2755
+  },
+  "tips": [
+    "故宫必须提前 7 天官网实名预约且周一闭馆，10/26 是周一，行程已避开",
+    "天安门城楼登楼同样需要单独预约，与故宫门票不通用",
+    "八达岭返程的市郊铁路 S2 线末班约 19:00，周日下午排队严重，别卡末班",
+    "三里屯银杏大道要等 11 月上旬才全黄，10 月下旬去只能看到初黄",
+    "大兴机场线从草桥站出发最快，比地铁换乘省 30 分钟以上"
+  ],
+  "theme": {
+    "name": "北京",
+    "bg": "#F2EFE9",
+    "surface": "#FFFFFF",
+    "ink": "#24211D",
+    "inkBody": "#4A453D",
+    "muted": "#69635A",
+    "line": "#E0DACF",
+    "primary": "#9E2B25",
+    "primaryStrong": "#7A1E19",
+    "primarySoft": "#F2E3E1",
+    "primaryFaint": "#F9F0EF",
+    "primaryLine": "#DDB6B2",
+    "accent": "#96700F",
+    "accentStrong": "#78580A",
+    "accentSoft": "#F7F0DA",
+    "accentLine": "#E3D3A2",
+    "ok": "#356E52",
+    "okSoft": "#E4EFE8",
+    "warn": "#A8443A",
+    "warnSoft": "#F6E7E5",
+    "sun": "#C2872B",
+    "sky": "#3E6E8C",
+    "canvasA": "#9E2B25",
+    "canvasB": "#57130F",
+    "orb1": "#C9A227",
+    "orb2": "#C08A5E",
+    "seq1": "#9E2B25",
+    "seq2": "#C9A227",
+    "seq3": "#3E6E8C",
+    "seq4": "#6E7A70",
+    "seq5": "#7A6A55",
+    "landmark": "<svg viewBox=\"0 0 120 80\" role=\"img\"><title>北京 · 角楼与中轴</title><path d=\"M60 2v76\" stroke=\"#C9A227\" stroke-width=\"1.1\" stroke-dasharray=\"2.5 3.5\" opacity=\"0.55\"/><path d=\"M7 70V53H16V58H23V53H32V58H39V53H48V58H55V53H64V58H71V53H80V58H87V53H96V58H103V53H112V70Z\" fill=\"#F2EFE9\"/><path d=\"M39 52h42l3 6H36z\" fill=\"#F2EFE9\" fill-opacity=\"0.62\"/><rect x=\"49\" y=\"34\" width=\"22\" height=\"12\" fill=\"#F2EFE9\"/><path d=\"M41 52Q47 47 50 46H70q3 1 9 6-20-3-38 0z\" fill=\"#C9A227\"/><rect x=\"52\" y=\"20\" width=\"16\" height=\"9\" fill=\"#F2EFE9\"/><path d=\"M45 34Q50 30 52.5 29H67.5q2.5 1 7.5 5-15-2.5-30 0z\" fill=\"#C9A227\"/><path d=\"M48 16h24l2 4-4 3H52l-4-3z\" fill=\"#C9A227\"/><path d=\"M56 13l4-5 4 5z\" fill=\"#C9A227\"/><circle cx=\"60\" cy=\"6\" r=\"1.9\" fill=\"#C9A227\"/><g fill=\"#9E2B25\"><rect x=\"52\" y=\"37\" width=\"4\" height=\"5\"/><rect x=\"58\" y=\"37\" width=\"4\" height=\"5\"/><rect x=\"64\" y=\"37\" width=\"4\" height=\"5\"/><rect x=\"54\" y=\"22\" width=\"3.5\" height=\"4\"/><rect x=\"62.5\" y=\"22\" width=\"3.5\" height=\"4\"/></g></svg>",
+    "landmarkCaption": "故宫角楼 · 城墙垛口 · 中轴线",
+    "fontDisplay": "\"Songti SC\", \"STSong\", \"SimSun\", \"Noto Serif SC\", serif"
+  }
+}

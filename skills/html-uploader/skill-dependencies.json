@@ -1,0 +1,121 @@
+{
+  "schema_version": "1",
+  "capabilities": [
+    "html-upload",
+    "credential-handling"
+  ],
+  "functional_degradations": [
+    {
+      "capability": "html-upload",
+      "trigger": "Python 缺失或版本低于 3.9，或包内 upload_skill.py / 适配器文件缺失损坏",
+      "fallback": "无法发起上传；保留源 HTML 不动，输出适配器接口约定与手动提交步骤供用户自行执行",
+      "user_input": "确认是否修复运行环境或重新安装本技能；拒绝时接受仅输出手动步骤",
+      "limitations": "不产生上传结果，拿不到 id/url 与阅读地址",
+      "evidence_label": "已验证",
+      "recovery": "安装 Python 3.9+ 或重新安装本技能后重跑 scripts/check_environment.py",
+      "stop_condition": "不得声称已上传，不得编造 id/url"
+    },
+    {
+      "capability": "credential-handling",
+      "trigger": "目标系统地址或访问密钥未提供，或提供的凭据被服务端拒绝（401/403）",
+      "fallback": "停止上传并回到提问环节，把缺失项合并为同一轮提问一次性获取",
+      "user_input": "目标系统地址；密钥提供方式（当次粘贴 / 已设环境变量 / 该系统无需鉴权）",
+      "limitations": "没有地址与凭据无法发起任何网络请求",
+      "evidence_label": "部分验证",
+      "recovery": "用户补齐地址与密钥后重跑 scripts/check_config.py 确认转为就绪",
+      "stop_condition": "用户拒绝提供或给不出时终止任务，不得用示例值、历史值或猜测值硬试"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "python-runtime",
+      "type": "runtime",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "html-upload"
+      ],
+      "checks": [
+        {
+          "id": "python-version",
+          "type": "python",
+          "required": true,
+          "min_version": "3.9"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://www.python.org/",
+        "official_docs_url": "https://docs.python.org/3/",
+        "steps": [
+          "安装 Python 3.9 或更高版本",
+          "确认 python --version 可用",
+          "本技能脚本仅使用标准库，无需 pip 安装任何依赖"
+        ],
+        "verify": "python --version",
+        "security": "脚本纯标准库；密钥只经环境变量或当次输入使用，不写入任何文件",
+        "verified_at": "2026-09-13",
+        "applies_to_version": ">=3.9"
+      },
+      "degradation": [
+        {
+          "capability": "html-upload",
+          "trigger": "Python 缺失或版本低于 3.9",
+          "fallback": "无法运行包内脚本；改为输出适配器接口约定与手动提交步骤",
+          "user_input": "是否安装 Python 3.9+；拒绝则接受仅输出手动步骤",
+          "limitations": "无法发起上传，拿不到 id/url",
+          "evidence_label": "已验证",
+          "recovery": "安装 Python 3.9+ 后重跑 scripts/check_environment.py",
+          "stop_condition": "不得声称已上传"
+        }
+      ]
+    },
+    {
+      "id": "bundled-uploader",
+      "type": "local-tool",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "html-upload"
+      ],
+      "checks": [
+        {
+          "id": "uploader-script",
+          "type": "file",
+          "required": true,
+          "path": "scripts/upload_skill.py"
+        },
+        {
+          "id": "default-adapter",
+          "type": "file",
+          "required": true,
+          "path": "adapters/htmlview-agent-api.md"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://github.com/DecodeAZ/skills",
+        "official_docs_url": "https://github.com/DecodeAZ/skills/tree/main/skills/html-uploader",
+        "steps": [
+          "确认 scripts/upload_skill.py 与 adapters/htmlview-agent-api.md 均存在",
+          "用法：python scripts/upload_skill.py --file <HTML 路径> --system <适配器名>",
+          "退出码：0 成功、1 载荷或服务端错误、3 地址或凭据不可用、4 适配器缺失"
+        ],
+        "verify": "python scripts/check_config.py 返回退出码 0 或 3（而非 4）",
+        "security": "只读取待上传的 HTML 与适配器文件；不落临时文件，密钥仅存进程内存",
+        "verified_at": "2026-09-13",
+        "applies_to_version": "1.2.0"
+      },
+      "degradation": [
+        {
+          "capability": "html-upload",
+          "trigger": "包内执行器或默认适配器文件缺失、损坏",
+          "fallback": "无法上传；按 references/setup-guide.md 的适配器规范手写适配器，或改用其他文档系统",
+          "user_input": "确认是否重新安装本技能",
+          "limitations": "在当前包体上无法完成上传",
+          "evidence_label": "已验证",
+          "recovery": "重新安装本技能以恢复包内文件",
+          "stop_condition": "不得在缺少执行器时宣称上传成功"
+        }
+      ]
+    }
+  ]
+}
