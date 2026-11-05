@@ -6,10 +6,12 @@
 
 | 技能 | 说明 |
 |---|---|
+| [doc-structure](skills/doc-structure/SKILL.md) | 初始化并检查项目 Markdown 文档结构（根 README 文档索引 + docs/ 分层布局），确定性 bash 检查脚本 + 人工核对工作流（纯 bash，无 Python 依赖） |
 | [html-uploader](skills/html-uploader/SKILL.md) | 将本地 HTML 文档上传到文档系统，多系统适配器架构（默认 htmlview-agent-api） |
 | [planting-guide](skills/planting-guide/SKILL.md) | 生成城市与场景定制的植物种植/养护指南，输出为单文件 HTML 网页（需 Python 3.10+） |
 | [property-report-chapter](skills/property-report-chapter/SKILL.md) | 生成楼盘评估报告的专题章节（户型/价格竞品/交通配套/总结展望），输出为自包含单文件 HTML（需 Python 3.10+，图表 CDN 不可用时降级为静态数据表） |
 | [travel-planner](skills/travel-planner/SKILL.md) | 生成多日旅行计划，输出为单文件 HTML 网页，按目的地定调专属配色、地标与展示字体（逐日天气/行程/餐饮/酒店/分级预算，需 Python 3.9+ 与 Node.js 18+；实时报价依赖 FlyAI CLI，小红书反馈依赖 mcporter，缺失时降级为通用检索） |
+| [web-vuln-scan-report](skills/web-vuln-scan-report/SKILL.md) | 对授权目标网站做只读漏洞扫描并生成含修复方案的 13 章 HTML 报告（指纹识别/端点探测/9 类安全检查/CVE 比对，附复验清单与跟踪表；需 Python 3.10+，执行前必须确认授权，未获授权不开始） |
 
 ## 在线安装
 
@@ -35,6 +37,7 @@ npx skills add DecodeAZ/skills --list
 ## 仓库结构
 
 ```
+docs/                     # 项目文档：数据源优化方案、可用性实测报告、实施与加固报告
 skills/
   <skill-name>/
     SKILL.md                # 必需：frontmatter 含 name / description，供 CLI 发现

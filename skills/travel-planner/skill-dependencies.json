@@ -2,8 +2,11 @@
   "schema_version": "1",
   "capabilities": [
     "realtime-pricing",
+    "realtime-weather",
+    "geo-coding",
     "community-feedback",
     "general-research",
+    "poi-fallback",
     "html-output"
   ],
   "functional_degradations": [
@@ -16,6 +19,26 @@
       "evidence_label": "未验证",
       "recovery": "npm i -g @fly-ai/flyai-cli 后重跑 scripts/check_environment.py 确认转为 partial 或 ready",
       "stop_condition": "不得把检索到的区间价标注为实查，不得凭记忆填写航班号或具体票价"
+    },
+    {
+      "capability": "realtime-weather",
+      "trigger": "Open-Meteo 天气端点不可达，且和风天气未配置 Key 或同样不可达",
+      "fallback": "改用宿主通用网络搜索检索天气预报（含中国天气网页面与 wttr.in），全部标注参考；超出预报范围时改用历史同期均值",
+      "user_input": "是否配置和风天气 API Key 以恢复国内精度预报；拒绝则接受仅通用搜索的参考级天气",
+      "limitations": "天气来自页面抓取或社区服务，无 SLA、结构不稳定，逐日降水概率可能缺失，降雨天数统计可能无法完成",
+      "evidence_label": "部分验证",
+      "recovery": "恢复网络后重跑 scripts/check_environment.py；或配置 QWEATHER_API_KEY 作为国内精度备源",
+      "stop_condition": "不得凭记忆填写气温与降水概率；天气与交通两类均无数据时停止生成行程"
+    },
+    {
+      "capability": "geo-coding",
+      "trigger": "Open-Meteo Geocoding 不可达，且 Nominatim 与高德均不可用",
+      "fallback": "改用本地静态城市坐标表（精度到市级）；仍缺失时用宿主通用搜索核对坐标",
+      "user_input": "是否接受使用本地城市坐标表（只到市级精度）",
+      "limitations": "只能拿到市级坐标，景点级坐标缺失，第四步地理聚类的精度下降",
+      "evidence_label": "未验证",
+      "recovery": "恢复网络后重跑自检；或配置 AMAP_MAPS_API_KEY 补齐景点级坐标",
+      "stop_condition": "不得凭记忆估经纬度；坐标缺失时不得声称已完成地理聚类"
     },
     {
       "capability": "community-feedback",
@@ -36,6 +59,16 @@
       "evidence_label": "部分验证",
       "recovery": "恢复网络或更换可用检索通道后重新执行采集",
       "stop_condition": "交通与天气两类均无可靠数据时停止生成行程，不得凭记忆补齐"
+    },
+    {
+      "capability": "poi-fallback",
+      "trigger": "FlyAI search-poi 不可用，或需要交叉核对坐标而高德与 Overpass 均不可用",
+      "fallback": "改用宿主通用搜索检索景点清单与坐标并标注参考；坐标缺失时明确声明地理聚类精度受限",
+      "user_input": "是否配置高德 API Key 以补齐 POI 评分与坐标",
+      "limitations": "无 freePoiStatus 与 poiLevel，门票是否计入只能靠检索判断，坐标可能不精确",
+      "evidence_label": "部分验证",
+      "recovery": "恢复 FlyAI 可用性，或配置 AMAP_MAPS_API_KEY 后重跑自检",
+      "stop_condition": "不得编造景点等级或门票状态；不得把检索到的坐标当作精确值"
     },
     {
       "capability": "html-output",
@@ -153,6 +186,272 @@
       ]
     },
     {
+      "id": "open-meteo",
+      "type": "network",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "realtime-weather",
+        "geo-coding"
+      ],
+      "checks": [
+        {
+          "id": "open-meteo-forecast",
+          "type": "url",
+          "required": true,
+          "url": "https://api.open-meteo.com/v1/forecast?latitude=30.27&longitude=120.15&daily=temperature_2m_max&forecast_days=3&timezone=auto",
+          "method": "GET",
+          "expected_status": [200]
+        },
+        {
+          "id": "open-meteo-geocoding",
+          "type": "url",
+          "required": false,
+          "url": "https://geocoding-api.open-meteo.com/v1/search?name=Hangzhou&count=1&language=zh",
+          "method": "GET",
+          "expected_status": [200]
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://open-meteo.com/",
+        "official_docs_url": "https://open-meteo.com/en/docs",
+        "steps": [
+          "无需安装、无需注册、无需 Key，直接用 HTTP GET 调用",
+          "天气：https://api.open-meteo.com/v1/forecast?latitude=&longitude=&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=16&timezone=auto",
+          "地理编码：https://geocoding-api.open-meteo.com/v1/search?name=&count=5&language=zh",
+          "历史同期：https://archive-api.open-meteo.com/v1/archive?latitude=&longitude=&start_date=&end_date=&daily=temperature_2m_max&timezone=auto",
+          "Windows 上调用 curl 必须加 --ssl-no-revoke，否则会因证书吊销检查离线误报失败"
+        ],
+        "verify": "curl -s --ssl-no-revoke \"https://api.open-meteo.com/v1/forecast?latitude=30.27&longitude=120.15&daily=temperature_2m_max&forecast_days=3&timezone=auto\" 应返回含 daily 字段的 JSON",
+        "security": "只读公开接口，不传任何凭据；数据为 CC BY 4.0，必须署名 Weather data by Open-Meteo.com；非商用 < 1 万次/日，商用需订阅或自托管",
+        "verified_at": "2026-10-05",
+        "applies_to_version": "v1"
+      },
+      "degradation": [
+        {
+          "capability": "realtime-weather",
+          "trigger": "Open-Meteo 预报端点不可达（网络受限或服务故障）",
+          "fallback": "优先切换和风天气（若已配置 Key）；否则改用宿主通用搜索检索天气页面并标注参考",
+          "user_input": "是否配置和风天气 API Key 以恢复国内精度预报；拒绝则接受参考级天气",
+          "limitations": "失去 16 天结构化预报，逐日降水概率与气温只能用检索结果近似",
+          "evidence_label": "部分验证",
+          "recovery": "恢复网络后重跑 scripts/check_environment.py 确认 open-meteo-forecast 检查通过",
+          "stop_condition": "不得凭记忆填写气温与降水概率；不得把检索描述当作逐日预报"
+        },
+        {
+          "capability": "geo-coding",
+          "trigger": "Open-Meteo Geocoding 端点不可达",
+          "fallback": "改用 Nominatim（免 Key）；再不行用高德（需 Key）；最后用本地城市坐标表",
+          "user_input": "是否接受使用本地城市坐标表（只到市级精度）",
+          "limitations": "景点级坐标可能缺失，第四步地理聚类精度下降",
+          "evidence_label": "部分验证",
+          "recovery": "恢复网络后重跑自检确认 open-meteo-geocoding 检查通过",
+          "stop_condition": "不得凭记忆估经纬度；坐标缺失时不得声称已完成地理聚类"
+        }
+      ]
+    },
+    {
+      "id": "qweather",
+      "type": "api",
+      "required": false,
+      "auth_type": "api-key",
+      "capabilities": [
+        "realtime-weather"
+      ],
+      "checks": [
+        {
+          "id": "qweather-auth",
+          "type": "auth_probe",
+          "required": true,
+          "target": "devapi.qweather.com/v7/weather/7d"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://www.qweather.com/",
+        "official_docs_url": "https://dev.qweather.com/",
+        "login_url": "https://console.qweather.com/",
+        "credential_url": "https://console.qweather.com/",
+        "console_path": [
+          "登录控制台 https://console.qweather.com/",
+          "创建项目后进入凭据管理",
+          "生成 API Key 并复制到本机环境变量 QWEATHER_API_KEY"
+        ],
+        "scopes": [
+          "weather"
+        ],
+        "credential_storage": "只存本机环境变量 QWEATHER_API_KEY；不得写入仓库、技能文件或产物",
+        "rotate_or_revoke": "在控制台重新生成或删除该凭据，旧 Key 立即失效",
+        "steps": [
+          "访问 https://dev.qweather.com/ 注册开发者账号并完成实名认证",
+          "在 https://console.qweather.com/ 创建项目并生成 API Key",
+          "把 Key 写入本机环境变量 QWEATHER_API_KEY，不要写进技能目录",
+          "验证：请求 https://devapi.qweather.com/v7/weather/7d?location=101210101&key=<你的 Key>"
+        ],
+        "verify": "带 Key 请求 devapi.qweather.com 的 7 天预报接口，返回 code 为 200 的 JSON；不带 Key 时实测返回 403",
+        "security": "Key 只本地配置，不入仓库、不进产物；免费档按月计数（官方 2025-03-01 公告为 5 万次/月、QPS 10，此后调整请以控制台为准）；必须署名「数据由和风天气提供」",
+        "verified_at": "2026-10-05",
+        "applies_to_version": "free"
+      },
+      "degradation": [
+        {
+          "capability": "realtime-weather",
+          "trigger": "未配置 QWEATHER_API_KEY，或 Key 失效、超额",
+          "fallback": "跳过国内精度备源，天气继续用 Open-Meteo；Open-Meteo 也不可达时才转通用搜索",
+          "user_input": "是否配置和风天气 API Key 以获得中国城市更高精度预报；拒绝则接受仅 Open-Meteo",
+          "limitations": "中国城市的小时级与分钟级降水精度下降",
+          "evidence_label": "部分验证",
+          "recovery": "配置 QWEATHER_API_KEY 后重跑 scripts/check_environment.py",
+          "stop_condition": "不得把和风的缺省当作故障去阻塞流程"
+        }
+      ]
+    },
+    {
+      "id": "nominatim",
+      "type": "network",
+      "required": false,
+      "auth_type": "none",
+      "capabilities": [
+        "geo-coding"
+      ],
+      "checks": [
+        {
+          "id": "nominatim-search",
+          "type": "url",
+          "required": false,
+          "url": "https://nominatim.openstreetmap.org/search?q=Hangzhou&format=json&limit=1",
+          "method": "GET",
+          "expected_status": [200]
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://nominatim.org/",
+        "official_docs_url": "https://operations.osmfoundation.org/policies/nominatim/",
+        "steps": [
+          "免 Key，直接用 HTTP GET 调用 search 接口",
+          "必须设置可识别的 User-Agent，否则可能被拒",
+          "公开实例 fair use 上限：建议 < 1 次/秒、不批量并发",
+          "Windows 上调用 curl 必须加 --ssl-no-revoke"
+        ],
+        "verify": "curl -s --ssl-no-revoke \"https://nominatim.openstreetmap.org/search?q=杭州&format=json&limit=1\" 返回 JSON 数组",
+        "security": "只读公开接口，不传凭据；数据为 ODbL，必须署名 © OpenStreetMap contributors，派生数据库须 share-alike",
+        "verified_at": "2026-10-05",
+        "applies_to_version": "v1"
+      },
+      "degradation": [
+        {
+          "capability": "geo-coding",
+          "trigger": "Nominatim 不可达或触发 fair use 限流",
+          "fallback": "改用 Open-Meteo Geocoding（主源）；再不行用高德（需 Key）；最后用本地城市坐标表",
+          "user_input": "是否配置高德 API Key 以补齐坐标",
+          "limitations": "坐标来源减少，景点级坐标可能需退回市级精度",
+          "evidence_label": "部分验证",
+          "recovery": "降低请求频率或恢复网络后重跑自检",
+          "stop_condition": "不得绕过节流策略反复重试"
+        }
+      ]
+    },
+    {
+      "id": "amap",
+      "type": "api",
+      "required": false,
+      "auth_type": "api-key",
+      "capabilities": [
+        "poi-fallback"
+      ],
+      "checks": [
+        {
+          "id": "amap-auth",
+          "type": "auth_probe",
+          "required": true,
+          "target": "restapi.amap.com/v3/weather/weatherInfo"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://lbs.amap.com/",
+        "official_docs_url": "https://lbs.amap.com/api/mcp-server/gettingstarted",
+        "login_url": "https://console.amap.com/dev/key/app",
+        "credential_url": "https://console.amap.com/dev/key/app",
+        "console_path": [
+          "登录控制台 https://console.amap.com/dev/key/app",
+          "创建应用并添加 Key，服务平台选择 Web 服务",
+          "把 Key 写入本机环境变量 AMAP_MAPS_API_KEY，并按需配置 IP 白名单"
+        ],
+        "scopes": [
+          "geocode",
+          "place-around"
+        ],
+        "credential_storage": "只存本机环境变量 AMAP_MAPS_API_KEY；不得写入仓库、技能文件或产物",
+        "rotate_or_revoke": "在 https://console.amap.com/dev/key/app 删除或重置该 Key",
+        "steps": [
+          "访问 https://lbs.amap.com/ 注册并完成实名认证",
+          "在 https://console.amap.com/dev/key/app 创建应用，申请 Web 服务类型的 Key",
+          "把 Key 写入本机环境变量 AMAP_MAPS_API_KEY，不要写进技能目录",
+          "可选：使用官方 MCP https://mcp.amap.com/mcp?key=<你的 Key>，或 npx -y @amap/amap-maps-mcp-server"
+        ],
+        "verify": "带 Key 请求 restapi.amap.com 的 POI 或地理编码接口返回 status 为 1；不带 Key 时实测返回 INVALID_USER_KEY",
+        "security": "服务条款禁止存储原始地理数据，只能当次使用、不落库；坐标 GCJ-02；个人配额按月计算，以控制台实际显示为准；商用需购买授权",
+        "verified_at": "2026-10-05",
+        "applies_to_version": "web-service-v3"
+      },
+      "degradation": [
+        {
+          "capability": "poi-fallback",
+          "trigger": "未配置 AMAP_MAPS_API_KEY，或 Key 失效、超额、触发限流",
+          "fallback": "POI 以 FlyAI search-poi 为主；坐标备源改用 Nominatim 与 Open-Meteo Geocoding；仍不足时用通用搜索补充",
+          "user_input": "是否配置高德 API Key 以补齐 POI 评分与景点级坐标；拒绝则接受坐标精度下降",
+          "limitations": "缺少评分与营业时间，景点级坐标可能不足，跨源去重的准确度下降",
+          "evidence_label": "部分验证",
+          "recovery": "配置 AMAP_MAPS_API_KEY 后重跑 scripts/check_environment.py",
+          "stop_condition": "不得把高德缺失当作故障；不得存储高德返回的原始地理数据"
+        }
+      ]
+    },
+    {
+      "id": "overpass",
+      "type": "network",
+      "required": false,
+      "auth_type": "none",
+      "capabilities": [
+        "poi-fallback"
+      ],
+      "checks": [
+        {
+          "id": "overpass-status",
+          "type": "url",
+          "required": false,
+          "url": "https://overpass-api.de/api/status",
+          "method": "GET",
+          "expected_status": [200]
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://overpass-api.de/",
+        "official_docs_url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+        "steps": [
+          "免 Key，用 POST 向 interpreter 端点提交查询",
+          "多个公共镜像依次尝试，但不得并行；单次超时设 ≤ 15 秒，超时即放弃",
+          "必须带可识别 User-Agent；公开实例 fair use，建议 < 1 万次/日",
+          "实测 2026-10-05：多数公共镜像不可用，只有个别镜像偶尔返回，该源只作尽力而为"
+        ],
+        "verify": "curl -s --ssl-no-revoke \"https://overpass-api.de/api/status\" 返回纯文本状态；返回 406 或超时即视为不可用",
+        "security": "只读公开接口，不传凭据；数据为 ODbL，必须署名 © OpenStreetMap contributors，派生数据库须 share-alike",
+        "verified_at": "2026-10-05",
+        "applies_to_version": "api-0.7"
+      },
+      "degradation": [
+        {
+          "capability": "poi-fallback",
+          "trigger": "Overpass 公共镜像不可用、返回 406 或超时（实测为常态）",
+          "fallback": "立即改用 Nominatim / 高德 / FlyAI 与通用搜索，不重试风暴",
+          "user_input": "是否继续尝试其他公共镜像（会显著增加耗时）",
+          "limitations": "失去 OSM 侧的 POI 补充来源",
+          "evidence_label": "部分验证",
+          "recovery": "稍后重试，或改用自托管的 Overpass 实例",
+          "stop_condition": "该源失败不得阻塞流程，不得反复重试"
+        }
+      ]
+    },
+    {
       "id": "mcporter-cli",
       "type": "cli",
       "required": false,
@@ -181,7 +480,7 @@
           "确保 Node.js >= 20 已安装",
           "执行 npm i -g mcporter，或直接使用 npx mcporter",
           "验证 mcporter list 能列出服务",
-          "另行提供并按 mcporter 的方式注册一个具备小红书检索能力的 MCP 服务（无官方入口可核验，本技能不硬编码地址与端口）"
+          "另行部署一个社区实现的小红书 MCP 服务并按 mcporter 方式注册；本技能不硬编码任何地址与端口"
         ],
         "verify": "mcporter list",
         "security": "mcporter 只连接你已配置的服务；凭据由该服务与 mcporter 配置自行管理，不得写入本技能",
@@ -216,7 +515,7 @@
           "required": true,
           "url": "https://www.weather.com.cn/",
           "method": "HEAD",
-          "expected_status": "200"
+          "expected_status": [200]
         }
       ],
       "setup": {
@@ -224,8 +523,9 @@
         "official_docs_url": "https://www.weather.com.cn/",
         "steps": [
           "确认宿主 Agent 环境提供可用的联网检索与网页抓取工具",
-          "确认可直连 weather.com.cn、12306、qweather.com 等公开数据源",
-          "如所在网络需要代理，配置宿主环境的代理而不是写入本技能"
+          "确认可直连 weather.com.cn、12306、open-meteo.com 等公开数据源",
+          "如所在网络需要代理，配置宿主环境的代理而不是写入本技能",
+          "Windows 上自建探测必须加 --ssl-no-revoke，否则会因证书吊销检查离线产生假阴性"
         ],
         "verify": "在宿主环境中执行一次公开网页检索并确认返回内容",
         "security": "只访问公开数据源；不传递任何凭据；不绕过登录或付费墙",
@@ -270,7 +570,7 @@
           "本技能脚本仅使用标准库，无需 pip 安装任何依赖"
         ],
         "verify": "python --version",
-        "security": "脚本纯标准库，无网络、无子进程、不读取凭据",
+        "security": "脚本纯标准库，无凭据读取；环境检查中的网络探测只访问清单声明的公开端点",
         "verified_at": "2026-09-13",
         "applies_to_version": ">=3.9"
       },

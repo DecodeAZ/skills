@@ -358,6 +358,18 @@
 
   /* ---- Focus ---- */
   :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+
+  /* ---- Empty State ---- */
+  /* 数据缺失时区块不空白，给出可读提示，避免被误认为渲染失败 */
+  .empty-note {
+    grid-column: 1 / -1;
+    padding: 18px 20px;
+    border: 1px dashed var(--t-line);
+    border-radius: var(--radius-sm);
+    color: var(--t-ink-muted);
+    font-size: 0.88rem;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -846,7 +858,7 @@ const tripData = {
     "seq3": "#3E6E8C",
     "seq4": "#6E7A70",
     "seq5": "#7A6A55",
-    "landmark": "<svg viewBox=\"0 0 120 80\" role=\"img\"><title>北京 · 角楼与中轴<\/title><path d=\"M60 2v76\" stroke=\"#C9A227\" stroke-width=\"1.1\" stroke-dasharray=\"2.5 3.5\" opacity=\"0.55\"/><path d=\"M7 70V53H16V58H23V53H32V58H39V53H48V58H55V53H64V58H71V53H80V58H87V53H96V58H103V53H112V70Z\" fill=\"#F2EFE9\"/><path d=\"M39 52h42l3 6H36z\" fill=\"#F2EFE9\" fill-opacity=\"0.62\"/><rect x=\"49\" y=\"34\" width=\"22\" height=\"12\" fill=\"#F2EFE9\"/><path d=\"M41 52Q47 47 50 46H70q3 1 9 6-20-3-38 0z\" fill=\"#C9A227\"/><rect x=\"52\" y=\"20\" width=\"16\" height=\"9\" fill=\"#F2EFE9\"/><path d=\"M45 34Q50 30 52.5 29H67.5q2.5 1 7.5 5-15-2.5-30 0z\" fill=\"#C9A227\"/><path d=\"M48 16h24l2 4-4 3H52l-4-3z\" fill=\"#C9A227\"/><path d=\"M56 13l4-5 4 5z\" fill=\"#C9A227\"/><circle cx=\"60\" cy=\"6\" r=\"1.9\" fill=\"#C9A227\"/><g fill=\"#9E2B25\"><rect x=\"52\" y=\"37\" width=\"4\" height=\"5\"/><rect x=\"58\" y=\"37\" width=\"4\" height=\"5\"/><rect x=\"64\" y=\"37\" width=\"4\" height=\"5\"/><rect x=\"54\" y=\"22\" width=\"3.5\" height=\"4\"/><rect x=\"62.5\" y=\"22\" width=\"3.5\" height=\"4\"/><\/g><\/svg>",
+    "landmark": "\u003csvg viewBox=\"0 0 120 80\" role=\"img\"\u003e\u003ctitle\u003e北京 · 角楼与中轴\u003c/title\u003e\u003cpath d=\"M60 2v76\" stroke=\"#C9A227\" stroke-width=\"1.1\" stroke-dasharray=\"2.5 3.5\" opacity=\"0.55\"/\u003e\u003cpath d=\"M7 70V53H16V58H23V53H32V58H39V53H48V58H55V53H64V58H71V53H80V58H87V53H96V58H103V53H112V70Z\" fill=\"#F2EFE9\"/\u003e\u003cpath d=\"M39 52h42l3 6H36z\" fill=\"#F2EFE9\" fill-opacity=\"0.62\"/\u003e\u003crect x=\"49\" y=\"34\" width=\"22\" height=\"12\" fill=\"#F2EFE9\"/\u003e\u003cpath d=\"M41 52Q47 47 50 46H70q3 1 9 6-20-3-38 0z\" fill=\"#C9A227\"/\u003e\u003crect x=\"52\" y=\"20\" width=\"16\" height=\"9\" fill=\"#F2EFE9\"/\u003e\u003cpath d=\"M45 34Q50 30 52.5 29H67.5q2.5 1 7.5 5-15-2.5-30 0z\" fill=\"#C9A227\"/\u003e\u003cpath d=\"M48 16h24l2 4-4 3H52l-4-3z\" fill=\"#C9A227\"/\u003e\u003cpath d=\"M56 13l4-5 4 5z\" fill=\"#C9A227\"/\u003e\u003ccircle cx=\"60\" cy=\"6\" r=\"1.9\" fill=\"#C9A227\"/\u003e\u003cg fill=\"#9E2B25\"\u003e\u003crect x=\"52\" y=\"37\" width=\"4\" height=\"5\"/\u003e\u003crect x=\"58\" y=\"37\" width=\"4\" height=\"5\"/\u003e\u003crect x=\"64\" y=\"37\" width=\"4\" height=\"5\"/\u003e\u003crect x=\"54\" y=\"22\" width=\"3.5\" height=\"4\"/\u003e\u003crect x=\"62.5\" y=\"22\" width=\"3.5\" height=\"4\"/\u003e\u003c/g\u003e\u003c/svg\u003e",
     "landmarkCaption": "故宫角楼 · 城墙垛口 · 中轴线",
     "fontDisplay": "\"Songti SC\", \"STSong\", \"SimSun\", \"Noto Serif SC\", serif"
   }
@@ -934,46 +946,126 @@ const weatherTone = { sunny: 'var(--t-sun)', partlyCloudy: 'var(--t-sun)', cloud
 
 function toneOf(icon) { return weatherTone[icon] || 'var(--t-ink-muted)'; }
 
+/* ---- Data Normalization ---- */
+/* 渲染层不直接解引用 tripData 字段：先收敛到安全形态，缺失数据只降级不抛错 */
+function asArray(value) { return Array.isArray(value) ? value : []; }
+function asObject(value) { return value && typeof value === 'object' && !Array.isArray(value) ? value : {}; }
+function asText(value) { return value === null || value === undefined ? '' : String(value); }
+function asNumber(value) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^0-9.\-]/g, '');
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+}
+function hasValue(value) { return value !== null && value !== undefined && value !== ''; }
+function asMoney(value) { return asNumber(value).toLocaleString(); }
+
+/* 标注字段只接受字符串或有限数字，与 scripts/generate.py 的 text_value 口径一致 */
+function asScalar(value) {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return '';
+}
+
+/* 插入位置一律走转义：数据里的 < & " 不得改变标签结构，也不得注入脚本 */
+const HTML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+function escapeHtml(value) { return String(value).replace(/[&<>"']/g, ch => HTML_ESCAPES[ch]); }
+function esc(value) { return escapeHtml(asText(value)); }
+function escScalar(value) { return escapeHtml(asScalar(value)); }
+
+const EMPTY_NOTES = {
+  weather: '暂无逐日天气数据',
+  days: '暂无行程数据',
+  hotels: '暂无住宿数据',
+  budget: '暂无预算明细',
+  tips: '暂无实用贴士'
+};
+function emptyNote(kind) { return `<div class="empty-note">${EMPTY_NOTES[kind] || '暂无数据'}</div>`; }
+
+/* 区块级容错：单个区块渲染失败不影响其余区块，原因记录到 window.__renderErrors */
+const renderErrors = [];
+function safeRender(section, action) {
+  try {
+    action();
+  } catch (err) {
+    renderErrors.push({ section: section, message: String(err && err.message ? err.message : err) });
+  }
+}
+window.__renderErrors = renderErrors;
+
 function renderWeather(weather, days) {
+  const data = asObject(weather);
+  const list = asArray(days);
   const bar = document.getElementById('weatherBar');
-  bar.innerHTML = days.map(d => {
-    const icon = weatherIcons[d.weather.icon] || SVG.cloudSun;
-    return `<div class="weather-card">
-      <div class="w-date">${d.date} ${d.weekday}</div>
-      <div class="w-icon" style="color:${toneOf(d.weather.icon)}">${icon}</div>
-      <div class="w-temp">${d.weather.high}° <span class="w-temp-low">/ ${d.weather.low}°</span></div>
+  if (bar) {
+    bar.innerHTML = list.length ? list.map(day => {
+      const item = asObject(day);
+      const w = asObject(item.weather);
+      return `<div class="weather-card">
+      <div class="w-date">${esc(item.date)} ${esc(item.weekday)}</div>
+      <div class="w-icon" style="color:${toneOf(w.icon)}">${weatherIcons[w.icon] || SVG.cloudSun}</div>
+      <div class="w-temp">${esc(w.high)}° <span class="w-temp-low">/ ${esc(w.low)}°</span></div>
     </div>`;
-  }).join('');
+    }).join('') : emptyNote('weather');
+  }
 
   const tip = document.getElementById('weatherTip');
-  tip.innerHTML = `<span class="icon" style="color:var(--primary)">${SVG.info}</span>
-    <span>${weather.clothing} · 降水概率 ${weather.rainfall} · ${weather.tips}</span>`;
+  if (!tip) return;
+  const parts = [];
+  const clothing = esc(data.clothing);
+  const rainfall = esc(data.rainfall);
+  const tipText = esc(data.tips);
+  if (clothing) parts.push(clothing);
+  if (rainfall) parts.push('降水概率 ' + rainfall);
+  if (tipText) parts.push(tipText);
+  tip.innerHTML = parts.length
+    ? `<span class="icon" style="color:var(--primary)">${SVG.info}</span><span>${parts.join(' · ')}</span>`
+    : '';
 }
 
 function renderDays(days) {
   const container = document.getElementById('daysContainer');
-  container.innerHTML = days.map((day, i) => {
-    const wIcon = weatherIcons[day.weather.icon] || SVG.cloudSun;
-    const acts = day.activities.map(a => {
-      const isMeal = a.meal || /[午晚早]餐/.test(a.name);
+  if (!container) return;
+  const list = asArray(days);
+  if (!list.length) {
+    container.innerHTML = emptyNote('days');
+    return;
+  }
+  container.innerHTML = list.map((day, i) => {
+    const item = asObject(day);
+    const w = asObject(item.weather);
+    const wIcon = weatherIcons[w.icon] || SVG.cloudSun;
+    const acts = asArray(item.activities).map(activity => {
+      const a = asObject(activity);
+      const meal = asObject(a.meal);
+      const hasMeal = Object.keys(meal).length > 0;
+      const isMeal = hasMeal || /[午晚早]餐/.test(asText(a.name));
+      const duration = esc(a.duration);
+      const note = esc(a.note);
+      const transport = esc(a.transport);
       let html = `<div class="tl-item${isMeal ? ' is-meal' : ''}"><div class="tl-dot"></div>`;
-      html += `<div class="tl-time">${a.time}${a.duration ? ' · ' + a.duration : ''}</div><div class="tl-content">`;
-      html += `<h4>${a.name}</h4>`;
-      if (a.note) html += `<p>${a.note}</p>`;
-      if (a.meal) {
+      html += `<div class="tl-time">${esc(a.time)}${duration ? ' · ' + duration : ''}</div><div class="tl-content">`;
+      html += `<h4>${esc(a.name)}</h4>`;
+      if (note) html += `<p>${note}</p>`;
+      if (hasMeal) {
+        const recommended = esc(meal.recommended);
+        const mealDetail = [esc(meal.cuisine), esc(meal.location)].filter(Boolean).join(' · ');
         html += `<div class="meal-card">
           <div class="meal-icon"><span class="icon">${SVG.utensils}</span></div>
           <div class="meal-info">
-            <div class="meal-name">${a.meal.name}</div>
-            <div class="meal-detail">${a.meal.cuisine} · ${a.meal.location}${a.meal.recommended ? ' · 推荐：' + a.meal.recommended : ''}</div>
+            <div class="meal-name">${esc(meal.name)}</div>
+            <div class="meal-detail">${mealDetail}${recommended ? ' · 推荐：' + recommended : ''}</div>
           </div>
-          <div class="meal-price">¥${a.meal.perPerson}/人</div>
+          <div class="meal-price">¥${esc(meal.perPerson)}/人</div>
         </div>`;
       }
       const tags = [];
-      if (a.cost === 0) tags.push(`<span class="tag tag-free">免费</span>`);
-      else if (a.cost) tags.push(`<span class="tag tag-cost">¥${a.cost}</span>`);
-      if (a.transport) tags.push(`<span class="tag tag-transport">${a.transport}</span>`);
+      if (hasValue(a.cost) && asNumber(a.cost) === 0) tags.push('<span class="tag tag-free">免费</span>');
+      else if (hasValue(a.cost)) tags.push(`<span class="tag tag-cost">¥${asMoney(a.cost)}</span>`);
+      if (transport) tags.push(`<span class="tag tag-transport">${transport}</span>`);
       if (tags.length) html += `<div class="tl-tags">${tags.join('')}</div>`;
       html += `</div></div>`;
       return html;
@@ -985,11 +1077,11 @@ function renderDays(days) {
         <div class="day-header-left">
           <div class="day-num">D${i + 1}</div>
           <div class="day-header-info">
-            <h3>${day.theme}</h3>
+            <h3>${esc(item.theme)}</h3>
             <div class="day-meta">
-              <span>${day.date} ${day.weekday}</span>
-              <span style="display:inline-flex;align-items:center;gap:3px;color:${toneOf(day.weather.icon)}">
-                <span class="icon icon-sm">${wIcon}</span> ${day.weather.high}°/${day.weather.low}°
+              <span>${esc(item.date)} ${esc(item.weekday)}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;color:${toneOf(w.icon)}">
+                <span class="icon icon-sm">${wIcon}</span> ${esc(w.high)}°/${esc(w.low)}°
               </span>
             </div>
           </div>
@@ -1002,67 +1094,107 @@ function renderDays(days) {
 }
 
 function toggleDay(el) {
-  const card = el.closest('.day-card');
+  const card = el && el.closest ? el.closest('.day-card') : null;
+  if (!card) return;
   const expanded = !card.classList.contains('collapsed');
   card.classList.toggle('collapsed');
   el.setAttribute('aria-expanded', !expanded);
 }
 
 function renderHotels(hotels) {
-  document.getElementById('hotelGrid').innerHTML = hotels.map((h, i) => {
-    const tags = h.highlights.split(/[;；、,，]/).filter(Boolean).map(t => `<span class="hotel-tag">${t.trim()}</span>`).join('');
+  const grid = document.getElementById('hotelGrid');
+  if (!grid) return;
+  const list = asArray(hotels);
+  if (!list.length) {
+    grid.innerHTML = emptyNote('hotels');
+    return;
+  }
+  grid.innerHTML = list.map((hotel, i) => {
+    const h = asObject(hotel);
+    const tags = asText(h.highlights).split(/[;；、,，]/)
+      .map(t => t.trim()).filter(Boolean)
+      .map(t => `<span class="hotel-tag">${escapeHtml(t)}</span>`).join('');
     return `<div class="hotel-card">
       ${i === 0 ? '<div class="hotel-badge">推荐</div>' : ''}
-      <div class="hotel-name">${h.name}</div>
-      <div class="hotel-area"><span class="icon icon-sm" style="color:var(--accent)">${SVG.mapPin}</span>${h.area}</div>
-      <div class="hotel-price-row"><span class="hotel-price">¥${h.pricePerNight}</span><span class="hotel-price-unit">/晚</span></div>
+      <div class="hotel-name">${esc(h.name)}</div>
+      <div class="hotel-area"><span class="icon icon-sm" style="color:var(--accent)">${SVG.mapPin}</span>${esc(h.area)}</div>
+      <div class="hotel-price-row"><span class="hotel-price">¥${esc(h.pricePerNight)}</span><span class="hotel-price-unit">/晚</span></div>
       <div class="hotel-highlights">${tags}</div>
     </div>`;
   }).join('');
 }
 
 function renderBudget(budget) {
-  // Chart bar
-  const cats = Object.entries(budget).filter(([k]) => !['total', 'perPerson'].includes(k));
-  const total = budget.total || cats.reduce((s, [, d]) => s + d.subtotal, 0);
-  document.getElementById('budgetChart').innerHTML = cats.map(([cat, data]) =>
-    `<div class="budget-chart-seg" style="width:${(data.subtotal / total * 100).toFixed(1)}%;background:${budgetColors[cat] || 'var(--t-seq-5)'}"></div>`
-  ).join('');
+  const data = asObject(budget);
+  const cats = Object.keys(data)
+    .filter(key => key !== 'total' && key !== 'perPerson')
+    .map(key => [key, asObject(data[key])]);
+  const computed = cats.reduce((sum, entry) => sum + asNumber(entry[1].subtotal), 0);
+  // total 缺省或为 0 时按分类小计推算，避免占比除零得到 NaN 宽度
+  const total = asNumber(data.total) || computed;
 
-  // Table
+  const chart = document.getElementById('budgetChart');
+  if (chart) {
+    chart.innerHTML = cats.length && total > 0
+      ? cats.map(([cat, entry]) =>
+        `<div class="budget-chart-seg" style="width:${(asNumber(entry.subtotal) / total * 100).toFixed(1)}%;background:${budgetColors[cat] || 'var(--t-seq-5)'}"></div>`
+      ).join('')
+      : '';
+  }
+
   const tbody = document.querySelector('#budgetTable tbody');
-  tbody.innerHTML = cats.map(([cat, data]) => {
-    const icon = budgetIcons[cat] || SVG.box;
-    const label = budgetLabels[cat] || cat;
-    let rows = `<tr class="cat-row"><td colspan="2"><span class="cat-icon"><span class="icon icon-sm" style="color:${budgetColors[cat]}">${icon}</span>${label}</span></td><td class="subtotal">¥${data.subtotal.toLocaleString()}</td></tr>`;
-    data.items.forEach(item => { rows += `<tr class="sub-row"><td></td><td>${item.name}</td><td>¥${item.cost.toLocaleString()}</td></tr>`; });
-    return rows;
-  }).join('');
+  if (tbody) {
+    tbody.innerHTML = cats.length
+      ? cats.map(([cat, entry]) => {
+        const color = budgetColors[cat] || 'var(--t-seq-5)';
+        let rows = `<tr class="cat-row"><td colspan="2"><span class="cat-icon"><span class="icon icon-sm" style="color:${color}">${budgetIcons[cat] || SVG.box}</span>${budgetLabels[cat] || cat}</span></td><td class="subtotal">¥${asMoney(entry.subtotal)}</td></tr>`;
+        asArray(entry.items).forEach(item => {
+          const detail = asObject(item);
+          rows += `<tr class="sub-row"><td></td><td>${esc(detail.name)}</td><td>¥${asMoney(detail.cost)}</td></tr>`;
+        });
+        return rows;
+      }).join('')
+      : `<tr><td colspan="3">${emptyNote('budget')}</td></tr>`;
+  }
 
-  // Total bar
-  const el = document.getElementById('budgetTotal');
-  el.querySelector('.budget-total-amount').textContent = `¥${total.toLocaleString()}`;
-  el.querySelector('.budget-total-per').textContent = `人均 ¥${(budget.perPerson || 0).toLocaleString()}`;
+  const totalBox = document.getElementById('budgetTotal');
+  if (!totalBox) return;
+  const amount = totalBox.querySelector('.budget-total-amount');
+  if (amount) amount.textContent = `¥${total.toLocaleString()}`;
+  const per = totalBox.querySelector('.budget-total-per');
+  if (per) per.textContent = `人均 ¥${asNumber(data.perPerson).toLocaleString()}`;
 }
 
 function renderTips(tips) {
-  document.getElementById('tipsList').innerHTML = tips.map(t =>
-    `<div class="tip-card"><div class="tip-icon"><span class="icon">${SVG.lightbulb}</span></div><span>${t}</span></div>`
+  const list = document.getElementById('tipsList');
+  if (!list) return;
+  const items = asArray(tips);
+  if (!items.length) {
+    list.innerHTML = emptyNote('tips');
+    return;
+  }
+  list.innerHTML = items.map(t =>
+    `<div class="tip-card"><div class="tip-icon"><span class="icon">${SVG.lightbulb}</span></div><span>${esc(t)}</span></div>`
   ).join('');
 }
 
 if (tripData) {
-  applyTheme(tripData.theme);
-  renderLandmark(tripData.theme);
-  document.getElementById('heroTitle').textContent = tripData.title;
-  if (tripData.dateRange) document.getElementById('heroDate').textContent = tripData.dateRange;
-  if (tripData.travelers) document.getElementById('heroTravelers').textContent = tripData.travelers;
-  if (tripData.budget) document.getElementById('heroBudget').textContent = `¥${(tripData.budget.total || 0).toLocaleString()}`;
-  renderWeather(tripData.weather, tripData.days);
-  renderDays(tripData.days);
-  renderHotels(tripData.hotels);
-  renderBudget(tripData.budget);
-  renderTips(tripData.tips);
+  const data = asObject(tripData);
+  safeRender('theme', () => applyTheme(data.theme));
+  safeRender('landmark', () => renderLandmark(data.theme));
+  const heroTitle = document.getElementById('heroTitle');
+  if (heroTitle) heroTitle.textContent = asScalar(data.title);
+  const heroDate = document.getElementById('heroDate');
+  if (heroDate && asScalar(data.dateRange)) heroDate.textContent = asScalar(data.dateRange);
+  const heroTravelers = document.getElementById('heroTravelers');
+  if (heroTravelers && asScalar(data.travelers)) heroTravelers.textContent = asScalar(data.travelers);
+  const heroBudget = document.getElementById('heroBudget');
+  if (heroBudget) heroBudget.textContent = `¥${asNumber(asObject(data.budget).total).toLocaleString()}`;
+  safeRender('weather', () => renderWeather(data.weather, data.days));
+  safeRender('days', () => renderDays(data.days));
+  safeRender('hotels', () => renderHotels(data.hotels));
+  safeRender('budget', () => renderBudget(data.budget));
+  safeRender('tips', () => renderTips(data.tips));
 }
 </script>
 </body>

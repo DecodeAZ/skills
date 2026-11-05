@@ -358,6 +358,18 @@
 
   /* ---- Focus ---- */
   :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+
+  /* ---- Empty State ---- */
+  /* 数据缺失时区块不空白，给出可读提示，避免被误认为渲染失败 */
+  .empty-note {
+    grid-column: 1 / -1;
+    padding: 18px 20px;
+    border: 1px dashed var(--t-line);
+    border-radius: var(--radius-sm);
+    color: var(--t-ink-muted);
+    font-size: 0.88rem;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -835,7 +847,7 @@ const tripData = {
     "seq3": "#E4572E",
     "seq4": "#F2C14E",
     "seq5": "#8A9AA8",
-    "landmark": "<svg viewBox=\"0 0 120 80\" role=\"img\"><title>重庆 · 洪崖洞与两江<\/title><g fill=\"#E4572E\" fill-opacity=\"0.15\" stroke=\"#E4572E\" stroke-width=\"1.2\" stroke-linejoin=\"round\"><path d=\"M6 52h38l-2 6H8z\"/><path d=\"M9 42h32l-2 6H11z\"/><path d=\"M12 32h26l-2 6H14z\"/><path d=\"M15 22h20l-2 6H17z\"/><path d=\"M8 58h34v14H8z\"/><path d=\"M11 48h28v10H11z\"/><path d=\"M14 38h22v10H14z\"/><path d=\"M17 28h16v10H17z\"/><\/g><g fill=\"#F2C14E\"><rect x=\"11\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"18\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"25\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"32\" y=\"61\" width=\"4\" height=\"4\"/><rect x=\"14\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"21\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"28\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/><rect x=\"17\" y=\"40.5\" width=\"3\" height=\"3\"/><rect x=\"24\" y=\"40.5\" width=\"3\" height=\"3\"/><rect x=\"20\" y=\"30.5\" width=\"3\" height=\"3\"/><\/g><g stroke=\"#3E8C9E\" fill=\"none\" stroke-linecap=\"round\"><path d=\"M60 47h56\" stroke-width=\"2.4\"/><path d=\"M88 78V20\" stroke-width=\"2.4\"/><g stroke-width=\"1\" opacity=\"0.85\"><path d=\"M88 21L64 47\"/><path d=\"M88 21L72 47\"/><path d=\"M88 21L80 47\"/><path d=\"M88 21L96 47\"/><path d=\"M88 21L104 47\"/><path d=\"M88 21L112 47\"/><\/g><path d=\"M70 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/><path d=\"M106 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/><\/g><g stroke=\"#5BB8D4\" fill=\"none\"><path d=\"M44 10L84 18\" stroke-width=\"1.2\" opacity=\"0.8\"/><path d=\"M64 14v3.5\" stroke-width=\"1.2\"/><\/g><rect x=\"58\" y=\"17.5\" width=\"13\" height=\"10\" rx=\"2\" fill=\"#5BB8D4\" fill-opacity=\"0.85\"/><g fill=\"none\" stroke=\"#5BB8D4\" stroke-width=\"1\" stroke-linecap=\"round\" opacity=\"0.45\"><path d=\"M3 75q9-2.5 18 0t18 0t18 0t18 0t18 0t18 0\"/><\/g><\/svg>",
+    "landmark": "\u003csvg viewBox=\"0 0 120 80\" role=\"img\"\u003e\u003ctitle\u003e重庆 · 洪崖洞与两江\u003c/title\u003e\u003cg fill=\"#E4572E\" fill-opacity=\"0.15\" stroke=\"#E4572E\" stroke-width=\"1.2\" stroke-linejoin=\"round\"\u003e\u003cpath d=\"M6 52h38l-2 6H8z\"/\u003e\u003cpath d=\"M9 42h32l-2 6H11z\"/\u003e\u003cpath d=\"M12 32h26l-2 6H14z\"/\u003e\u003cpath d=\"M15 22h20l-2 6H17z\"/\u003e\u003cpath d=\"M8 58h34v14H8z\"/\u003e\u003cpath d=\"M11 48h28v10H11z\"/\u003e\u003cpath d=\"M14 38h22v10H14z\"/\u003e\u003cpath d=\"M17 28h16v10H17z\"/\u003e\u003c/g\u003e\u003cg fill=\"#F2C14E\"\u003e\u003crect x=\"11\" y=\"61\" width=\"4\" height=\"4\"/\u003e\u003crect x=\"18\" y=\"61\" width=\"4\" height=\"4\"/\u003e\u003crect x=\"25\" y=\"61\" width=\"4\" height=\"4\"/\u003e\u003crect x=\"32\" y=\"61\" width=\"4\" height=\"4\"/\u003e\u003crect x=\"14\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/\u003e\u003crect x=\"21\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/\u003e\u003crect x=\"28\" y=\"50.5\" width=\"3.5\" height=\"3.5\"/\u003e\u003crect x=\"17\" y=\"40.5\" width=\"3\" height=\"3\"/\u003e\u003crect x=\"24\" y=\"40.5\" width=\"3\" height=\"3\"/\u003e\u003crect x=\"20\" y=\"30.5\" width=\"3\" height=\"3\"/\u003e\u003c/g\u003e\u003cg stroke=\"#3E8C9E\" fill=\"none\" stroke-linecap=\"round\"\u003e\u003cpath d=\"M60 47h56\" stroke-width=\"2.4\"/\u003e\u003cpath d=\"M88 78V20\" stroke-width=\"2.4\"/\u003e\u003cg stroke-width=\"1\" opacity=\"0.85\"\u003e\u003cpath d=\"M88 21L64 47\"/\u003e\u003cpath d=\"M88 21L72 47\"/\u003e\u003cpath d=\"M88 21L80 47\"/\u003e\u003cpath d=\"M88 21L96 47\"/\u003e\u003cpath d=\"M88 21L104 47\"/\u003e\u003cpath d=\"M88 21L112 47\"/\u003e\u003c/g\u003e\u003cpath d=\"M70 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/\u003e\u003cpath d=\"M106 47v31\" stroke-width=\"1.6\" opacity=\"0.65\"/\u003e\u003c/g\u003e\u003cg stroke=\"#5BB8D4\" fill=\"none\"\u003e\u003cpath d=\"M44 10L84 18\" stroke-width=\"1.2\" opacity=\"0.8\"/\u003e\u003cpath d=\"M64 14v3.5\" stroke-width=\"1.2\"/\u003e\u003c/g\u003e\u003crect x=\"58\" y=\"17.5\" width=\"13\" height=\"10\" rx=\"2\" fill=\"#5BB8D4\" fill-opacity=\"0.85\"/\u003e\u003cg fill=\"none\" stroke=\"#5BB8D4\" stroke-width=\"1\" stroke-linecap=\"round\" opacity=\"0.45\"\u003e\u003cpath d=\"M3 75q9-2.5 18 0t18 0t18 0t18 0t18 0t18 0\"/\u003e\u003c/g\u003e\u003c/svg\u003e",
     "landmarkCaption": "洪崖洞 · 斜拉桥 · 过江索道",
     "fontDisplay": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Source Han Sans SC\", sans-serif"
   }
@@ -923,46 +935,126 @@ const weatherTone = { sunny: 'var(--t-sun)', partlyCloudy: 'var(--t-sun)', cloud
 
 function toneOf(icon) { return weatherTone[icon] || 'var(--t-ink-muted)'; }
 
+/* ---- Data Normalization ---- */
+/* 渲染层不直接解引用 tripData 字段：先收敛到安全形态，缺失数据只降级不抛错 */
+function asArray(value) { return Array.isArray(value) ? value : []; }
+function asObject(value) { return value && typeof value === 'object' && !Array.isArray(value) ? value : {}; }
+function asText(value) { return value === null || value === undefined ? '' : String(value); }
+function asNumber(value) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/[^0-9.\-]/g, '');
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+}
+function hasValue(value) { return value !== null && value !== undefined && value !== ''; }
+function asMoney(value) { return asNumber(value).toLocaleString(); }
+
+/* 标注字段只接受字符串或有限数字，与 scripts/generate.py 的 text_value 口径一致 */
+function asScalar(value) {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return '';
+}
+
+/* 插入位置一律走转义：数据里的 < & " 不得改变标签结构，也不得注入脚本 */
+const HTML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+function escapeHtml(value) { return String(value).replace(/[&<>"']/g, ch => HTML_ESCAPES[ch]); }
+function esc(value) { return escapeHtml(asText(value)); }
+function escScalar(value) { return escapeHtml(asScalar(value)); }
+
+const EMPTY_NOTES = {
+  weather: '暂无逐日天气数据',
+  days: '暂无行程数据',
+  hotels: '暂无住宿数据',
+  budget: '暂无预算明细',
+  tips: '暂无实用贴士'
+};
+function emptyNote(kind) { return `<div class="empty-note">${EMPTY_NOTES[kind] || '暂无数据'}</div>`; }
+
+/* 区块级容错：单个区块渲染失败不影响其余区块，原因记录到 window.__renderErrors */
+const renderErrors = [];
+function safeRender(section, action) {
+  try {
+    action();
+  } catch (err) {
+    renderErrors.push({ section: section, message: String(err && err.message ? err.message : err) });
+  }
+}
+window.__renderErrors = renderErrors;
+
 function renderWeather(weather, days) {
+  const data = asObject(weather);
+  const list = asArray(days);
   const bar = document.getElementById('weatherBar');
-  bar.innerHTML = days.map(d => {
-    const icon = weatherIcons[d.weather.icon] || SVG.cloudSun;
-    return `<div class="weather-card">
-      <div class="w-date">${d.date} ${d.weekday}</div>
-      <div class="w-icon" style="color:${toneOf(d.weather.icon)}">${icon}</div>
-      <div class="w-temp">${d.weather.high}° <span class="w-temp-low">/ ${d.weather.low}°</span></div>
+  if (bar) {
+    bar.innerHTML = list.length ? list.map(day => {
+      const item = asObject(day);
+      const w = asObject(item.weather);
+      return `<div class="weather-card">
+      <div class="w-date">${esc(item.date)} ${esc(item.weekday)}</div>
+      <div class="w-icon" style="color:${toneOf(w.icon)}">${weatherIcons[w.icon] || SVG.cloudSun}</div>
+      <div class="w-temp">${esc(w.high)}° <span class="w-temp-low">/ ${esc(w.low)}°</span></div>
     </div>`;
-  }).join('');
+    }).join('') : emptyNote('weather');
+  }
 
   const tip = document.getElementById('weatherTip');
-  tip.innerHTML = `<span class="icon" style="color:var(--primary)">${SVG.info}</span>
-    <span>${weather.clothing} · 降水概率 ${weather.rainfall} · ${weather.tips}</span>`;
+  if (!tip) return;
+  const parts = [];
+  const clothing = esc(data.clothing);
+  const rainfall = esc(data.rainfall);
+  const tipText = esc(data.tips);
+  if (clothing) parts.push(clothing);
+  if (rainfall) parts.push('降水概率 ' + rainfall);
+  if (tipText) parts.push(tipText);
+  tip.innerHTML = parts.length
+    ? `<span class="icon" style="color:var(--primary)">${SVG.info}</span><span>${parts.join(' · ')}</span>`
+    : '';
 }
 
 function renderDays(days) {
   const container = document.getElementById('daysContainer');
-  container.innerHTML = days.map((day, i) => {
-    const wIcon = weatherIcons[day.weather.icon] || SVG.cloudSun;
-    const acts = day.activities.map(a => {
-      const isMeal = a.meal || /[午晚早]餐/.test(a.name);
+  if (!container) return;
+  const list = asArray(days);
+  if (!list.length) {
+    container.innerHTML = emptyNote('days');
+    return;
+  }
+  container.innerHTML = list.map((day, i) => {
+    const item = asObject(day);
+    const w = asObject(item.weather);
+    const wIcon = weatherIcons[w.icon] || SVG.cloudSun;
+    const acts = asArray(item.activities).map(activity => {
+      const a = asObject(activity);
+      const meal = asObject(a.meal);
+      const hasMeal = Object.keys(meal).length > 0;
+      const isMeal = hasMeal || /[午晚早]餐/.test(asText(a.name));
+      const duration = esc(a.duration);
+      const note = esc(a.note);
+      const transport = esc(a.transport);
       let html = `<div class="tl-item${isMeal ? ' is-meal' : ''}"><div class="tl-dot"></div>`;
-      html += `<div class="tl-time">${a.time}${a.duration ? ' · ' + a.duration : ''}</div><div class="tl-content">`;
-      html += `<h4>${a.name}</h4>`;
-      if (a.note) html += `<p>${a.note}</p>`;
-      if (a.meal) {
+      html += `<div class="tl-time">${esc(a.time)}${duration ? ' · ' + duration : ''}</div><div class="tl-content">`;
+      html += `<h4>${esc(a.name)}</h4>`;
+      if (note) html += `<p>${note}</p>`;
+      if (hasMeal) {
+        const recommended = esc(meal.recommended);
+        const mealDetail = [esc(meal.cuisine), esc(meal.location)].filter(Boolean).join(' · ');
         html += `<div class="meal-card">
           <div class="meal-icon"><span class="icon">${SVG.utensils}</span></div>
           <div class="meal-info">
-            <div class="meal-name">${a.meal.name}</div>
-            <div class="meal-detail">${a.meal.cuisine} · ${a.meal.location}${a.meal.recommended ? ' · 推荐：' + a.meal.recommended : ''}</div>
+            <div class="meal-name">${esc(meal.name)}</div>
+            <div class="meal-detail">${mealDetail}${recommended ? ' · 推荐：' + recommended : ''}</div>
           </div>
-          <div class="meal-price">¥${a.meal.perPerson}/人</div>
+          <div class="meal-price">¥${esc(meal.perPerson)}/人</div>
         </div>`;
       }
       const tags = [];
-      if (a.cost === 0) tags.push(`<span class="tag tag-free">免费</span>`);
-      else if (a.cost) tags.push(`<span class="tag tag-cost">¥${a.cost}</span>`);
-      if (a.transport) tags.push(`<span class="tag tag-transport">${a.transport}</span>`);
+      if (hasValue(a.cost) && asNumber(a.cost) === 0) tags.push('<span class="tag tag-free">免费</span>');
+      else if (hasValue(a.cost)) tags.push(`<span class="tag tag-cost">¥${asMoney(a.cost)}</span>`);
+      if (transport) tags.push(`<span class="tag tag-transport">${transport}</span>`);
       if (tags.length) html += `<div class="tl-tags">${tags.join('')}</div>`;
       html += `</div></div>`;
       return html;
@@ -974,11 +1066,11 @@ function renderDays(days) {
         <div class="day-header-left">
           <div class="day-num">D${i + 1}</div>
           <div class="day-header-info">
-            <h3>${day.theme}</h3>
+            <h3>${esc(item.theme)}</h3>
             <div class="day-meta">
-              <span>${day.date} ${day.weekday}</span>
-              <span style="display:inline-flex;align-items:center;gap:3px;color:${toneOf(day.weather.icon)}">
-                <span class="icon icon-sm">${wIcon}</span> ${day.weather.high}°/${day.weather.low}°
+              <span>${esc(item.date)} ${esc(item.weekday)}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;color:${toneOf(w.icon)}">
+                <span class="icon icon-sm">${wIcon}</span> ${esc(w.high)}°/${esc(w.low)}°
               </span>
             </div>
           </div>
@@ -991,67 +1083,107 @@ function renderDays(days) {
 }
 
 function toggleDay(el) {
-  const card = el.closest('.day-card');
+  const card = el && el.closest ? el.closest('.day-card') : null;
+  if (!card) return;
   const expanded = !card.classList.contains('collapsed');
   card.classList.toggle('collapsed');
   el.setAttribute('aria-expanded', !expanded);
 }
 
 function renderHotels(hotels) {
-  document.getElementById('hotelGrid').innerHTML = hotels.map((h, i) => {
-    const tags = h.highlights.split(/[;；、,，]/).filter(Boolean).map(t => `<span class="hotel-tag">${t.trim()}</span>`).join('');
+  const grid = document.getElementById('hotelGrid');
+  if (!grid) return;
+  const list = asArray(hotels);
+  if (!list.length) {
+    grid.innerHTML = emptyNote('hotels');
+    return;
+  }
+  grid.innerHTML = list.map((hotel, i) => {
+    const h = asObject(hotel);
+    const tags = asText(h.highlights).split(/[;；、,，]/)
+      .map(t => t.trim()).filter(Boolean)
+      .map(t => `<span class="hotel-tag">${escapeHtml(t)}</span>`).join('');
     return `<div class="hotel-card">
       ${i === 0 ? '<div class="hotel-badge">推荐</div>' : ''}
-      <div class="hotel-name">${h.name}</div>
-      <div class="hotel-area"><span class="icon icon-sm" style="color:var(--accent)">${SVG.mapPin}</span>${h.area}</div>
-      <div class="hotel-price-row"><span class="hotel-price">¥${h.pricePerNight}</span><span class="hotel-price-unit">/晚</span></div>
+      <div class="hotel-name">${esc(h.name)}</div>
+      <div class="hotel-area"><span class="icon icon-sm" style="color:var(--accent)">${SVG.mapPin}</span>${esc(h.area)}</div>
+      <div class="hotel-price-row"><span class="hotel-price">¥${esc(h.pricePerNight)}</span><span class="hotel-price-unit">/晚</span></div>
       <div class="hotel-highlights">${tags}</div>
     </div>`;
   }).join('');
 }
 
 function renderBudget(budget) {
-  // Chart bar
-  const cats = Object.entries(budget).filter(([k]) => !['total', 'perPerson'].includes(k));
-  const total = budget.total || cats.reduce((s, [, d]) => s + d.subtotal, 0);
-  document.getElementById('budgetChart').innerHTML = cats.map(([cat, data]) =>
-    `<div class="budget-chart-seg" style="width:${(data.subtotal / total * 100).toFixed(1)}%;background:${budgetColors[cat] || 'var(--t-seq-5)'}"></div>`
-  ).join('');
+  const data = asObject(budget);
+  const cats = Object.keys(data)
+    .filter(key => key !== 'total' && key !== 'perPerson')
+    .map(key => [key, asObject(data[key])]);
+  const computed = cats.reduce((sum, entry) => sum + asNumber(entry[1].subtotal), 0);
+  // total 缺省或为 0 时按分类小计推算，避免占比除零得到 NaN 宽度
+  const total = asNumber(data.total) || computed;
 
-  // Table
+  const chart = document.getElementById('budgetChart');
+  if (chart) {
+    chart.innerHTML = cats.length && total > 0
+      ? cats.map(([cat, entry]) =>
+        `<div class="budget-chart-seg" style="width:${(asNumber(entry.subtotal) / total * 100).toFixed(1)}%;background:${budgetColors[cat] || 'var(--t-seq-5)'}"></div>`
+      ).join('')
+      : '';
+  }
+
   const tbody = document.querySelector('#budgetTable tbody');
-  tbody.innerHTML = cats.map(([cat, data]) => {
-    const icon = budgetIcons[cat] || SVG.box;
-    const label = budgetLabels[cat] || cat;
-    let rows = `<tr class="cat-row"><td colspan="2"><span class="cat-icon"><span class="icon icon-sm" style="color:${budgetColors[cat]}">${icon}</span>${label}</span></td><td class="subtotal">¥${data.subtotal.toLocaleString()}</td></tr>`;
-    data.items.forEach(item => { rows += `<tr class="sub-row"><td></td><td>${item.name}</td><td>¥${item.cost.toLocaleString()}</td></tr>`; });
-    return rows;
-  }).join('');
+  if (tbody) {
+    tbody.innerHTML = cats.length
+      ? cats.map(([cat, entry]) => {
+        const color = budgetColors[cat] || 'var(--t-seq-5)';
+        let rows = `<tr class="cat-row"><td colspan="2"><span class="cat-icon"><span class="icon icon-sm" style="color:${color}">${budgetIcons[cat] || SVG.box}</span>${budgetLabels[cat] || cat}</span></td><td class="subtotal">¥${asMoney(entry.subtotal)}</td></tr>`;
+        asArray(entry.items).forEach(item => {
+          const detail = asObject(item);
+          rows += `<tr class="sub-row"><td></td><td>${esc(detail.name)}</td><td>¥${asMoney(detail.cost)}</td></tr>`;
+        });
+        return rows;
+      }).join('')
+      : `<tr><td colspan="3">${emptyNote('budget')}</td></tr>`;
+  }
 
-  // Total bar
-  const el = document.getElementById('budgetTotal');
-  el.querySelector('.budget-total-amount').textContent = `¥${total.toLocaleString()}`;
-  el.querySelector('.budget-total-per').textContent = `人均 ¥${(budget.perPerson || 0).toLocaleString()}`;
+  const totalBox = document.getElementById('budgetTotal');
+  if (!totalBox) return;
+  const amount = totalBox.querySelector('.budget-total-amount');
+  if (amount) amount.textContent = `¥${total.toLocaleString()}`;
+  const per = totalBox.querySelector('.budget-total-per');
+  if (per) per.textContent = `人均 ¥${asNumber(data.perPerson).toLocaleString()}`;
 }
 
 function renderTips(tips) {
-  document.getElementById('tipsList').innerHTML = tips.map(t =>
-    `<div class="tip-card"><div class="tip-icon"><span class="icon">${SVG.lightbulb}</span></div><span>${t}</span></div>`
+  const list = document.getElementById('tipsList');
+  if (!list) return;
+  const items = asArray(tips);
+  if (!items.length) {
+    list.innerHTML = emptyNote('tips');
+    return;
+  }
+  list.innerHTML = items.map(t =>
+    `<div class="tip-card"><div class="tip-icon"><span class="icon">${SVG.lightbulb}</span></div><span>${esc(t)}</span></div>`
   ).join('');
 }
 
 if (tripData) {
-  applyTheme(tripData.theme);
-  renderLandmark(tripData.theme);
-  document.getElementById('heroTitle').textContent = tripData.title;
-  if (tripData.dateRange) document.getElementById('heroDate').textContent = tripData.dateRange;
-  if (tripData.travelers) document.getElementById('heroTravelers').textContent = tripData.travelers;
-  if (tripData.budget) document.getElementById('heroBudget').textContent = `¥${(tripData.budget.total || 0).toLocaleString()}`;
-  renderWeather(tripData.weather, tripData.days);
-  renderDays(tripData.days);
-  renderHotels(tripData.hotels);
-  renderBudget(tripData.budget);
-  renderTips(tripData.tips);
+  const data = asObject(tripData);
+  safeRender('theme', () => applyTheme(data.theme));
+  safeRender('landmark', () => renderLandmark(data.theme));
+  const heroTitle = document.getElementById('heroTitle');
+  if (heroTitle) heroTitle.textContent = asScalar(data.title);
+  const heroDate = document.getElementById('heroDate');
+  if (heroDate && asScalar(data.dateRange)) heroDate.textContent = asScalar(data.dateRange);
+  const heroTravelers = document.getElementById('heroTravelers');
+  if (heroTravelers && asScalar(data.travelers)) heroTravelers.textContent = asScalar(data.travelers);
+  const heroBudget = document.getElementById('heroBudget');
+  if (heroBudget) heroBudget.textContent = `¥${asNumber(asObject(data.budget).total).toLocaleString()}`;
+  safeRender('weather', () => renderWeather(data.weather, data.days));
+  safeRender('days', () => renderDays(data.days));
+  safeRender('hotels', () => renderHotels(data.hotels));
+  safeRender('budget', () => renderBudget(data.budget));
+  safeRender('tips', () => renderTips(data.tips));
 }
 </script>
 </body>

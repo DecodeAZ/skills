@@ -1,0 +1,230 @@
+{
+  "schema_version": "1",
+  "capabilities": [
+    "active-probing",
+    "security-checks",
+    "cve-matching",
+    "report-delivery"
+  ],
+  "functional_degradations": [
+    {
+      "capability": "active-probing",
+      "trigger": "Python 低于 3.10 或包内探测脚本缺失损坏；或 requests 不可用、WAF 按 UA/请求头/TLS 栈指纹降权（404 静默过滤 / 420 黑名单页 / SSL 断连）、目标断连限流；或 dirsearch / python-Wappalyzer 未安装",
+      "fallback": "http_client 自动降级（requests→urllib→curl 粘性兜底）；Wappalyzer 装不上跳过通用对照仅自建指纹；dirsearch 缺失仅用 pathprobe 串行探测；curl 兜底后仍失败→等待冷却（实测 15–30 分钟）或报备源 IP 后把 --delay 加倍重试一次；仍失败→停止主动探测，转纯离线产物分析",
+      "user_input": "确认是否放宽时间窗、报备源 IP 后重试，或接受「主动探测受限」的盲区结论",
+      "limitations": "端点覆盖面与指纹完整度下降，可能漏报仅存于未探测路径的问题；每次降级必须在报告中标注",
+      "evidence_label": "已验证",
+      "recovery": "恢复网络冷却后按降级矩阵重试；安装 Python 3.10+ 或重装本技能后重跑 scripts/check_environment.py",
+      "stop_condition": "curl 兜底后仍被拦截时必须停止主动探测，不得换字典、加线程或绕过 http_client 硬试；报告须声明「主动探测受限」盲区"
+    },
+    {
+      "capability": "security-checks",
+      "trigger": "Python 低于 3.10 或包内 security_checks.py 缺失损坏；或 openssl CLI 缺失；或目标 WAF 按 TLS 指纹对 openssl ClientHello（JA3）限流",
+      "fallback": "openssl 缺失时 TLS 协议/证书项判 SKIP，其余 8 类照常执行；TLS 指纹限流时该项单独停跑，必要时改用 SSL Labs 外测并在报告第 8 章声明",
+      "user_input": "确认是否安装 openssl CLI，或接受 TLS 项缺失",
+      "limitations": "TLS 结论缺失，检查矩阵须标 SKIP，报告盲区章声明",
+      "evidence_label": "已验证",
+      "recovery": "安装 openssl CLI 后重跑 security_checks.py 的 tls 检查",
+      "stop_condition": "TLS 项未执行时不得在报告中标成 PASS 或 FAIL，只能标 SKIP 并说明原因"
+    },
+    {
+      "capability": "cve-matching",
+      "trigger": "cve-scan MCP 不可用或查询失败",
+      "fallback": "按 references/cve-matching.md 手册流程比对；仍无法比对时输出「未比对」，nginx 等非包生态用 search_cve/get_cve + 人工比对",
+      "user_input": "确认是否配置 cve-scan MCP，或接受 CVE 比对盲区",
+      "limitations": "CVE 覆盖依赖人工比对，时效与准确性下降",
+      "evidence_label": "部分验证",
+      "recovery": "恢复 cve-scan MCP 后重新提交 fingerprint 的 frontend 字典转 deps",
+      "stop_condition": "未比对的依赖不得写「无漏洞」结论，只能写「未比对」并进第 8 章盲区声明"
+    },
+    {
+      "capability": "report-delivery",
+      "trigger": "Python 低于 3.10，或包内模板/脚本（report-template.html、checklist-template.md、findings-tracker.csv、verify_findings.py）缺失损坏",
+      "fallback": "按 references/report-guide.md 手工撰写 13 章报告、复验清单与跟踪表三件套",
+      "user_input": "确认是否重装本技能，或接受手工模板交付",
+      "limitations": "失去模板固化的章节结构与 http_client.mask 脱敏工具，需人工逐条落实",
+      "evidence_label": "已验证",
+      "recovery": "重装本技能后重跑 scripts/check_environment.py",
+      "stop_condition": "报告证据必须先脱敏（IP 末段、32 位 UUID）再交付，未脱敏证据不得出现在报告中"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "python-runtime",
+      "type": "runtime",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "active-probing",
+        "security-checks",
+        "report-delivery"
+      ],
+      "checks": [
+        {
+          "id": "python-version",
+          "type": "python",
+          "required": true,
+          "min_version": "3.10"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://www.python.org/",
+        "official_docs_url": "https://docs.python.org/3/",
+        "steps": [
+          "安装 Python 3.10 或更高版本（已验证 3.14.7）",
+          "在目标项目下建 venv：python -m venv .venv",
+          "安装依赖：.venv/Scripts/python -m pip install -r <本Skill目录>/scripts/requirements.txt（POSIX 用 .venv/bin/python）",
+          "requests 缺失时 http_client.py 自动降级 urllib，脚本零改动"
+        ],
+        "verify": "python --version 输出 ≥3.10，且 venv 内 import requests 成功（或接受 stdlib 降级模式）",
+        "security": "脚本只向用户授权的目标发送只读请求（GET/HEAD/OPTIONS），串行限速 --delay ≥ 0.5，统一模拟浏览器行为，证据输出前脱敏",
+        "verified_at": "2026-11-06",
+        "applies_to_version": ">=3.10"
+      },
+      "degradation": [
+        {
+          "capability": "active-probing",
+          "trigger": "Python 缺失或低于 3.10（脚本使用 3.10+ 语法）",
+          "fallback": "仅旧解释器可跑 pathprobe 时只做端点探测；完全无 Python 时停止主动探测",
+          "user_input": "是否安装 Python 3.10+；拒绝时接受纯离线产物分析",
+          "limitations": "指纹识别与安全检查无法脚本化，结论标注为人工判断",
+          "evidence_label": "已验证",
+          "recovery": "安装 Python 3.10+ 后重跑 scripts/check_environment.py",
+          "stop_condition": "不得在无 Python 环境下声称完成了脚本化指纹与安全检查"
+        },
+        {
+          "capability": "security-checks",
+          "trigger": "Python 缺失或低于 3.10",
+          "fallback": "9 类检查无法运行，改为按 references/remediation-playbook.md 人工核对可判定项",
+          "user_input": "是否安装 Python 3.10+；拒绝时接受人工核对清单",
+          "limitations": "检查结果无机器可复现的 JSON 证据",
+          "evidence_label": "已验证",
+          "recovery": "安装 Python 3.10+ 后重跑 scripts/check_environment.py",
+          "stop_condition": "人工核对结论不得标成脚本实测 PASS/FAIL"
+        },
+        {
+          "capability": "report-delivery",
+          "trigger": "Python 缺失或低于 3.10",
+          "fallback": "按 references/report-guide.md 手工撰写报告三件套，复验脚本改由人工按清单执行",
+          "user_input": "是否安装 Python 3.10+；拒绝时接受手工模板交付",
+          "limitations": "失去模板固化结构与自动复验退出码约定",
+          "evidence_label": "已验证",
+          "recovery": "安装 Python 3.10+ 后重跑 scripts/check_environment.py",
+          "stop_condition": "报告证据必须先脱敏再交付，未脱敏证据不得出现"
+        }
+      ]
+    },
+    {
+      "id": "bundled-toolkit",
+      "type": "local-tool",
+      "required": true,
+      "auth_type": "none",
+      "capabilities": [
+        "active-probing",
+        "security-checks",
+        "report-delivery"
+      ],
+      "checks": [
+        {
+          "id": "http-layer",
+          "type": "file",
+          "required": true,
+          "path": "scripts/http_client.py"
+        },
+        {
+          "id": "fingerprint-script",
+          "type": "file",
+          "required": true,
+          "path": "scripts/fingerprint.py"
+        },
+        {
+          "id": "pathprobe-script",
+          "type": "file",
+          "required": true,
+          "path": "scripts/pathprobe.py"
+        },
+        {
+          "id": "security-checks-script",
+          "type": "file",
+          "required": true,
+          "path": "scripts/security_checks.py"
+        },
+        {
+          "id": "verify-findings-script",
+          "type": "file",
+          "required": true,
+          "path": "scripts/verify_findings.py"
+        },
+        {
+          "id": "backend-wordlist",
+          "type": "file",
+          "required": true,
+          "path": "scripts/wordlists/backend-mini.txt"
+        },
+        {
+          "id": "report-template",
+          "type": "file",
+          "required": true,
+          "path": "assets/report-template.html"
+        },
+        {
+          "id": "checklist-template",
+          "type": "file",
+          "required": true,
+          "path": "assets/checklist-template.md"
+        },
+        {
+          "id": "findings-tracker",
+          "type": "file",
+          "required": true,
+          "path": "assets/findings-tracker.csv"
+        }
+      ],
+      "setup": {
+        "official_home_url": "https://github.com/DecodeAZ/skills",
+        "official_docs_url": "https://github.com/DecodeAZ/skills/tree/main/skills/web-vuln-scan-report",
+        "steps": [
+          "确认 scripts/ 与 assets/ 下 9 个包内文件齐全（check_environment.py 的 file 检查逐个核对）",
+          "所有请求必须经 scripts/http_client.py 发出，禁止绕过（第三方库内置 fetch 会裸发 python-requests UA）",
+          "wordlist 按第 1 步指纹更换（如 PHP 站点换 adminer/phpinfo 类）"
+        ],
+        "verify": "python scripts/check_environment.py 输出 bundled-toolkit 无缺失项",
+        "security": "包内脚本只对用户授权的目标发只读请求；词表与模板随技能分发，不含目标站点数据",
+        "verified_at": "2026-11-06",
+        "applies_to_version": "1.1.0"
+      },
+      "degradation": [
+        {
+          "capability": "active-probing",
+          "trigger": "包内探测脚本（fingerprint.py / pathprobe.py / http_client.py）或词表缺失损坏",
+          "fallback": "停止脚本化探测；改为人工阅读首页与静态产物做指纹判断，端点探测改人工经验清单并标注未脚本验证",
+          "user_input": "确认是否重新安装本技能",
+          "limitations": "无机器可复现的探测证据，结论可信度下降",
+          "evidence_label": "已验证",
+          "recovery": "重装本技能后重跑 scripts/check_environment.py",
+          "stop_condition": "不得在脚本缺失时声称探测结果经过统一 HTTP 层与限速控制"
+        },
+        {
+          "capability": "security-checks",
+          "trigger": "包内 security_checks.py 缺失损坏",
+          "fallback": "改为按 references/remediation-playbook.md 人工核对可判定项",
+          "user_input": "确认是否重新安装本技能",
+          "limitations": "检查结果无机器可复现的 JSON 证据",
+          "evidence_label": "已验证",
+          "recovery": "重装本技能后重跑 scripts/check_environment.py",
+          "stop_condition": "人工核对结论不得标成脚本实测 PASS/FAIL"
+        },
+        {
+          "capability": "report-delivery",
+          "trigger": "包内模板或 verify_findings.py 缺失损坏",
+          "fallback": "按 references/report-guide.md 手工撰写报告三件套",
+          "user_input": "确认是否重新安装本技能",
+          "limitations": "失去模板固化结构与复验退出码约定，需人工逐条落实",
+          "evidence_label": "已验证",
+          "recovery": "重装本技能后重跑 scripts/check_environment.py",
+          "stop_condition": "报告证据必须先脱敏再交付，未脱敏证据不得出现"
+        }
+      ]
+    }
+  ]
+}

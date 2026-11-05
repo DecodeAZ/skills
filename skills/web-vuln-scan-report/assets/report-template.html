@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--
+  web-vuln-scan-report · 报告模板（13 章）
+  使用规则：
+  1. 将 {{PLACEHOLDER}} 替换为实测值；带 TODO 注释的块按实际结果增删行。
+  2. 「命中」类表格的每一行必须有证据列；无证据的结论不写。
+  3. 所有对外证据先过脱敏（IP 末段、UUID、坐标）；CVSS 保留漏洞库原值，
+     并在第 3 章按适用面重新归类（仅 Node / 需原型污染 / 浏览器直接适用）。
+  4. 章节可按目标增删（如非 Spring 站点去掉第 6/9 章 Spring 专项），
+     但 01/04/12（摘要、优先级、修复方案）不得省略。
+-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{SITE_NAME}} · 技术栈测绘与漏洞报告</title>
+<style>
+  :root{--bg:#f5f6f8;--card:#fff;--ink:#15171c;--muted:#6b7280;--line:#e5e7eb;--line-2:#eef0f3;
+    --brand:#12314f;--brand-2:#1b4b74;--crit:#b42318;--crit-bg:#fef3f2;--high:#c2410c;--high-bg:#fff4ed;
+    --med:#a16207;--med-bg:#fffaeb;--low:#3f6212;--low-bg:#f6f8ee;--ok:#166534;--ok-bg:#f0fdf4;--radius:10px;
+    --mono:ui-monospace,Menlo,Consolas,monospace}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.65}
+  .hero{background:linear-gradient(135deg,#0d2438,#12314f 45%,#1b4b74);color:#fff;padding:34px 0 28px;border-bottom:3px solid #d97706}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .hero h1{margin:6px 0;font-size:26px}.hero .sub{color:#c3d6e6;font-size:13.5px}
+  .meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 26px;margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.16)}
+  .meta-item{font-size:12.5px;color:#a8c2d8}.meta-item b{display:block;color:#fff;margin-top:2px;word-break:break-all}
+  main{max-width:1180px;margin:0 auto;padding:26px 24px 70px}
+  section{margin-bottom:30px}
+  h2{font-size:17.5px;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  h2 .idx{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:var(--brand);color:#fff;font-size:12px;flex:none}
+  h3{font-size:14.5px;margin:20px 0 10px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;position:relative}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brand-2)}
+  .kpi .n{font-size:26px;font-weight:680;line-height:1.2}.kpi .l{font-size:12px;color:var(--muted)}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--card)}
+  table{border-collapse:collapse;width:100%;font-size:12.8px}
+  thead th{background:#f8f9fb;text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12px;white-space:nowrap}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  .mono,.mono td{font-family:var(--mono);font-size:11.8px}
+  .sev{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10.5px;font-weight:650;white-space:nowrap}
+  .sev.CRITICAL,.sev.HIGH{color:var(--crit);background:var(--crit-bg);border:1px solid #fbd5d0}
+  .sev.HIGH{color:var(--high);background:var(--high-bg);border-color:#fcd9c0}
+  .sev.MEDIUM{color:var(--med);background:var(--med-bg);border:1px solid #fde68a}
+  .sev.LOW{color:var(--low);background:var(--low-bg);border:1px solid #d9e2c0}
+  .sev.INFO{color:#1e40af;background:#eff6ff;border:1px solid #d6e4ff}
+  .tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10.5px;border:1px solid var(--line);background:#f8f9fb;white-space:nowrap}
+  .tag.warn{color:var(--high);border-color:#fcd9c0;background:var(--high-bg)}
+  .tag.ok{color:var(--ok);border-color:#c7e9cf;background:var(--ok-bg)}
+  .tag.node{color:#334155;border-color:#dbe2ea;background:#f1f5f9}
+  .tag.pp{color:#7c2d12;border-color:#fbd5c0;background:#fff7f2}
+  .callout{border-radius:8px;padding:12px 14px;font-size:12.9px;border:1px solid}
+  .callout.info{background:#f4f8fc;border-color:#d7e5f2;color:#1e3a55}
+  .callout.warn{background:var(--high-bg);border-color:#fcd9c0;color:#7c2d12}
+  pre{margin:10px 0 0;padding:12px 14px;background:#0f1723;color:#dbe6f2;border-radius:8px;
+    font-family:var(--mono);font-size:11.6px;line-height:1.6;overflow-x:auto;white-space:pre}
+  pre .c{color:#7f93a8}
+  code.inline{font-family:var(--mono);font-size:12px;background:#f1f4f8;border:1px solid var(--line);border-radius:4px;padding:1px 5px}
+  .finding{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px}
+  .finding .head{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-bottom:8px}
+  .finding .fid{font-family:var(--mono);font-size:11.5px;color:#fff;background:var(--brand);padding:2px 7px;border-radius:4px}
+  .finding h4{margin:0;font-size:14px}
+  .finding dl{display:grid;grid-template-columns:86px minmax(0,1fr);gap:6px 12px;margin:10px 0 0;font-size:12.8px}
+  .finding dt{color:var(--muted);font-size:12px}.finding dd{margin:0}
+  footer{border-top:1px solid var(--line);margin-top:34px;padding-top:16px;font-size:12px;color:var(--muted)}
+  @media print{.hero{background:#12314f}body{background:#fff}section{break-inside:avoid}pre{background:#f3f5f8;color:#111}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <h1>{{SITE_NAME}} · 技术栈测绘与漏洞报告</h1>
+  <p class="sub">基于被动指纹识别、只读探测与依赖清单比对（NVD / OSV / GHSA）。未执行写入或利用行为。</p>
+  <div class="meta-grid">
+    <div class="meta-item">目标资产<b>{{TARGET_URL}}</b></div>
+    <div class="meta-item">报告日期<b>{{DATE}}</b></div>
+    <div class="meta-item">扫描任务 ID<b>{{TASK_ID}}</b></div>
+    <div class="meta-item">命中总量<b>{{HIT_SUMMARY}}</b></div>
+    <div class="meta-item">最高风险<b>{{TOP_RISK}}</b></div>
+  </div>
+</div></header>
+
+<main>
+
+<section id="s1"><h2><span class="idx">01</span>结论摘要</h2>
+  <div class="kpis"><!-- TODO：依赖数 / CRITICAL / HIGH / MEDIUM / LOW -->
+    <div class="kpi"><div class="n">{{N_DEPS}}</div><div class="l">可识别依赖</div></div>
+    <div class="kpi"><div class="n">{{N_CRIT}}</div><div class="l">CRITICAL</div></div>
+    <div class="kpi"><div class="n">{{N_HIGH}}</div><div class="l">HIGH</div></div>
+    <div class="kpi"><div class="n">{{N_MED}}</div><div class="l">MEDIUM</div></div>
+    <div class="kpi"><div class="n">{{N_LOW}}</div><div class="l">LOW</div></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <p><b>一句话结论：</b>{{ONE_LINER}}</p>
+    <p><b>比 CVE 更值得先看的：</b></p>
+    <p>1）{{TOP_ISSUE_1}}</p>
+    <p>2）{{TOP_ISSUE_2}}</p>
+  </div>
+  <div class="callout warn"><b>风险定级说明：</b>CVSS 为漏洞库原始评分，不代表本部署形态下的真实风险；每条命中的「影响面」列已标注适用性。</div>
+</section>
+
+<section id="s2"><h2><span class="idx">02</span>技术栈测绘</h2>
+  <!-- TODO：接入层 / 前端 / 后端三张表，每行带识别证据 -->
+  <h3>2.1 接入层</h3><div class="table-wrap"><table><!-- 组件 | 结果 | 证据 --></table></div>
+  <h3>2.2 前端（SPA 产物）</h3><div class="table-wrap"><table><!-- 依赖 | 版本 | 生命周期 | 识别依据 --></table></div>
+  <h3>2.3 后端（按行为判定）</h3><div class="table-wrap"><table><!-- 组件 | 判定 | 证据 --></table></div>
+</section>
+
+<section id="s3"><h2><span class="idx">03</span>风险分布</h2>
+  <!-- TODO：按包的命中条形图 + 按适用面重归类表（仅 Node / 需 PP / 浏览器直接适用） -->
+</section>
+
+<section id="s4"><h2><span class="idx">04</span>修复优先级</h2>
+  <!-- TODO：P0(24h) / P1(一周) / P2(两周) / P3(规划) 四张卡；末尾加指向第 12 章的跳转 -->
+</section>
+
+<section id="s5"><h2><span class="idx">05</span>依赖漏洞明细</h2>
+  <!-- TODO：逐条 CVE 表：编号 | CVSS | 等级 | 摘要 | 影响面 | 修复版本；附筛选说明 -->
+</section>
+
+<section id="s6"><h2><span class="idx">06</span>{{GATEWAY}} 人工比对</h2>
+  <!-- TODO：反向代理/网关 CVE 逐条判定表（本地库无版本区间时人工核对） -->
+</section>
+
+<section id="s7"><h2><span class="idx">07</span>非版本类问题（F-01 起）</h2>
+  <!-- TODO：finding 块：fid + 标题 + 等级 + dl(证据/影响/建议) -->
+</section>
+
+<section id="s8"><h2><span class="idx">08</span>未覆盖范围与盲区</h2>
+  <!-- TODO：表：项目 | 状态 | 原因/后续建议 -->
+</section>
+
+<section id="s9"><h2><span class="idx">09</span>如何进一步获取后端信息</h2>
+  <!-- TODO：被动识别 / 主动探测（实测结果）/ GitHub 工具清单 / 拿精确版本的路径 / 执行清单 -->
+</section>
+
+<section id="s10"><h2><span class="idx">10</span>离线产物深度分析</h2>
+  <!-- TODO：API 攻击面清单 / 前台路由 / 实时通道 / 凭据存储 / 新增发现 / 局限 -->
+</section>
+
+<section id="s11"><h2><span class="idx">11</span>本地工具链实测</h2>
+  <!-- TODO：环境与依赖 / 工具表现 / 指纹交叉验证 / 新增发现 / 复现命令 / 结论 -->
+</section>
+
+<section id="s12"><h2><span class="idx">12</span>修复方案与整改建议</h2>
+  <!-- TODO：12.1 整改总览矩阵(ID/问题/优先级/责任方/工作量/验收) +
+       12.2 P0 24h + 12.3 P1 一周 + 12.4 P2 两周 + 12.5 P3 规划 +
+       12.6 验收与回归流程(verify_findings.py 退出码语义) + 12.7 残余风险 -->
+</section>
+
+<section id="s13"><h2><span class="idx">13</span>附录 · 探测证据</h2>
+  <!-- TODO：原始请求/响应、指纹定位、TLS、扫描范围；证据先脱敏 -->
+</section>
+
+<footer>
+  <p><b>免责声明：</b>本报告基于 {{DATE}} 的公开可达信息与依赖清单比对生成，结果具有时效性；未命中不代表不存在漏洞。</p>
+  <p>所有验证均为只读操作，未对目标系统做任何修改。仅用于授权范围内的资产自查与加固参考。</p>
+</footer>
+</main>
+</body>
+</html>

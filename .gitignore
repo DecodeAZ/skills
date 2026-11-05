@@ -1,4 +1,7 @@
 # 本地运行时产物与用户配置（不随仓库分发）
+dist/
+docs/
+skills/*/tests/
 skills/*/config.json
 skills/*/_user_meta.json
 
@@ -15,6 +18,8 @@ _backup/
 .DS_Store
 Thumbs.db
 .workbuddy/
+.mimosa/
+.zcode/
 
 # Skill 运行时产物目录（如 travel-planner 输出的 [目的地]-[出发年-月]/）
 /*-20[0-9][0-9]-[0-9][0-9]/

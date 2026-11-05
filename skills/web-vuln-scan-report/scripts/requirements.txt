@@ -1,0 +1,15 @@
+# web-vuln-scan-report 依赖清单
+# 安装：python -m venv .venv && .venv/Scripts/python -m pip install -r <skill>/scripts/requirements.txt
+# 分「必需」「可选」两档；安装失败时按 SKILL.md「降级矩阵」处理，不要反复重试。
+
+# ---- 必需（缺任一则仅剩 stdlib 降级模式）----
+requests>=2.28,<3          # HTTP 客户端；缺失时 http_client.py 自动回退 urllib（stdlib 降级模式）
+
+# ---- 可选（缺失时跳过对应模块并在报告中标注，不影响主流程）----
+python-Wappalyzer==0.3.1   # 通用技术栈对照；依赖 aiohttp，且必须配合 setuptools<81（81 起移除 pkg_resources）
+setuptools<81              # 为 python-Wappalyzer 提供 pkg_resources；单独安装无副作用
+dirsearch==0.5.0           # 路径枚举对照工具；主路径是 scripts/pathprobe.py 串行探测，dirsearch 仅作交叉验证
+
+# 备注：
+# * openssl CLI 用于 TLS 检查（security_checks.py），Windows 自带 / Git Bash 自带，不经 pip 安装。
+# * CVE 比对优先使用 cve-scan MCP；不可用时按 references/cve-matching.md 手册降级。
